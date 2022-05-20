@@ -1,0 +1,94 @@
+<div class="position-relative padding-x padding-y  width-full ">
+  <div class="margin-1 radius-md bg-white shadow-3 border border-base-light">
+    <div class="height-full">
+      <div class=" padding-left-1 padding-right-1 padding-top-1 ">
+        <!--Abbr, Name, Role-->
+        <div class="padding-bottom-1">
+          <div class="grid-container padding-0">
+            <div class="grid-row grid-gap-2px flex-align-center">
+              <div class="grid-col flex-auto flex-align-center">
+                <div
+                  class="circle-3 display-flex flex-align-center flex-justify-center text-center outline-1px outline-accent-cool-dark bg-accent-cool-light font-sans-3xs">
+                  <div class="display-flex flex-align-center ">
+                    {{comment.firstName.substring(0,1)+comment.lastName.substring(0,1)}}
+                  </div>
+                </div>
+              </div>
+              <div class="grid-col flex-auto flex-align-center font-sans-xs ">
+                <span class="text-semibold "> {{comment.firstName}} {{comment.lastName }}</span>
+              </div>
+              <div class="grid-col flex-auto font-sans-2xs">
+                <span class="text-italic "> {{comment.role}}</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!--Date-->
+        <div class=" padding-right-1 font-sans-2xs" *ngIf="commmentMode===CommentMode.READ">
+          {{ getDateFormat(comment.createdDate) }}
+        </div>
+        <!--Comment-->
+        <div class=" padding-right-1 padding-bottom-1 font-sans-xs" *ngIf="commmentMode===CommentMode.READ">
+          <div *ngIf="comment.comment.length<=characterCountShowMore||showMore">
+            {{comment.comment}}
+          </div>
+
+          <div class="padding-right-1 padding-bottom-1 font-sans-xs"
+            *ngIf="comment.comment.length>characterCountShowMore&&!showMore">
+            {{comment.comment.substring(0,characterCountShowMore)}}
+          </div>
+        </div>
+
+        <!--Inline Edit-->
+        <div class="padding-left-1 padding-right-1"
+          style="resize: none; border-style: none; border-color: Transparent; overflow: auto; "
+          *ngIf="commmentMode===CommentMode.UPDATE">
+          <textarea title="Edit Comment" placeholder="Write a comment…" style="resize: none;"
+            [(ngModel)]="model.commentField" id="txtArea" maxlength="500" rows="5" cols="30"></textarea>
+        </div>
+        <!--  More Less, Edit, Delete buttons-->
+        <div class="grid-container padding-0" *ngIf="commmentMode===CommentMode.READ">
+          <div class="grid-row flex-align-center">
+            <div class="grid-col display-flex flex-row">
+              <div class="flex-1 padding-1px flex-align-self-center display-flex flex-align-center flex-justify-center">
+                <button class=" usa-button usa-button--unstyled sds-button--small"
+                  *ngIf="comment.comment.length>characterCountShowMore&& !showMore" (click)="showMoreClick()">
+                  More
+                  <usa-icon [icon]="'chevron-down'" [size]="'x'">
+                  </usa-icon>
+                </button>
+                <button class="usa-button usa-button--unstyled sds-button--small" *ngIf="showMore"
+                  (click)="showLessClick()">Less
+                  <usa-icon [icon]="'chevron-up'" [size]="'x'">
+                  </usa-icon>
+                </button>
+              </div>
+            </div>
+            <div class="grid-col flex-auto">
+              <div class="pos-right">
+                <button (click)="editComment()"
+                  class="padding-right-05 usa-button usa-button--unstyled font-sans-2xs">Edit</button>
+                <button (click)="deleteComment()" class="usa-button usa-button--unstyled font-sans-2xs">
+                  Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Save and Cancel-->
+        <div class="grid-container padding-0 padding-bottom-1" *ngIf="commmentMode===CommentMode.UPDATE">
+          <div class="grid-row flex-column flex-align-end">
+            <div class="grid-col flex-fill">
+              <div class="">
+                <button (click)="cancelEditComment()"
+                  class=" pos-right usa-button sds-button--small usa-button--base font-sans-2xs">Cancel</button>
+                <button (click)="saveEditComment()"
+                  class=" pos-right usa-button sds-button--small usa-button--accent-cool font-sans-2xs">
+                  Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

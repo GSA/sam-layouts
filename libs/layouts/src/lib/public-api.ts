@@ -36,3 +36,6 @@ export * from './stepper/stepper.module';
 export * from './stepper/stepper.component';
 export * from './stepper/header/header.component';
 export * from './stepper/footer/footer.component';
+export * from './thread/thread.module';
+export * from './thread/thread.component';
+export * from './thread/thread.service';

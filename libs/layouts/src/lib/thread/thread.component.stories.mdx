@@ -1,0 +1,54 @@
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { moduleMetadata } from '@storybook/angular';
+import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GenericThreadComponent } from './thread.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SdsFormlyModule } from '@gsa-sam/sam-formly';
+import { FormlyModule } from '@ngx-formly/core';
+import { SdsToastModule, SdsToastSettings } from '@gsa-sam/components';
+import { SystemConfig } from './thread-config-model';
+import { GenericThreadService } from './thread.service';
+import { ThreadMockService } from './thread-mock.service';
+import { GenericThreadModule } from './thread.module';
+import { CommonModule } from '@angular/common';
+import { ToastrModule } from 'ngx-toastr';
+
+<Meta
+  title="Thread"
+  component={GenericThreadComponent}
+  decorators={[
+    moduleMetadata({
+      declarations: [],
+      imports: [
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        CommonModule,
+        GenericThreadModule
+      ],
+    }),
+  ]}
+/>
+
+# Thread
+
+Thread does something cool
+
+
+<Canvas>
+  <Story
+    inline={true}
+    name="GenericThreadComponent"
+    args={{}}>
+     {(args) => ({
+      props: {
+        ...args,
+      },
+      template: `
+        <thread [role]="'SOME ROLE'" [threadId]="'0'">
+        </thread>
+        `,
+    })}
+  </Story>
+</Canvas>
+
