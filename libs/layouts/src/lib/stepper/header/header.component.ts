@@ -47,5 +47,5 @@ export class SLStepperHeaderComponent
 })
 export class SLStepperHeaderWithStatusComponent {
   @Input() title: string;
-  @Input() status: string;
+  @Input() status: { text: string; color: string };
 }

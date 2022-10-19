@@ -4,7 +4,10 @@
   [stepValidityMap]="stepValidityMap" (stepChange)="onStepChange($event)" [linear]="linear"
   (saveData)="onSaveData($event)" expirationDate="N/A" [versions]="versions">
 
-  <sam-layouts-stepper-header-with-status title="Test Title" status="Draft">
+  <sam-layouts-stepper-header-with-status 
+    title="Test Title" 
+    [status]="{ text: 'Draft', color: 'light-blue' }"
+  >
   </sam-layouts-stepper-header-with-status>
 
   <sds-step id="welcome" text="Welcome" [stepTemplate]="gatherInformation"
