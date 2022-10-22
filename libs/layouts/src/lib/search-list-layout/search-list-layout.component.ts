@@ -136,6 +136,8 @@ export class SearchListLayoutComponent implements OnInit {
    */
   private triggeredByPopState: boolean = false;
 
+  private skipUpdate = false;
+
   @HostListener('window:popstate', ['$event'])
   onpopstate(event) {
     this.triggeredByPopState = true;
@@ -202,12 +204,32 @@ export class SearchListLayoutComponent implements OnInit {
    * @param filter - the updated filter model
    */
   public updateFilter(filter: any) {
+
+    const skip = (excluded, filter) => {
+      return excluded.unless && excluded.unless(filter)
+        ? false
+        : _.get(filter, excluded.field) !==
+            _.get(this.filterData, excluded.field);
+    };
+    
+    if (
+      this.configuration.excludeFilterFields &&
+      this.configuration.excludeFilterFields.length > 0 &&
+      this.filterData
+    ) {
+      this.skipUpdate = this.configuration.excludeFilterFields.some(
+        (excluded) => skip(excluded, filter)
+      );
+    }
+
     this.filterData = filter;
     this.page.pageNumber = this.page.default ? this.page.pageNumber : 1;
     this.page.default = filter ? false : true;
-    this.isDefaultFilter(filter);
-    if (this.isDefaultModel) {
-      this.items = [];
+    if (this.skipUpdate === false) {
+      this.isDefaultFilter(filter);
+      if (this.isDefaultModel) {
+        this.items = [];
+      }
     }
     this.updateContent(true);
   }
@@ -368,7 +390,8 @@ export class SearchListLayoutComponent implements OnInit {
       this.filterData &&
       this.service &&
       this.enableApiCall &&
-      !this.isDefaultModel
+      !this.isDefaultModel &&  
+      this.skipUpdate === false
     ) {
       this.loading = true;
 
