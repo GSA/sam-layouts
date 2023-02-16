@@ -4,6 +4,8 @@ import {
   ComponentRef,
   Inject,
   Input,
+  Output,
+  EventEmitter,
   ViewEncapsulation,
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
@@ -16,6 +18,7 @@ import { filter } from 'rxjs/operators';
 
 interface Data {
   help: [];
+  search: any;
 }
 
 @Component({
@@ -40,6 +43,7 @@ interface Data {
 })
 export class SdsHeaderHelpComponent {
   @Input() content;
+  @Output() searchEvent = new EventEmitter<string>();
 
   openedDialogRef: SdsDialogRef<HelpContentComponent>;
 
@@ -56,6 +60,7 @@ export class SdsHeaderHelpComponent {
       },
       data: {
         help: this.content,
+        search: this.searchEvent
       },
     });
   }
@@ -67,6 +72,10 @@ export class SdsHeaderHelpComponent {
       class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2"
     >
       <h2 class="font-heading-lg text-semibold">Help</h2>
+
+      <input [(ngModel)]="searchValue" type="text" />
+      <button (click)="sendSearchEvent()">Search</button>
+
       <div *ngFor="let item of data.help">
         <h3
           class="font-heading-md text-semibold margin-top-205 margin-bottom-1"
@@ -86,6 +95,9 @@ export class SdsHeaderHelpComponent {
   encapsulation: ViewEncapsulation.None,
 })
 export class HelpContentComponent {
+
+  searchValue:string;
+
   constructor(
     private router: Router,
     public dialogRef: SdsDialogRef<HelpContentComponent>,
@@ -104,4 +116,9 @@ export class HelpContentComponent {
       ref.instance[input] = value;
     }
   }
+
+  sendSearchEvent() {
+    this.data.search.emit(this.searchValue);
+  }
+
 }

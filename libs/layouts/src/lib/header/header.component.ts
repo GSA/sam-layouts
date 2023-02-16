@@ -55,7 +55,12 @@ export class SdsHeaderComponent {
 
   @Input() alertsTemplate: TemplateRef<any>;
 
+  /**
+   * Help properties
+   */
   @Input() help: [];
+  @Output() helpSearchEvent = new EventEmitter<string>();
+
   /**
    * event for event based
    */
