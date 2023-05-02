@@ -1,0 +1,464 @@
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { moduleMetadata } from '@storybook/angular';
+import { RouterModule } from '@angular/router';
+import { SdsHeaderComponent } from './header.component';
+import { SdsHeaderModule } from './header.module';
+import { NavigationMode } from '@gsa-sam/components';
+import {
+  NgxBootstrapIconsModule,
+  squareFill,
+  xCircle,
+  filePdf,
+  files,
+} from 'ngx-bootstrap-icons';
+import {
+  request,
+  messages,
+  workspace,
+  logOut,
+  bars,
+} from '@gsa-sam/ngx-uswds-icons';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { SdsLandingListComponent } from '../landing/list/list.component';
+import { NavigationHelper } from '@gsa-sam/components';
+import { BrowserModule } from '@angular/platform-browser';
+
+<Meta
+  title="Header"
+  component={SdsHeaderComponent}
+  decorators={[
+    moduleMetadata({
+      declarations: [],
+      imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        SdsHeaderModule,
+      ],
+    }),
+  ]}
+  args={{}}
+  argTypes = {{
+    navigationHelper: {
+      table: { disable: true },
+      control: { disable: true }
+    }
+  }}
+/>
+
+# Header
+
+<Canvas>
+  <Story
+    inline={true}
+    name="Header"
+    args={{
+      model: {
+        secondaryLinks: [
+          {
+            imageClass: 'pencil-square',
+            text: 'Requests',
+            route: '/',
+            id: 'request',
+            hasCounter: true,
+            selected: true,
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            imageClass: 'bell',
+            text: 'Notifications',
+            route: '/',
+            id: 'messages',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            imageClass: 'grid',
+            text: 'Workspace',
+            route: '/',
+            id: 'workspace',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            imageClass: 'arrow-right-square',
+            text: 'Sign Out',
+            route: '/',
+            id: 'signOut',
+            mode: NavigationMode.INTERNAL,
+          },
+        ],
+        navigationLinks: [
+          {
+            text: 'Home',
+            selected: true,
+            route: '/',
+            id: 'home',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            text: 'Search',
+            route: '/',
+            id: 'search',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            text: 'Databank',
+            route: '/',
+            id: 'databank',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            text: 'Data Services',
+            route: '/',
+            id: 'dataService',
+            mode: NavigationMode.INTERNAL,
+          },
+          {
+            text: 'Help',
+            route: '/',
+            id: 'help',
+            mode: NavigationMode.INTERNAL,
+          },
+        ],
+        home: {
+          text: 'Logo',
+          logo: 'assets/img/logo-sam.svg',
+          route: '/',
+          id: 'home',
+          mode: NavigationMode.INTERNAL,
+        },
+      },
+    }}
+  >
+    {(args) => ({
+      props: {
+        ...args,
+        help: [
+          {
+            head: {
+              title: 'Get started searching contract opportunities',
+            },
+            body: {
+              content: [
+                {
+                  component: new ComponentPortal(SdsLandingListComponent),
+                  inputs: {
+                    list: {
+                      iconList: true,
+                      items: [
+                        {
+                          link: {
+                            innerHtml: 'Use the search feature on SAM.gov',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0017298',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Follow contract opportunities',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0017560',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Save my searches',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0017561',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'file-earmark',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Use the interested vendors list',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0017569',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            head: {
+              title: 'Use contract opportunities advanced search',
+            },
+            body: {
+              content: [
+                {
+                  component: new ComponentPortal(SdsLandingListComponent),
+                  inputs: {
+                    list: {
+                      iconList: true,
+                      items: [
+                        {
+                          link: {
+                            innerHtml: 'Changing search filters',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0029688',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Filter by notice types',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0029689',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Filter by small business set-asides',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0029690',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml:
+                              'Filter by product and services (NAICS and PSC)',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0020214',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'play-btn',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Filter by place of performance',
+                            href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0029691',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml:
+                              'Search vendor collaboration opportunities',
+                            routerLink:
+                              '/search/?index=opp&page=1&sort=-relevance&sfm%5Bstatus%5D%5Bis_active%5D=true&sfm%5Bkeywords%5D%5B0%5D%5Bkey%5D=Vendor%20Collaboration&sfm%5Bkeywords%5D%5B0%5D%5Bvalue%5D=Vendor%20Collaboration',
+                          },
+                          icon: {
+                            icon: 'search',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Search small business events',
+                            routerLink:
+                              '/search/?index=opp&page=1&sort=-relevance&sfm%5Bstatus%5D%5Bis_active%5D=true&sfm%5Bkeywords%5D%5B0%5D%5Bkey%5D=Small%20Business%20Event&sfm%5Bkeywords%5D%5B0%5D%5Bvalue%5D=Small%20Business%20Event',
+                          },
+                          icon: {
+                            icon: 'search',
+                            prefix: 'bs',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            head: {
+              title: 'Available Icons',
+            },
+            body: {
+              content: [
+                {
+                  component: new ComponentPortal(SdsLandingListComponent),
+                  inputs: {
+                    list: {
+                      iconList: true,
+                      items: [
+                        {
+                          link: {
+                            innerHtml: 'Glossary',
+                            href: '',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'book',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Document',
+                            href: '',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'file-earmark',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'GOTO',
+                            href: '',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'arrow-right-circle-green',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Video',
+                            href: '',
+                            target: '_blank',
+                          },
+                          icon: {
+                            icon: 'play-btn',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml:'Search',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'search',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Info',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'info-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'External',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'window',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'User',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'person',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'List',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'files',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Filter',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'filter-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'Reset',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'arrow-clockwise',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'QSG',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'file-pdf',
+                            prefix: 'bs',
+                          },
+                        },
+                        {
+                          link: {
+                            innerHtml: 'FAQ',
+                            routerLink:'',
+                          },
+                          icon: {
+                            icon: 'question-circle',
+                            prefix: 'bs',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      template: `
+        <sds-header
+          [model]="model"
+          [help]="help">
+        </sds-header>
+        `,
+    })}
+  </Story>
+</Canvas>
+
+<ArgsTable of={SdsHeaderComponent} />

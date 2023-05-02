@@ -1,0 +1,159 @@
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { action } from '@storybook/addon-actions';
+import { SdsFooterComponent } from './footer.component';
+import { SdsFeedbackModule } from '../sds-feedback/sds-feedback.module';
+import { moduleMetadata } from '@storybook/angular';
+import { SdsCollapseModule, NavigationMode } from '@gsa-sam/components';
+import { UsaAccordionModule } from '@gsa-sam/ngx-uswds';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { SdsExternalLinkDirectivesModule } from '@gsa-sam/components';
+
+<Meta
+  title="Footer"
+  component={SdsFooterComponent}
+  decorators={[
+    moduleMetadata({
+      declarations: [SdsFooterComponent],
+      imports: [
+        CommonModule,
+        BrowserAnimationsModule,
+        SdsExternalLinkDirectivesModule,
+        UsaAccordionModule,
+        IconModule,
+        SdsFeedbackModule,
+        SdsCollapseModule,
+        RouterModule.forRoot([], { useHash: true }),
+      ],
+    }),
+  ]}
+/>
+
+# Footer
+
+<Canvas>
+  <Story
+    inline={true}
+    name="Footer"
+    args={{
+      modelFooter: {
+        linkSections: [
+          {
+            text: 'Our Website',
+            links: [
+              {
+                text: 'About This Site',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+              {
+                text: 'Release Notes',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+              { text: 'Alerts', route: '/', mode: NavigationMode.INTERNAL },
+              { text: 'News', route: '/', mode: NavigationMode.INTERNAL },
+            ],
+          },
+          {
+            text: 'Our Partners',
+            links: [
+              {
+                text: 'Acquisition.gov',
+                route: 'https://Acquisition.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'FSD.gov',
+                route: 'https://fsd.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'USASpending.gov',
+                route: 'https://USASpending.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'Grants.gov',
+                route: 'https://Grants.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'More Partners',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+            ],
+          },
+          {
+            text: 'Customer Service',
+            links: [
+              {
+                text: 'Help',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+              {
+                text: 'Contact Federal Service Desk',
+                route: 'https://fsd.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'Our Community',
+                route: 'https://sam.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'Policy',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+            ],
+          },
+          {
+            text: 'Policies',
+            links: [
+              {
+                text: 'Privacy Policy',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+              {
+                text: 'Disclaimers',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+              {
+                text: 'Freedom of Information Act',
+                route: 'https://foia.gov',
+                mode: NavigationMode.EXTERNAL,
+              },
+              {
+                text: 'Accessibility',
+                route: '/',
+                mode: NavigationMode.INTERNAL,
+              },
+            ],
+          },
+        ],
+        footerLogo: {
+          text: 'Logo',
+          imageSourcePath: './assets/img/logo-gsa.svg',
+          imageAltText: 'GSA Logo',
+          href: 'https://www.gsa.gov',
+          agencyName: 'General Services Administration',
+        },
+        disclaimer: `This is a U.S. General Services Administration Federal Government computer system that is <strong>"FOR OFFICIAL USE ONLY."</strong> This system is subject to monitoring. Individuals found performing unauthorized activities are subject to disciplinary action including criminal prosecution.`,
+      },
+    }}
+  >
+    {(args) => ({
+      props: { ...args, clicks: action('Button Click') },
+      template: `<sds-footer [model]="modelFooter" (linkEvent)="linkEvent.next($event)"></sds-footer>`,
+    })}
+  </Story>
+</Canvas>
+
+<ArgsTable of={SdsFooterComponent} />

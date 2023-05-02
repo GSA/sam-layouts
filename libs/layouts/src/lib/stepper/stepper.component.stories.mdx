@@ -1,0 +1,249 @@
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { moduleMetadata } from '@storybook/angular';
+import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SLStepperComponent } from './stepper.component';
+import { DemoStepperSimpleModule } from './demo/simple/simple.module';
+import { DemoStepperAdvancedModule } from './demo/advanced/advanced.module';
+
+<Meta
+  title="Stepper"
+  component={SLStepperComponent}
+  decorators={[
+    moduleMetadata({
+      declarations: [],
+      imports: [
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        DemoStepperSimpleModule,
+        DemoStepperAdvancedModule
+      ],
+    }),
+  ]}
+/>
+
+# Stepper
+
+Wrapper component for [sds-stepper](https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system).
+It provides the most common uses for `sds-stepper` component.
+
+<Canvas>
+  <Story inline={true} name="Stepper" args={{}}>
+    {(args) => ({
+      template: `<demo-stepper-simple></demo-stepper-simple>`,
+    })}
+  </Story>
+</Canvas>
+
+## Stepper Wrapper (*sam-layouts-stepper*)
+
+`sam-layouts-stepper` extends `sds-stepper` so all inputs and outputs found in `sds-stepper` can be used. There is only one additional input added `hideSideNav`.
+For more information about this input look at the Stepper with navigation section
+
+For more information about the `sds-stepper` component, visit the [design system docs]([sds-stepper](https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system).) -> Formly -> Stepper
+
+```html
+<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)" ... >
+    // Steps...
+ </sam-layouts-stepper>
+```
+
+## How to use
+
+### Add the stepper to your module
+```typescript
+import { SdsStepperModule } from '@gsa-sam/sam-formly';
+import { SLStepperModule } from '@gsa-sam/layouts';
+
+@NgModule({
+  declarations: [MyStepperComponent],
+  imports: [CommonModule, SdsStepperModule, SLStepperModule],
+  exports: [MyStepperComponent],
+})
+export class DemoStepperSimpleModule {}
+```
+
+### Create your steps using formly
+```typescript
+export class MyStepperComponent {
+  stepOne: FormlyFieldConfig = {
+    key: 'entityOne',
+    fieldGroup: [
+      {
+        key: 'name',
+        type: 'input',
+        templateOptions: {
+          label: 'Entity Name',
+          placeholder: 'eg: Acme Corporation',
+          description: 'Enter the name of your entity.',
+          required: true,
+        },
+        modelOptions: {
+          updateOn: 'blur',
+        },
+      },
+      {
+        className: 'desktop:grid-col-12 tablet:grid-col-12',
+        type: 'input',
+        key: 'title',
+
+        templateOptions: {
+          label: 'Program or Project Title',
+          required: true,
+          showError: false,
+        },
+      },
+    ],
+  };
+```
+### Create your steps using templates
+```html
+<ng-template #stepTwo>
+  <h1 class="margin-top-0">
+    Gather Your Information
+  </h1>
+  <div class="sds-card">
+    <div class="sds-card__header">
+      <h2>
+        U.S. REGISTRANTS:
+      </h2>
+    </div>
+    <div class="sds-card__body">
+      <ul class="usa-list usa-list--unstyled">
+        <li class="margin-bottom-4">
+          <h3>Entity Details</h3>
+          <ul class="usa-list">
+            <li>Purpose of Registration</li>
+            <li>Legal Business Name</li>
+            <li>Physical Address</li>
+          </ul>
+        </li>
+        <li class="margin-bottom-4">
+          <h3>Taxpayer Information</h3>
+          <ul class="usa-list">
+            <li>Taxpayer Identification Number (TIN)</li>
+            <li>Taxpayer Name</li>
+          </ul>
+          <span class="display-block text-small">
+            Review your tax documents from the IRS (such as a 1099 or w2 form)
+            to find your Taxpayer information.
+          </span>
+        </li>
+        <li class="margin-bottom-4">
+          <h3>Banking Information</h3>
+          <ul class="usa-list">
+            <li>Routing Number</li>
+            <li>Account Number</li>
+          </ul>
+          <span class="display-block text-small">
+            Account type (checking or savings) to set up Electronic Funds Transfer (ETF)
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+```
+
+### Add your steps to sds-step
+
+```html
+<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+    <sam-layouts-stepper-header></sam-layouts-stepper-header>
+    <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+    <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
+</sam-layouts-stepper>
+```
+
+## How to remove the header and indicator
+
+Remove `sam-layouts-stepper-header` from your html
+
+## How to modify the indicator
+
+To modify the header you can pass an object with your options to the `UsaStepIndicatorConfig` provider.
+
+To view all the options [click here](https://github.com/GSA/ngx-uswds/blob/main/projects/uswds-components/src/lib/step-indicator/step-indicator.config.ts)
+
+Visit the NGX-USWDS Documentation for more information about the [**Step Indicator component**](https://gsa.github.io/ngx-uswds/?path=/story/components-stepindicator--basic)
+
+```typescript
+import { UsaStepIndicatorConfig } from '@gsa-sam/ngx-uswds';
+
+@Component({
+  selector: 'my-stepper',
+  templateUrl: './my-stepper.component.html',
+  providers: [
+    {
+      provide: UsaStepIndicatorConfig,
+      useValue: {
+        displayCounters: true,
+        hideLabels: false,
+        position: 'top'
+      },
+    },
+  ],
+})
+export class MyStepperComponent { ...
+```
+
+## How to create a custom header
+
+Pass an angular template to the `template` input in `sam-layouts-stepper-header`
+
+```html
+<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+  <sam-layouts-stepper-header [template]="customHeader">
+    <ng-template #customHeader>Hello World</ng-template>
+  </sam-layouts-stepper-header>
+  <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+  <sds-step id="stepTwo" text="Purpose of Registration" [fieldConfig]="stepTwo"></sds-step>
+  <sds-step id="stepThree" text="Taxpayer Details" [fieldConfig]="stepThree"></sds-step>
+</sam-layouts-stepper>
+```
+
+
+## How to add more options to the footer
+
+Add the `stepper-footer` to any container,  use the `sam-layouts-stepper-footer-custom-action` component and provide and icon and text.
+
+```html
+<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+  <sam-layouts-stepper-header></sam-layouts-stepper-header>
+  <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+  <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
+
+  <ng-container stepper-footer>
+    <sam-layouts-stepper-footer-custom-action icon="x" (clickEvent)="customBtnClick($event)">
+      Close
+    </sam-layouts-stepper-footer-custom-action>
+    <sam-layouts-stepper-footer-custom-action icon="question" (clickEvent)="customBtnClick($event)">
+      Help
+    </sam-layouts-stepper-footer-custom-action>
+  </ng-container>
+</sam-layouts-stepper>
+```
+
+# Stepper with Navigation
+
+<Canvas>
+  <Story inline={true} name="Stepper with Navigation" args={{}}>
+    {(args) => ({
+      template: `<demo-stepper-advanced></demo-stepper-advanced>`,
+    })}
+  </Story>
+</Canvas>
+
+### Enable Navigation
+
+Set the `hideSideNav` attribute of the `sam-layouts-stepper` component to `false`
+
+Visit the github repository to [View the code](https://github.com/GSA/sam-layouts/tree/master/libs/layouts/src/lib/stepper/demo/advanced)
+
+```html
+<sam-layouts-stepper [hideSideNav]="false"  [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+    <sam-layouts-stepper-header></sam-layouts-stepper-header>
+    <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+    <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
+</sam-layouts-stepper>
+```

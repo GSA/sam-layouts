@@ -1,0 +1,135 @@
+<div class="grid-row">
+  <div *ngIf="!hideSideNav" class="desktop:grid-col-3 tablet-lg:grid-col-12 mobile-lg:grid-col-12 margin-bottom-3 margin-right-2">
+    <!-- =========================================================== -->
+    <!-- SIDE NAVIGATION -->
+    <!-- =========================================================== -->
+    <sds-side-toolbar [responsiveButtonText]="'Select Step'">
+      <ng-template>
+        <div class="sds-card">
+          <div class="sds-card__body sds-card__body--accent-cool">
+            <ul class="usa-sidenav usa-sidenav--styled">
+              <li *ngFor="let step of stepTemplates; let i = index;" class="usa-sidenav__item" [ngClass]="{
+                  'usa-current':  selectedStep?.id === step.id
+                }">
+                <ng-container *ngIf="!step.hide">
+                  <ng-container [ngTemplateOutlet]="sidenavItem" [ngTemplateOutletContext]="{$implicit: step}">
+                  </ng-container>
+                  <ng-container [ngTemplateOutlet]="subPanelTemplate" [ngTemplateOutletContext]="{$implicit:step}">
+                  </ng-container>
+                </ng-container>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ng-template>
+    </sds-side-toolbar>
+  </div>
+
+  <!-- =========================================================== -->
+  <!-- STEPPER -->
+  <!-- =========================================================== -->
+
+  <div class="grid-col-fill margin-left-2">
+
+    <!-- =========================================================== -->
+    <!-- Types of headers -->
+    <!-- =========================================================== -->
+    <ng-content select="sam-layouts-stepper-header"></ng-content>
+    <ng-content select="sam-layouts-stepper-header-with-status"></ng-content>
+
+    <!-- =========================================================== -->
+    <!-- Options -->
+    <!-- =========================================================== -->
+    <div class="display-flex margin-top-1 margin-bottom-2">
+      <div *ngIf="versions">
+        <label class="text-semibold" for="version">Version</label>
+        <select class="sds-tag sds-tag--outline" name="version" id="version" (change)="versionSelected($event)">
+          <option *ngFor="let version of versions" [value]="version.value">
+            {{version?.label}}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="expirationDate">
+        <div class="text-semibold">Expiration Date</div>
+        <span class="sds-tag sds-tag--outline flex-justify-center padding-y-1">
+          {{ expirationDate }}
+        </span>
+      </div>
+      <div class="flex-align-self-end flex-fill text-right">
+        <ng-content select="[sam-layouts-stepper-header-actions]"></ng-content>
+      </div>
+    </div>
+
+    <!-- =========================================================== -->
+    <!-- Content -->
+    <!-- =========================================================== -->
+    <div *ngIf="!reviewMode">
+      <div [ngTemplateOutlet]="selectedStep ? selectedStep.content : null"></div>
+    </div>
+    <div *ngIf="reviewMode">
+      <ng-content select="[sam-layouts-stepper-review-content]"></ng-content>
+    </div>
+
+
+    <!-- =========================================================== -->
+    <!-- Footer -->
+    <!-- =========================================================== -->
+    <div class="grid-row grid-gap flex-justify-center margin-top-4">
+      <div class="grid-col-fill"></div>
+      <div class="grid-col-auto float-right">
+        <ng-content select="[sam-layouts-stepper-footer-actions]"></ng-content>
+      </div>
+    </div>
+
+
+    <!-- Footer -->
+    <sam-layouts-stepper-footer
+      (previousBtnClick)="previousClick.emit($event)"
+      (nextBtnClick)="nextClick.emit($event)">
+      <ng-content select="[stepper-footer]"></ng-content>
+    </sam-layouts-stepper-footer>
+
+  </div>
+</div>
+
+<!-- =========================================================== -->
+<!-- SIDE NAVIGATION TEMPLATES -->
+<!-- =========================================================== -->
+
+<ng-template #subPanelTemplate let-panelItem>
+  <div *ngFor="let pItem of getDisplayedSteps(panelItem.children); let i = index;">
+    <ul class="usa-sidenav usa-sidenav--styled bg-base-lighter margin-x-0">
+      <li class="usa-sidenav__item  padding-left-3" [ngClass]="{'usa-current':  selectedStep?.id === pItem.id }">
+        <ng-container [ngTemplateOutlet]="sidenavItem" [ngTemplateOutletContext]="{$implicit: pItem}"></ng-container>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<ng-template #sidenavItem let-step>
+  <ng-container [ngSwitch]="step.editable">
+    <span *ngSwitchCase="false">
+      <span class="padding-x-2 padding-y-1 display-block text-bold">
+        {{step.text}}
+      </span>
+    </span>
+    <a *ngSwitchDefault href="javascript:void(0);" [sdsStepperNav]="step"
+      class="display-flex justify-content-space-between"
+      [ngClass]="{'usa-sidenav__item--disabled': step.disabled || (step.isReview && _isReviewAndSubmitDisabled)}">
+      <span>
+        {{step.text}}
+      </span>
+      <ng-container [ngTemplateOutlet]="sidenavIcon" [ngTemplateOutletContext]="{$implicit: step}"></ng-container>
+    </a>
+  </ng-container>
+</ng-template>
+
+<ng-template #sidenavIcon let-step>
+  <span>
+    <ng-container [ngSwitch]="step.valid">
+      <usa-icon *ngSwitchCase="true" [icon]="'check-circle-fill'" class="text-primary"></usa-icon>
+      <usa-icon *ngSwitchCase="false" [icon]="'slash-circle-fill'" class="text-error"></usa-icon>
+      <usa-icon *ngSwitchDefault [icon]="'circle'"></usa-icon>
+    </ng-container>
+  </span>
+</ng-template>

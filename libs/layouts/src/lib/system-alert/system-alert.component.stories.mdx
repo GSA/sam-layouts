@@ -1,0 +1,75 @@
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { moduleMetadata } from '@storybook/angular';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import {
+  NgxBootstrapIconsModule,
+  x,
+  exclamationTriangle,
+  caretDownFill,
+} from 'ngx-bootstrap-icons';
+import { SdsSystemAlertComponent } from './system-alert.component';
+import { SdsSystemAlertModule } from './system-alert.module';
+
+<Meta
+  title="System Alerts"
+  component={SdsSystemAlertComponent}
+  decorators={[
+    moduleMetadata({
+      imports: [
+        IconModule,
+        SdsSystemAlertModule,
+        NgxBootstrapIconsModule.pick({ x, exclamationTriangle, caretDownFill }),
+      ],
+    }),
+  ]}
+/>
+
+# System Alerts
+
+export const Template = (args) => ({ props: args });
+
+<Canvas>
+  <Story
+    inline={true}
+    name="Single Alert"
+    args={{
+      alerts: [
+        {
+          header: 'Alert Header',
+          description: 'Alert Description',
+          date: new Date(),
+        },
+      ],
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+<Story
+    inline={true}
+    name="Multiple Alerts"
+    args={{
+      alerts: [
+        {
+          header: 'Alert Header',
+          description: 'Alert Description',
+          date: new Date()
+        },
+        {
+          header: 'Alert Header 2',
+          description: 'Alert 2 Description',
+          date: new Date()
+        },
+        {
+          header: 'Alert Header 3',
+          description: 'Alert 3 Description',
+          date: new Date()
+        },
+      ]
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+
+<ArgsTable of={SdsSystemAlertComponent} />

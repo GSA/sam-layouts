@@ -1,0 +1,25 @@
+<div class="display-flex flex-justify-center">
+  <sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+
+    <sam-layouts-stepper-header [template]="customHeader">
+      <ng-template #customHeader></ng-template>
+    </sam-layouts-stepper-header>
+
+    <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+    <sds-step id="stepTwo" text="Purpose of Registration" [fieldConfig]="stepTwo"></sds-step>
+    <sds-step id="stepThree" text="Taxpayer Details" [fieldConfig]="stepThree"></sds-step>
+
+    <ng-container stepper-footer>
+      <sam-layouts-stepper-footer-custom-action icon="x">
+        Close
+      </sam-layouts-stepper-footer-custom-action>
+      <sam-layouts-stepper-footer-custom-action icon="question">
+        Help
+      </sam-layouts-stepper-footer-custom-action>
+    </ng-container>
+
+  </sam-layouts-stepper>
+</div>
+
+
+

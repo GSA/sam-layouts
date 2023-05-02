@@ -1,0 +1,8 @@
+[type=justify-content-space-between], .justify-content-space-between{
+    justify-content: space-between;
+ }
+[type=usa-sidenav__item--disabled], .usa-sidenav__item--disabled{
+    cursor: default;
+    opacity: 60%;
+    pointer-events: none;
+ }
