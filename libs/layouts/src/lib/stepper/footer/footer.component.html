@@ -22,7 +22,8 @@
     </label>
   </div>
 
-  <div class="margin-right-1">
+
+  <div *ngIf="!customSave" class="margin-right-1">
     <button #saveAndContinueBtn sdsStepperNext
       class="usa-button sds-button--circle usa-button--base usa-button--big usa-button--active padding-2"
       [attr.id]="stepperID + '-nextBtn'" (click)="nextBtn($event)" [attr.aria-labelledby]="stepperID + '-nextBtn-label'">
@@ -32,4 +33,9 @@
       Save and Continue
     </label>
   </div>
+
+  <div *ngIf="customSave" class="margin-right-1">
+    <ng-content select="[stepper-footer-save-and-continue]"></ng-content>
+  </div>
+
 </div>

@@ -20,6 +20,10 @@ export class SLStepperComponent extends SdsStepper {
   @Input() expirationDate: string;
   @Input() reviewMode = false;
   @Input() hideSideNav = true;
+  @Input() hideFooter = false;
+  @Input() customSave = false;
+  @Input() hideValidationIconForIDs = [];
+
   @Output() versionChange = new EventEmitter<any>();
   @Output() previousClick = new EventEmitter<any>();
   @Output() nextClick = new EventEmitter<any>();
@@ -34,5 +38,9 @@ export class SLStepperComponent extends SdsStepper {
     cdr: ChangeDetectorRef
   ) {
     super(router, activatedRoute, cdr);
+  }
+
+  showValidationIcon(stepID: string){
+    return !this.hideValidationIconForIDs.includes(stepID);
   }
 }

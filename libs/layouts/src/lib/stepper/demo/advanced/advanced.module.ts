@@ -9,9 +9,20 @@ import {
   AddSubawardeeDialogDemo,
   SubawardeeDemoComponent,
 } from './subawardee.component';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, chevronRight } from 'ngx-bootstrap-icons';
 
 @NgModule({
-  imports: [CommonModule, FormlyModule, SdsStepperModule, SLStepperModule],
+  imports: [
+    CommonModule,
+    FormlyModule,
+    SdsStepperModule,
+    SLStepperModule,
+    NgxBootstrapIconsModule.pick({
+      chevronRight,
+    }),
+    IconModule,
+  ],
   declarations: [
     DemoStepperAdvancedComponent,
     SubawardeeDemoComponent,

@@ -7,6 +7,7 @@ import { SdsStepper } from '@gsa-sam/sam-formly';
   templateUrl: './footer.component.html',
 })
 export class SLStepperFooterComponent {
+  @Input() customSave = false;
   @Output() previousBtnClick = new EventEmitter<any>();
   @Output() nextBtnClick = new EventEmitter<any>();
 
