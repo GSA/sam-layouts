@@ -20,6 +20,7 @@ export class SLStepperComponent extends SdsStepper {
   @Input() expirationDate: string;
   @Input() reviewMode = false;
   @Input() hideSideNav = true;
+  @Input() hideFooter = false;
   @Input() customSave = false;
   @Input() hideValidationIconForIDs = [];
 

@@ -74,7 +74,7 @@
     <!-- =========================================================== -->
     <!-- Footer -->
     <!-- =========================================================== -->
-    <div class="grid-row grid-gap flex-justify-center margin-top-4">
+    <div *ngIf="!hideFooter" class="grid-row grid-gap flex-justify-center margin-top-4">
       <div class="grid-col-fill"></div>
       <div class="grid-col-auto float-right">
         <ng-content select="[sam-layouts-stepper-footer-actions]"></ng-content>
@@ -84,6 +84,7 @@
 
     <!-- Footer -->
     <sam-layouts-stepper-footer
+      *ngIf="!hideFooter"
       [customSave]="customSave"
       (previousBtnClick)="previousClick.emit($event)"
       (nextBtnClick)="nextClick.emit($event)">

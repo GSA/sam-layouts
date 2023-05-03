@@ -3,7 +3,7 @@
 <sam-layouts-stepper [hideSideNav]="false" [queryParamKey]="'sdsAdvancedStepper'" [model]="model"
   [stepValidityMap]="stepValidityMap" (stepChange)="onStepChange($event)" [linear]="linear"
   (saveData)="onSaveData($event)" expirationDate="N/A" [versions]="versions" [customSave]="true"
-  [hideValidationIconForIDs]="['welcome']">
+  [hideValidationIconForIDs]="['welcome']" [hideFooter]="false">
 
   <sam-layouts-stepper-header-with-status 
     title="Test Title" 

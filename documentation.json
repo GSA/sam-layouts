@@ -8950,21 +8950,21 @@
                 "name": "environment",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "apps/sam-layouts/src/environments/environment.prod.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "object",
-                "defaultValue": "{\n  production: true,\n}"
-            },
-            {
-                "name": "environment",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "apps/sam-layouts/src/environments/environment.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "object",
                 "defaultValue": "{\n  production: false,\n}"
+            },
+            {
+                "name": "environment",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/sam-layouts/src/environments/environment.prod.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "object",
+                "defaultValue": "{\n  production: true,\n}"
             },
             {
                 "name": "Link",
@@ -9070,21 +9070,21 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/layouts/src/lib/landing/card/card.component.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "Story<SdsLandingCardComponent>",
-                "defaultValue": "(args) => ({\n  props: args,\n  template: `\n    <sds-landing-card>\n      <h2 sdsLandingCardTitle>Rhoncus id ullamcorper sed</h2>\n      <ng-container landing-page-card-content>\n        Ut et aliquam nunc, vitae facilisis metus. Vestibulum sed finibus ex, ut\n        posuere dui. Sed vel lobortis felis. Vestibulum pretium arcu non lorem\n        lobortis vulputate.\n      </ng-container>\n    </sds-landing-card>\n  `,\n})"
-            },
-            {
-                "name": "Template",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/layouts/src/lib/landing/link/link.component.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story<SdsLandingLinkComponent>",
                 "defaultValue": "(args) => ({\n  props: args,\n  template: `\n  <sds-landing-link [link]=\"externalLink\"></sds-landing-link>\n  |\n  <sds-landing-link [link]=\"internalLink\"></sds-landing-link>\n  `,\n})"
+            },
+            {
+                "name": "Template",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/layouts/src/lib/landing/card/card.component.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story<SdsLandingCardComponent>",
+                "defaultValue": "(args) => ({\n  props: args,\n  template: `\n    <sds-landing-card>\n      <h2 sdsLandingCardTitle>Rhoncus id ullamcorper sed</h2>\n      <ng-container landing-page-card-content>\n        Ut et aliquam nunc, vitae facilisis metus. Vestibulum sed finibus ex, ut\n        posuere dui. Sed vel lobortis felis. Vestibulum pretium arcu non lorem\n        lobortis vulputate.\n      </ng-container>\n    </sds-landing-card>\n  `,\n})"
             },
             {
                 "name": "Template",
@@ -9218,18 +9218,6 @@
                     "defaultValue": "(args) => ({\n  props: args,\n  template: `\n    <sds-landing-card>\n      <h2 sdsLandingCardTitle>Rhoncus id ullamcorper sed</h2>\n      <ng-container landing-page-card-content>\n        Ut et aliquam nunc, vitae facilisis metus. Vestibulum sed finibus ex, ut\n        posuere dui. Sed vel lobortis felis. Vestibulum pretium arcu non lorem\n        lobortis vulputate.\n      </ng-container>\n    </sds-landing-card>\n  `,\n})"
                 }
             ],
-            "apps/sam-layouts/src/environments/environment.prod.ts": [
-                {
-                    "name": "environment",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "apps/sam-layouts/src/environments/environment.prod.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "object",
-                    "defaultValue": "{\n  production: true,\n}"
-                }
-            ],
             "apps/sam-layouts/src/environments/environment.ts": [
                 {
                     "name": "environment",
@@ -9240,6 +9228,18 @@
                     "deprecationMessage": "",
                     "type": "object",
                     "defaultValue": "{\n  production: false,\n}"
+                }
+            ],
+            "apps/sam-layouts/src/environments/environment.prod.ts": [
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/sam-layouts/src/environments/environment.prod.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "object",
+                    "defaultValue": "{\n  production: true,\n}"
                 }
             ],
             "libs/layouts/src/lib/landing/link/link.component.stories.ts": [
