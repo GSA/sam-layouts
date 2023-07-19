@@ -6,7 +6,8 @@ import {
   ViewChild,
   ElementRef,
   HostListener,
-  TemplateRef
+  TemplateRef,
+  ContentChild
 } from '@angular/core';
 import {
   HeaderModel,
@@ -25,6 +26,7 @@ import { NavigationHelper } from '@gsa-sam/components';
 export class SdsHeaderComponent {
   @ViewChild('usaNavOpen') openNavBtn: ElementRef;
   @ViewChild('usaNavClose') closeNavBtn: ElementRef;
+  @ContentChild('spotlight') spotlight: TemplateRef<any>;
   mobileNavActive = false;
 
   /** Navigation helper

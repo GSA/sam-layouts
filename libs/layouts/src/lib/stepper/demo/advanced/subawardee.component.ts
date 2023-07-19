@@ -58,7 +58,7 @@ export class SubawardeeDemoComponent {
       <formly-form [fields]="subawardeeFields" [model]="model"> </formly-form>
     </div>
     <div sds-dialog-actions>
-      <button class="usa-button usa-button--base" (click)="cancel()">
+      <button class="usa-button usa-button--base bg-base-lighter" (click)="cancel()">
         Cancel
       </button>
       <button
