@@ -22,7 +22,7 @@ import { AutocompleteService } from './examples/services/autocomplete.service';
       <ng-content></ng-content>
 
       <ng-container *ngIf="showButtons" subheader-buttons-container>
-        <button class="usa-button usa-button--secondary grid-col-6">
+        <button class="usa-button bg-primary-lighter grid-col-6">
           Button
         </button>
         <button class="usa-button grid-col-6">Button</button>

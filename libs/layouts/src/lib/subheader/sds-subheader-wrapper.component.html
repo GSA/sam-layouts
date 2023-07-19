@@ -32,12 +32,12 @@
 
 
 <ng-template #request>
-  <button class="usa-button usa-button--secondary grid-col-6" (click)="action.emit('Reject')">Reject</button>
+  <button class="usa-button bg-primary-lighter grid-col-6" (click)="action.emit('Reject')">Reject</button>
   <button class="usa-button grid-col-6" (click)="action.emit('Approve')">Approve</button>
 </ng-template>
 
 <ng-template #submit>
-  <button class="usa-button usa-button--secondary grid-col-6" (click)="action.emit('Edit')">Edit</button>
+  <button class="usa-button bg-primary-lighter grid-col-6" (click)="action.emit('Edit')">Edit</button>
   <button class="usa-button grid-col-6" (click)="action.emit('Submit')">Submit</button>
 </ng-template>
 

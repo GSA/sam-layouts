@@ -48,10 +48,16 @@
             [ngTemplateOutletContext]="{ $implicit: link }"></ng-container>
         </li>
       </ul>
-      <div *ngIf="help && help.length > 0 && !mobileNavActive" class="position-absolute top-1 right-205">
-        <sds-header-help [content]="help"></sds-header-help>
+      <div *ngIf="!mobileNavActive" class="position-absolute top-1 right-205">
+        <ng-container *ngTemplateOutlet="spotlight">
+
+        </ng-container>
+        <div *ngIf="help && help.length > 0 && !mobileNavActive">
+          <sds-header-help [content]="help"></sds-header-help>
+        </div>
       </div>
-      <div *ngIf="!hideSecondaryLinks" class="usa-nav__secondary" [ngClass]="{'sds-nav__secondary--blank': !showHeaderLogo}">
+      <div *ngIf="!hideSecondaryLinks" class="usa-nav__secondary"
+        [ngClass]="{'sds-nav__secondary--blank': !showHeaderLogo}">
         <ul class="usa-nav__secondary-links">
           <li *ngFor="let link of model.secondaryLinks" class="usa-nav__secondary-item">
             <ng-container [ngTemplateOutlet]="
@@ -171,7 +177,7 @@
 <ng-template #dropDownEVENTLinkTemplate let-childLink>
   <a href="javascript:void(0)" (click)="linkClickEvent(childLink)">{{
     childLink.text
-  }}</a>
+    }}</a>
 </ng-template>
 
 <ng-template #fillerBlock>

@@ -15,7 +15,7 @@ import { SdsFormlyDialogComponent } from '@gsa-sam/sam-formly';
       Switching tabs will clear your current keywords.
     </div>
     <div sds-dialog-actions>
-      <button (click)="cancel()" class="usa-button usa-button--base">
+      <button (click)="cancel()" class="usa-button usa-button--base bg-base-lighter">
         Cancel
       </button>
       <button (click)="changeTabs()" cdkFocusInitial class="usa-button">

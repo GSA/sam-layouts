@@ -31,7 +31,7 @@ export class SLStepperFooterComponent {
   template: `
     <div class="margin-right-1">
       <button
-        class="usa-button sds-button--circle usa-button--big usa-button--base padding-2"
+        class="usa-button sds-button--circle usa-button--big usa-button--base bg-base-lighter padding-2"
         [attr.id]="stepperID + '-closeBtn'" [attr.aria-labelledby]="stepperID + '-closeBtn-label'"
         (click)="btnClicked($event)"
       >

@@ -20,7 +20,7 @@
           </div>
           <div class="grid-col-auto">
             <button (click)="onToggleAlertsClicked(alertsContent)" aria-label="Show/Hide alerts"
-              class="sds-button--circle usa-button--secondary simple-toggle" aria-controls="collapseTarget">
+              class="sds-button--circle bg-primary-lighter simple-toggle" aria-controls="collapseTarget">
               <usa-icon [icon]="'caret-down-fill'" [size]="'1x'"></usa-icon>
             </button>
           </div>
@@ -35,7 +35,7 @@
           </div>
           <div class="tablet:grid-offset-1 tablet:grid-col-auto tablet:display-none">
             <div>
-              <button class="usa-button usa-button--secondary" id="seeAllAlertsMobileBtn"
+              <button class="usa-button bg-primary-lighter" id="seeAllAlertsMobileBtn"
                 (click)="onSeeAllAlertsClicked()">See All Alerts</button>
             </div>
           </div>
@@ -43,7 +43,7 @@
       </div>
 
       <div class="grid-offset-1 grid-col-auto display-none tablet:display-inline-block">
-        <button class="usa-button usa-button--secondary margin-y-1" id="seeAllAlertsTabletBtn"
+        <button class="usa-button bg-primary-lighter margin-y-1" id="seeAllAlertsTabletBtn"
           (click)="onSeeAllAlertsClicked()">See All
           Alerts</button>
       </div>
@@ -70,7 +70,7 @@
       </div>
       <div class="grid-offset-1 grid-col-auto">
         <button (click)="onAlertClose(i)" [attr.id]="'alert'+ i + 'CloseBtn'"
-          class="usa-button sds-button--circle usa-button--secondary sds-alert--header__close simple-toggle"
+          class="usa-button sds-button--circle bg-primary-lighter sds-alert--header__close simple-toggle"
           aria-label="Close Alert" [attr.aria-controls]="'alert' + i">
           <usa-icon [icon]="'x'"></usa-icon>
         </button>
@@ -91,7 +91,7 @@
       </div>
       <div class="grid-offset-1 grid-col-auto">
         <button (click)="onAlertClose(0)" id="alert0CloseBtn"
-          class="usa-button sds-button--circle usa-button--secondary sds-alert--header__close simple-toggle"
+          class="usa-button sds-button--circle bg-primary-lighter sds-alert--header__close simple-toggle"
           aria-label="Close Alert" aria-controls="alert0">
           <usa-icon [icon]="'x'"></usa-icon>
         </button>
