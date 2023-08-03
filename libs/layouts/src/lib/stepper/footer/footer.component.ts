@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SdsStepper } from '@gsa-sam/sam-formly';
+import { FormlyForm } from '@ngx-formly/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -10,6 +11,8 @@ export class SLStepperFooterComponent {
   @Input() customSave = false;
   @Output() previousBtnClick = new EventEmitter<any>();
   @Output() nextBtnClick = new EventEmitter<any>();
+  @Output() submitBtnClick = new EventEmitter<any>();
+  @Output() submittedData = new EventEmitter<FormlyForm>();
 
   public stepperID: string;
   constructor(stepper: SdsStepper) {
@@ -22,6 +25,11 @@ export class SLStepperFooterComponent {
 
   nextBtn($event) {
     this.nextBtnClick.emit($event);
+  }
+
+  //new
+  submitBtn($event) {
+    this.submitBtnClick.emit($event);
   }
 }
 

@@ -34,6 +34,29 @@
     </label>
   </div>
 
+  <!-- pill buttons -->
+  <hr style="width: 100%;" class="fine" />
+  <div class="grid-row grid-gap margin-top-4">
+    <div class="flex-10 flex-justify-start">
+      <button class="usa-button usa-button--base usa-button--outline radius-pill">
+        <usa-icon size="md" [icon]="'x'"></usa-icon> Cancel
+      </button>
+    </div>
+
+      <div class="flex-justify-end">
+    <button sdsStepperPrevious class="usa-button bg-primary-lighter radius-pill">
+      <usa-icon size="md" [icon]="'chevron-left'"></usa-icon> Previous
+    </button>
+    <button class="usa-button bg-primary-lighter radius-pill" (click)="nextBtn($event)">
+      Submit
+    </button>
+    <button sdsStepperNext class="usa-button bg-primary-lighter radius-pill">
+      Review<usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
+    </button>
+    <button sdsStepperNext [attr.id]="stepperID+ '-nextBtn'" class="usa-button radius-pill">
+      Next <usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
+    </button>
+
   <div *ngIf="customSave" class="margin-right-1">
     <ng-content select="[stepper-footer-save-and-continue]"></ng-content>
   </div>
