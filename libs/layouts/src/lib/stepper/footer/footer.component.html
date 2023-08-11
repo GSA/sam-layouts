@@ -2,12 +2,17 @@
   <div class="margin-right-1">
     <button
       sdsStepperPrevious
-      class="usa-button sds-button--circle usa-button--base usa-button--big padding-2"
+      class="                        
+        usa-button
+        radius-pill
+        bg-primary-lighter
+        display-inline-flex
+        "
       [attr.id]="stepperID + '-prevBtn'"
       (click)="previousBtn($event)"
       [attr.aria-labelledby]="stepperID + '-prevBtn-label'"
     >
-      <usa-icon [icon]="'chevron-left'"></usa-icon>
+    <i class="sds bi-chevron-left"></i>
     </button>
 
     <label
@@ -64,22 +69,26 @@
     <div class="grid-row grid-gap margin-top-4">
       <div class="flex-10 flex-justify-start">
         <button
-          class="usa-button usa-button--base usa-button--outline radius-pill"
+          class="                      
+            usa-button
+            radius-pill
+            usa-button--base usa-button--outline
+            display-inline-flex
+            "
         >
-          <usa-icon size="md" [icon]="'x'"></usa-icon> Cancel
+        <i class="sds bi-x size-lg text-ink"></i> Cancel
         </button>
       </div>
-
       <div class="flex-justify-end">
         <button
           sdsStepperPrevious
           class="usa-button bg-primary-lighter radius-pill"
         >
-          <usa-icon size="md" [icon]="'chevron-left'"></usa-icon> Previous
+        <i class="sds bi-chevron-left bi-bold"></i> Previous
         </button>
         <button
           *ngIf="showSubmitButton()"
-          class="usa-button bg-primary-lighter radius-pill"
+          class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
           (click)="submitBtn($event)"
         >
           Submit
@@ -87,17 +96,17 @@
         <button
           *ngIf="showReviewButton()"
           sdsStepperNext
-          class="usa-button bg-primary-lighter radius-pill"
+          class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
         >
-          Review<usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
+          Review <i class="bi-chevron-right bi-bold"></i>
         </button>
         <button
           *ngIf="showNextButton()"
           sdsStepperNext
           [attr.id]="stepperID + '-nextBtn'"
-          class="usa-button radius-pill"
+          class="usa-button radius-pill flex-align-self-center"
         >
-          Next<usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
+          Next <i class="bi-chevron-right bi-bold"></i>
         </button>
 
         <div *ngIf="customSave" class="margin-right-1">
