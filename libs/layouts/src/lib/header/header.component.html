@@ -177,6 +177,8 @@
             : navigationHelper.isLinkExternal(childLink)
             ? dropDownHREFLinkTemplate
             : dropDownEVENTLinkTemplate
+            ? dropDownsignInButtonLinkHREFTemplate
+            : dropDownsignInButtonLinkRouteTemplate
         " [ngTemplateOutletContext]="{ $implicit: childLink }"></ng-container>
     </li>
   </ul>
@@ -196,12 +198,12 @@
     }}</a>
 </ng-template>
 
-<ng-template #signInButtonCurrentLinkHREFTemplate let-childLink>
+<ng-template #dropDownsignInButtonCurrentLinkHREFTemplate let-childLink>
   <a [attr.id]="link.id" [attr.href]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
   </a>
 </ng-template>
 
-<ng-template #signInButtonCurrentLinkRouteTemplate let-childLink>
+<ng-template #dropDownsignInButtonCurrentLinkRouteTemplate let-childLink>
   <a [attr.id]="link.id" [routerLink]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
   </a>
 </ng-template>
