@@ -12,13 +12,12 @@ export class SLStepperFooterComponent {
   @Output() previousBtnClick = new EventEmitter<any>();
   @Output() nextBtnClick = new EventEmitter<any>();
   @Output() submitBtnClick = new EventEmitter<any>();
-  @Output() submittedData = new EventEmitter<FormlyForm>();
 
   public stepperID: string;
   constructor(stepper: SdsStepper) {
     this.stepperID = stepper.id;
   }
-
+  
   previousBtn($event){
     this.previousBtnClick.emit($event);
   }
@@ -27,9 +26,20 @@ export class SLStepperFooterComponent {
     this.nextBtnClick.emit($event);
   }
 
-  //new
   submitBtn($event) {
     this.submitBtnClick.emit($event);
+  }
+
+  showReviewButton() {
+    return false;
+  }
+
+  showSubmitButton() {
+    return false;
+  }
+
+  showNextButton() {
+    return !this.showReviewButton() && !this.showSubmitButton();
   }
 }
 
