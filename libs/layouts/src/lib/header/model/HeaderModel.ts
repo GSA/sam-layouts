@@ -126,4 +126,9 @@ export class HeaderSecondaryLink implements Selectable, INavigationLink {
      * Status of if the item is selected
      */
     selected?: boolean;
+
+    /**
+     * Sign in button styling
+     */
+    signInButtonStyle?: string;
 }
