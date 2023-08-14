@@ -1,13 +1,58 @@
 <div class="grid-row grid-gap flex-justify-center margin-top-4">
-  <div class="margin-right-1">
+  <div *ngIf="!stepperButtonsNew">
+    <div class="margin-right-1">
+      <button
+        sdsStepperSave
+        class="usa-button sds-button--circle usa-button--big usa-button--base bg-base-lighter bg-base-lighter padding-2"
+        [attr.id]="stepperID + '-saveBtn'"
+        [attr.aria-labelledby]="stepperID + '-saveBtn-label'"
+      >
+        <usa-icon [icon]="'save'"></usa-icon>
+      </button>
+      <label
+        [attr.id]="stepperID + '-saveBtn-label'"
+        [attr.for]="stepperID + '-saveBtn'"
+        class="text-center usa-link cursor-pointer display-block margin-top-2"
+      >
+        Save
+      </label>
+    </div>
+  
+    <div *ngIf="!customSave" class="margin-right-1">
+      <button
+        #saveAndContinueBtn
+        sdsStepperNext
+        class="usa-button sds-button--circle usa-button--base bg-base-lighter usa-button--big usa-button--active padding-2"
+        [attr.id]="stepperID + '-nextBtn'"
+        (click)="nextBtn($event)"
+        [attr.aria-labelledby]="stepperID + '-nextBtn-label'"
+      >
+        <usa-icon [icon]="'chevron-right'"></usa-icon>
+      </button>
+      <label
+        [attr.id]="stepperID + '-nextBtn-label'"
+        [attr.for]="stepperID + '-nextBtn'"
+        class="text-left usa-link cursor-pointer display-block margin-top-2"
+      >
+        Save and Continue
+      </label>
+    </div>
+  </div>
+
+  <div *ngIf="stepperButtonsNew" class="margin-right-1">
     <button
       sdsStepperPrevious
-      class="usa-button sds-button--circle usa-button--base usa-button--big padding-2"
+      class="                        
+        usa-button
+        radius-pill
+        bg-primary-lighter
+        display-inline-flex
+        "
       [attr.id]="stepperID + '-prevBtn'"
       (click)="previousBtn($event)"
       [attr.aria-labelledby]="stepperID + '-prevBtn-label'"
     >
-      <usa-icon [icon]="'chevron-left'"></usa-icon>
+    <i class="sds bi-chevron-left"></i>
     </button>
 
     <label
@@ -22,88 +67,51 @@
   <ng-content></ng-content>
 
   <div class="margin-right-1">
-    <button
-      sdsStepperSave
-      class="usa-button sds-button--circle usa-button--big usa-button--base bg-base-lighter bg-base-lighter padding-2"
-      [attr.id]="stepperID + '-saveBtn'"
-      [attr.aria-labelledby]="stepperID + '-saveBtn-label'"
-    >
-      <usa-icon [icon]="'save'"></usa-icon>
-    </button>
-    <label
-      [attr.id]="stepperID + '-saveBtn-label'"
-      [attr.for]="stepperID + '-saveBtn'"
-      class="text-center usa-link cursor-pointer display-block margin-top-2"
-    >
-      Save
-    </label>
-  </div>
-
-  <div *ngIf="!customSave" class="margin-right-1">
-    <button
-      #saveAndContinueBtn
-      sdsStepperNext
-      class="usa-button sds-button--circle usa-button--base bg-base-lighter usa-button--big usa-button--active padding-2"
-      [attr.id]="stepperID + '-nextBtn'"
-      (click)="nextBtn($event)"
-      [attr.aria-labelledby]="stepperID + '-nextBtn-label'"
-    >
-      <usa-icon [icon]="'chevron-right'"></usa-icon>
-    </button>
-    <label
-      [attr.id]="stepperID + '-nextBtn-label'"
-      [attr.for]="stepperID + '-nextBtn'"
-      class="text-left usa-link cursor-pointer display-block margin-top-2"
-    >
-      Save and Continue
-    </label>
-  </div>
-
-  <div class="margin-right-1">
     <hr style="width: 100%" class="fine" />
     <div class="grid-row grid-gap margin-top-4">
-      <div class="flex-10 flex-justify-start">
-        <button
-          class="usa-button usa-button--base usa-button--outline radius-pill"
-        >
-          <usa-icon size="md" [icon]="'x'"></usa-icon> Cancel
-        </button>
-      </div>
-
-      <div class="flex-justify-end">
-        <button
-          sdsStepperPrevious
-          class="usa-button bg-primary-lighter radius-pill"
-        >
-          <usa-icon size="md" [icon]="'chevron-left'"></usa-icon> Previous
-        </button>
-        <button
-          *ngIf="showSubmitButton()"
-          class="usa-button bg-primary-lighter radius-pill"
-          (click)="submitBtn($event)"
-        >
-          Submit
-        </button>
-        <button
-          *ngIf="showReviewButton()"
-          sdsStepperNext
-          class="usa-button bg-primary-lighter radius-pill"
-        >
-          Review<usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
-        </button>
-        <button
-          *ngIf="showNextButton()"
-          sdsStepperNext
-          [attr.id]="stepperID + '-nextBtn'"
-          class="usa-button radius-pill"
-        >
-          Next<usa-icon size="md" [icon]="'chevron-right'"></usa-icon>
-        </button>
-
+        <div *ngIf="stepperButtonsNew" class="flex-10 flex-justify-start">
+          <button
+            class="                      
+              usa-button
+              radius-pill
+              usa-button--base usa-button--outline
+              display-inline-flex
+              "
+          >
+          <i class="sds bi-x size-lg text-ink"></i> Cancel
+          </button>
+        </div>
+        <div *ngIf="!stepperButtonsNew">
+          <div class="flex-justify-end">
+            <button
+              *ngIf="showSubmitButton()"
+              class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
+              (click)="submitBtn($event)"
+            >
+              Submit
+            </button>      
+            <button
+              *ngIf="showReviewButton()"
+              sdsStepperNext
+              class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
+            >
+              Review <i class="bi-chevron-right bi-bold"></i>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="stepperButtonsNew">
+          <button
+            *ngIf="showNextButton()"
+            sdsStepperNext
+            [attr.id]="stepperID + '-nextBtn'"
+            class="usa-button radius-pill flex-align-self-center"
+          >
+            Next <i class="bi-chevron-right bi-bold"></i>
+          </button>
+        </div>
         <div *ngIf="customSave" class="margin-right-1">
           <ng-content select="[stepper-footer-save-and-continue]"></ng-content>
         </div>
-      </div>
     </div>
   </div>
 </div>

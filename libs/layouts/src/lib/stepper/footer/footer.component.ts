@@ -13,6 +13,11 @@ export class SLStepperFooterComponent {
   @Output() nextBtnClick = new EventEmitter<any>();
   @Output() submitBtnClick = new EventEmitter<any>();
 
+  /**
+  * determines if old or new stepper buttons are shown
+  */
+  @Input() stepperButtonsNew = false;
+
   public stepperID: string;
   constructor(stepper: SdsStepper) {
     this.stepperID = stepper.id;
