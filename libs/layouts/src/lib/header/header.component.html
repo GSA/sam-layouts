@@ -86,14 +86,14 @@
 </ng-template>
 
 <ng-template #secondaryRouteLinkTemplate let-link>
-  <a [attr.id]="link.id" [routerLink]="[link.route]" [attr.class]="link.selected ? 'usa-current' : ''">
+  <a [attr.id]="link.id" [routerLink]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
 </ng-template>
 
 <ng-template #secondaryHREFLinkTemplate let-link>
-  <a [attr.id]="link.id" [attr.href]="[link.route]" [attr.class]="link.selected ? 'usa-current' : ''">
+  <a [attr.id]="link.id" [attr.href]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
@@ -101,7 +101,7 @@
 
 <ng-template #secondaryEVENTLinkTemplate let-link>
   <a [attr.id]="link.id" (click)="linkClickEvent(link)" href="javascript:void(0)"
-    [attr.class]="link.selected ? 'usa-current' : ''">
+    [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
@@ -113,10 +113,6 @@
     <usa-icon *ngIf="link.hasCounter" class="sds-stack-icon" [icon]="'circle-fill'" [size]="'xs'"
       [classes]="['counter-icon']"></usa-icon>
   </div>
-  <!-- <fa-layers [fixedWidth]="true">
-    <usa-icon [icon]="[link.imageClassPrefix, link.imageClass]"></usa-icon>
-    <fa-layers-counter *ngIf="link.hasCounter" [classes]="['icon-layers-counter']"></fa-layers-counter>
-  </fa-layers> -->
   <span class="sds-nav__secondary-item-text">{{ link.text }}</span>
 </ng-template>
 
@@ -167,15 +163,15 @@
 </ng-template>
 
 <ng-template #dropDownRouteLinkTemplate let-childLink>
-  <a [routerLink]="[childLink.route]">{{ childLink.text }}</a>
+  <a [attr.class]="[childLink.styleClass]" [routerLink]="[childLink.route]">{{ childLink.text }}</a>
 </ng-template>
 
 <ng-template #dropDownHREFLinkTemplate let-childLink>
-  <a [attr.href]="[childLink.route]">{{ childLink.text }}</a>
+  <a [attr.class]="[childLink.styleClass]" [attr.href]="[childLink.route]">{{ childLink.text }}</a>
 </ng-template>
 
 <ng-template #dropDownEVENTLinkTemplate let-childLink>
-  <a href="javascript:void(0)" (click)="linkClickEvent(childLink)">{{
+  <a [attr.class]="[childLink.styleClass]" href="javascript:void(0)" (click)="linkClickEvent(childLink)">{{
     childLink.text
     }}</a>
 </ng-template>
