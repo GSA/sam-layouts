@@ -86,14 +86,14 @@
 </ng-template>
 
 <ng-template #secondaryRouteLinkTemplate let-link>
-  <a [attr.id]="link.id" [routerLink]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
+  <a [attr.id]="link.id" [routerLink]="[link.route]" [attr.class]="link.styleClass + ' ' + (link.selected ? 'usa-current' : '')">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
 </ng-template>
 
 <ng-template #secondaryHREFLinkTemplate let-link>
-  <a [attr.id]="link.id" [attr.href]="[link.route]" [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
+  <a [attr.id]="link.id" [attr.href]="[link.route]" [attr.class]="link.styleClass + ' ' + (link.selected ? 'usa-current' : '')">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
@@ -101,7 +101,7 @@
 
 <ng-template #secondaryEVENTLinkTemplate let-link>
   <a [attr.id]="link.id" (click)="linkClickEvent(link)" href="javascript:void(0)"
-    [attr.class]="link.styleClass + link.selected ? 'usa-current' : ''">
+    [attr.class]="link.styleClass + ' ' + (link.selected ? 'usa-current' : '')">
     <ng-container [ngTemplateOutlet]="iconLinkTemplate" [ngTemplateOutletContext]="{ $implicit: link }">
     </ng-container>
   </a>
