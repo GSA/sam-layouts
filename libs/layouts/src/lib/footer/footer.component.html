@@ -57,23 +57,42 @@
     </nav>
   </div>
   <div class="usa-footer__secondary-section">
-    <div class="grid-container">
-      <div class="grid-row grid-gap">
+    <div class="grid-container margin">
+      <div class="grid-row grid-gap flex-no-wrap">
         <div class="grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-4 margin-bottom-4">
           <div class="sds-footer__logo">
             <a class="sds-footer__logo-link" [attr.href]="model.footerLogo.href">
               <img *ngIf="model.footerLogo" class="usa-footer__logo-img" [attr.src]="model.footerLogo.imageSourcePath"
                 [attr.alt]="model.footerLogo.imageAltText" />
             </a>
-            <h3 class="sds-footer__logo-heading">
-              {{model.footerLogo.agencyName}}
-            </h3>
           </div>
         </div>
-        <div class="sds-footer__note grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-8" [innerHTML]="model.disclaimer">
-        </div>
+        <div class="display-block margin-left-neg-10">
+          <span class="text-base display-inline-flex">
+            <usa-icon [icon]="'exclamation-triangle'" [class]="'sds-alert--header__icon-mobile'" [size]="'1x'"></usa-icon>
+            <div class="font-mono-xs margin-left-1"><strong>WARNING</strong></div>
+          </span>
+          <div class="sds-footer__note grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-8 font-body-3xs width-auto" [innerHTML]="model.disclaimer">
       </div>
     </div>
+    </div>
+  </div>
+  </div>
+  <div class="usa-identifier bg-base-darker margin-top-neg-4">
+    <section
+      class="usa-identifier__section usa-identifier__section--masthead"
+      aria-label="Agency identifier,">
+      <div class="usa-identifier__container">
+        <section
+          class="usa-identifier__identity"
+          aria-label="Agency description,">
+          <p class="usa-identifier__identity-domain font-body-lg text-white text-no-tabular">SAM.gov</p>
+          <p class="usa-identifier__identity-domain font-body-lg text-white text-no-tabular margin-top-neg-2">
+            An official website of the U.S. General Services Administration
+          </p>
+        </section>
+      </div>
+    </section>
   </div>
 </footer>
 
