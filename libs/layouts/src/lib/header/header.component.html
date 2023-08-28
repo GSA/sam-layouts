@@ -49,7 +49,7 @@
         </li>
       </ul>
       <div *ngIf="help && help.length > 0 && !mobileNavActive" class="position-absolute top-1 right-205">
-        <sds-header-help [content]="help"></sds-header-help>
+        <sds-header-help [content]="help" (searchEvent)="helpSearchEvent.emit($event)"></sds-header-help>
       </div>
       <div *ngIf="!hideSecondaryLinks" class="usa-nav__secondary" [ngClass]="{'sds-nav__secondary--blank': !showHeaderLogo}">
         <ul class="usa-nav__secondary-links">
