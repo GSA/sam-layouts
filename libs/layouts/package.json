@@ -1,6 +1,6 @@
 {
   "name": "@gsa-sam/layouts",
-  "version": "14.0.4",
+  "version": "14.0.12",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0"
