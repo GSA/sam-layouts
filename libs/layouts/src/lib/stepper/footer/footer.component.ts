@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SdsStepper } from '@gsa-sam/sam-formly';
-import { FormlyForm } from '@ngx-formly/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector

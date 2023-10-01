@@ -17,8 +17,29 @@
         "tsConfig": "apps/sam-layouts/tsconfig.app.json",
         "assets": [
           "apps/sam-layouts/src/favicon.ico",
-          "apps/sam-layouts/src/assets"
+          "apps/sam-layouts/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./node_modules/@uswds/uswds/dist/fonts/",
+            "output": "/assets/uswds/fonts"
+          },
+          {
+            "glob": "**/*",
+            "input": "./node_modules/@uswds/uswds/dist/img/",
+            "output": "/assets/uswds/img"
+          },
+          {
+            "glob": "**/*",
+            "input": "./node_modules/@gsa-sam/sam-styles/packages/images",
+            "output": "/assets/uswds/img"
+          }
         ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "./node_modules/@uswds/uswds/packages",
+            "./node_modules/@gsa-sam/sam-styles"
+          ]
+        },
         "styles": ["apps/sam-layouts/src/styles.scss"],
         "scripts": []
       },
@@ -28,7 +49,7 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumError": "2mb"
             },
             {
               "type": "anyComponentStyle",
@@ -68,7 +89,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
@@ -78,7 +99,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/sam-layouts/jest.config.ts",
@@ -92,7 +113,7 @@
       }
     },
     "serve-static": {
-      "executor": "@nrwl/web:file-server",
+      "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "sam-layouts:build"
       }
@@ -115,7 +136,7 @@
       "executor": "@storybook/angular:build-storybook",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/sam-layouts",
+        "outputDir": "docs",
         "configDir": "apps/sam-layouts/.storybook",
         "browserTarget": "sam-layouts:build",
         "compodoc": false
@@ -123,6 +144,18 @@
       "configurations": {
         "ci": {
           "quiet": true
+        }
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "sam-layouts:build-storybook",
+        "staticFilePath": "dist/storybook/sam-layouts"
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "sam-layouts:build-storybook:ci"
         }
       }
     }

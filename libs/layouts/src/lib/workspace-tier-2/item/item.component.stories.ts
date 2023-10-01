@@ -1,5 +1,5 @@
 import { moduleMetadata } from '@storybook/angular';
-import { Meta, Story } from '@storybook/angular/types-6-0';
+import { Meta, Story } from '@storybook/angular';
 import {
   SdsWorkspaceTier2ItemComponent,
   SdsWorkspaceTier2ItemHeadComponent,

@@ -1,8 +1,9 @@
 import { moduleMetadata } from '@storybook/angular';
-import { Meta, Story } from '@storybook/angular/types-6-0';
+import { Meta, Story } from '@storybook/angular';
 import { SdsLandingLinkComponent } from './link.component';
 import { SdsLandingLinkModule } from './link.module';
 import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 export default {
   title: 'Landing/Link',
@@ -12,7 +13,7 @@ export default {
       declarations: [],
       imports: [
         SdsLandingLinkModule,
-        RouterModule.forRoot([], { useHash: true }),
+        RouterTestingModule,
       ]
     }),
   ],
@@ -27,7 +28,7 @@ const Template: Story<SdsLandingLinkComponent> = (args) => ({
   `,
 });
 
-export const Link = Template.bind({});
+export const Link:any = Template.bind({});
 Link.args = {
   externalLink : {
     href: 'http://google.com',
