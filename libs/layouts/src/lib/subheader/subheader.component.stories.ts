@@ -1,9 +1,10 @@
 import { moduleMetadata } from '@storybook/angular';
 import { action } from '@storybook/addon-actions';
-import { Meta, Story } from '@storybook/angular/types-6-0';
+import { Meta, Story } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SubHeaderWrapperMode } from './sds-subheader-wrapper.component';
 import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { SdsSubheaderModule } from './subheader.module';
 import { SdsSubheaderComponent } from './subheader.component';
 
@@ -16,7 +17,7 @@ export default {
       imports: [
         BrowserAnimationsModule,
         SdsSubheaderModule,
-        RouterModule.forRoot([], { useHash: true }),
+        RouterTestingModule,
       ],
       providers: [],
     }),

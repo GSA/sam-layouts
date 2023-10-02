@@ -138,7 +138,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     });
 
     // Listen for radio change and refresh autocomplete
-    const keywordGroup = this.fields.find((field) => field.key === 'keyword')
+    const keywordGroup = (<any>this.fields.find((field) => field.key === 'keyword'))
       .fieldArray.fieldGroup[0].fieldGroup;
 
     keywordGroup
@@ -198,7 +198,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       },
     };
 
-    this.fields[0].fieldArray.fieldGroup[0].form.setValue(
+    (<any>this.fields[0]).fieldArray.fieldGroup[0].form.setValue(
       model.filterModel.keyword
     );
     this.resultList.updateSearchResultsModel(model);
