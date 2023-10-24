@@ -5,7 +5,7 @@
   "scripts": {
     "storybook": "nx storybook sam-layouts",
     "build:storybook": "nx build-storybook sam-layouts",
-    "build:layouts":"nx run layouts:build:production"
+    "build:layouts": "nx run layouts:build:production"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +22,7 @@
     "@ckeditor/ckeditor5-angular": "^7.0.0",
     "@ckeditor/ckeditor5-build-classic": "^39.0.2",
     "@gsa-sam/components": "^15.0.3",
+    "@gsa-sam/ngx-uswds": "^15.0.0",
     "@gsa-sam/ngx-uswds-icons": "^15.0.0",
     "@gsa-sam/sam-formly": "^15.0.3",
     "@gsa-sam/sam-material-extensions": "^15.0.3",
