@@ -1,9 +1,14 @@
 {
   "name": "@gsa-sam/layouts",
-  "version": "15.0.0",
+  "version": "15.0.8",
   "peerDependencies": {
     "@angular/common": "^15.2.0",
-    "@angular/core": "^15.2.0"
+    "@angular/core": "^15.2.0",
+    "@gsa-sam/components": "~15.0.3",
+    "@gsa-sam/ngx-uswds-icons": "~15.0.0",
+    "@gsa-sam/sam-formly": "~15.0.3",
+    "@gsa-sam/sam-material-extensions": "~15.0.3",
+    "@gsa-sam/sam-styles": "~3.0.12"
   },
   "dependencies": {
     "tslib": "^2.3.0"
