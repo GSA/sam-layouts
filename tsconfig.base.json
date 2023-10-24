@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gsa-sam/layouts": ["libs/layouts/src/index.ts"]
+      "@gsa-sam/layouts": ["layouts/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

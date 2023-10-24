@@ -1,7 +1,7 @@
 {
   "name": "layouts",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/layouts/src",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "layouts/src",
   "prefix": "sam-layouts",
   "tags": [],
   "projectType": "library",
@@ -10,14 +10,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "project": "libs/layouts/ng-package.json"
+        "project": "layouts/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "libs/layouts/tsconfig.lib.prod.json"
+          "tsConfig": "layouts/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "libs/layouts/tsconfig.lib.json"
+          "tsConfig": "layouts/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
@@ -26,7 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/layouts/jest.config.ts",
+        "jestConfig": "layouts/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -37,10 +37,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/layouts/**/*.ts", "libs/layouts/**/*.html"]
+        "lintFilePatterns": [
+          "layouts/**/*.ts",
+          "layouts/**/*.html",
+          "layouts/package.json"
+        ]
       }
     }
   }
