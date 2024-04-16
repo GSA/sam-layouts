@@ -2,7 +2,7 @@
   "name": "sam-layouts",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "prefix": "sam-layouts",
+  "prefix": "app",
   "sourceRoot": "apps/sam-layouts/src",
   "tags": [],
   "targets": {
@@ -15,6 +15,7 @@
         "main": "apps/sam-layouts/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/sam-layouts/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
         "assets": [
           "apps/sam-layouts/src/favicon.ico",
           "apps/sam-layouts/src/assets",
@@ -33,6 +34,7 @@
             "input": "./node_modules/@gsa-sam/sam-styles/packages/images",
             "output": "/assets/uswds/img"
           }
+
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
@@ -74,10 +76,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "sam-layouts:build:production"
+          "buildTarget": "sam-layouts:build:production"
         },
         "development": {
-          "browserTarget": "sam-layouts:build:development"
+          "buildTarget": "sam-layouts:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -85,31 +87,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "sam-layouts:build"
+        "buildTarget": "sam-layouts:build"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/sam-layouts/**/*.ts",
-          "apps/sam-layouts/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/sam-layouts/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/sam-layouts/jest.config.ts"
       }
     },
     "storybook": {
@@ -138,6 +126,25 @@
       "configurations": {
         "ci": {
           "quiet": true
+        }
+      }
+    },
+    "test-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test-storybook -c apps/sam-layouts/.storybook --url=http://localhost:4400"
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "sam-layouts:build-storybook",
+        "staticFilePath": "dist/storybook/sam-layouts",
+        "spa": true
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "sam-layouts:build-storybook:ci"
         }
       }
     }
