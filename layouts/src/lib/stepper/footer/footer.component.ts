@@ -11,6 +11,7 @@ export class SLStepperFooterComponent {
   @Output() previousBtnClick = new EventEmitter<any>();
   @Output() nextBtnClick = new EventEmitter<any>();
   @Output() submitBtnClick = new EventEmitter<any>();
+  @Output() cancelBtnClick = new EventEmitter<any>();
 
   /**
   * determines if old or new stepper buttons are shown
@@ -32,6 +33,10 @@ export class SLStepperFooterComponent {
 
   submitBtn($event) {
     this.submitBtnClick.emit($event);
+  }
+
+  cancelBtn($event) {
+    this.cancelBtnClick.emit($event);
   }
 
   showReviewButton() {

@@ -28,6 +28,7 @@ export class SLStepperComponent extends SdsStepper {
   @Output() versionChange = new EventEmitter<any>();
   @Output() previousClick = new EventEmitter<any>();
   @Output() nextClick = new EventEmitter<any>();
+  @Output() cancelBtnClick = new EventEmitter<any>();
 
   versionSelected(event) {
     this.versionChange.emit(event.target.value);
