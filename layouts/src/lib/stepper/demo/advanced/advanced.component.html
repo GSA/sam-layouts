@@ -1,7 +1,7 @@
 <button class="usa-button margin-bottom-3" (click)="toggleLinearMode()">Toggle Linear Mode</button>
 
 <sam-layouts-stepper [hideSideNav]="false" [queryParamKey]="'sdsAdvancedStepper'" [model]="model"
-  [stepValidityMap]="stepValidityMap" (stepChange)="onStepChange($event)" [linear]="linear"
+  [stepValidityMap]="stepValidityMap" (stepChange)="onStepChange($event)" [linear]="false"
   (saveData)="onSaveData($event)" expirationDate="N/A" [versions]="versions" [customSave]="true"
   [hideValidationIconForIDs]="['welcome']" [hideFooter]="false" [stepperButtonsNew]="true">
 
