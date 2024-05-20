@@ -32,7 +32,7 @@
     </button>
   </div>
   <nav aria-label="Primary navigation" class="usa-nav" (keydown.esc)="closeMobileNav()"
-    (animationend)="navAnimationEnd()" [class.is-visible]="mobileNavActive" [cdkTrapFocus]="mobileNavActive">
+    (animationend)="navAnimationEnd()" [class.is-visible]="mobileNavActive">
     <div class="usa-nav__inner">
       <button #usaNavClose class="usa-nav__close" (click)="closeMobileNav()">
         <usa-icon [icon]="'x-circle'" [size]="'lg'"></usa-icon>
