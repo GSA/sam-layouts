@@ -19,7 +19,7 @@ export class SLStepperFooterComponent {
   @Input() stepperButtonsNew = false;
 
   public stepperID: string;
-  constructor(stepper: SdsStepper) {
+  constructor(private stepper: SdsStepper) {
     this.stepperID = stepper.id;
   }
   
@@ -31,12 +31,12 @@ export class SLStepperFooterComponent {
     this.nextBtnClick.emit($event);
   }
 
-  submitBtn($event) {
-    this.submitBtnClick.emit($event);
-  }
-
   cancelBtn($event) {
     this.cancelBtnClick.emit($event);
+  }
+  
+  submitBtn($event) {
+    this.submitBtnClick.emit($event);
   }
 
   showReviewButton() {
@@ -44,12 +44,18 @@ export class SLStepperFooterComponent {
   }
 
   showSubmitButton() {
-    return false;
+    return this.isLastStep();
   }
 
   showNextButton() {
-    return !this.showReviewButton() && !this.showSubmitButton();
+    return !this.isLastStep();
   }
+
+  isLastStep(): boolean {
+    const currentIndex = this.stepper.flatSteps.findIndex(step => step.id === this.stepper.currentStepId);
+    return currentIndex === this.stepper.flatSteps.length - 1;
+  }
+
 }
 
 @Component({
