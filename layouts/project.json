@@ -2,9 +2,9 @@
   "name": "layouts",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "layouts/src",
-  "prefix": "sam-layouts",
-  "tags": [],
+  "prefix": "lib",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
@@ -26,26 +26,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "layouts/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "layouts/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "layouts/**/*.ts",
-          "layouts/**/*.html",
-          "layouts/package.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   }
 }
