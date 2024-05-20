@@ -33,12 +33,10 @@ export class SLStepperFooterComponent {
 
   cancelBtn($event) {
     this.cancelBtnClick.emit($event);
-    console.log("Cancel Button");
   }
   
   submitBtn($event) {
     this.submitBtnClick.emit($event);
-    console.log("Submit Button");
   }
 
   showReviewButton() {
@@ -55,7 +53,6 @@ export class SLStepperFooterComponent {
 
   isLastStep(): boolean {
     const currentIndex = this.stepper.flatSteps.findIndex(step => step.id === this.stepper.currentStepId);
-    console.log(currentIndex);
     return currentIndex === this.stepper.flatSteps.length - 1;
   }
 
