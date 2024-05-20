@@ -87,7 +87,10 @@
       *ngIf="!hideFooter"
       [customSave]="customSave"
       (previousBtnClick)="previousClick.emit($event)"
-      (nextBtnClick)="nextClick.emit($event)" [stepperButtonsNew]="stepperButtonsNew">
+      (nextBtnClick)="nextClick.emit($event)"
+      (submitBtnClick)="submitClick.emit($event)" 
+      (cancelBtnClick)="cancelClick.emit($event)" 
+      [stepperButtonsNew]="stepperButtonsNew">
       <ng-content select="[stepper-footer]"></ng-content>
       <ng-content select="[stepper-footer-save-and-continue]" 
         ngProjectAs="[stepper-footer-save-and-continue]"></ng-content>

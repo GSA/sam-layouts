@@ -81,32 +81,52 @@
 
   <div *ngIf="stepperButtonsNew" class="flex-10 flex-justify-start">
     <button
+      class="usa-button radius-pill usa-button--base usa-button--outline display-inline-flex space-x-1"
+      [attr.id]="stepperID + '-cancBtn'"
+      (click)="cancelBtn($event)"
+      [attr.aria-labelledby]="stepperID + '-cancBtn-label'"
+    >
+      <usa-icon class="padding-left-05" size="x" [icon]="'x'"></usa-icon> Cancel
+    </button>
+  </div>
+
+  <div *ngIf="stepperButtonsNew" class="flex-justify-end">
+    <button
       sdsStepperPrevious
-      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex"
+      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
       [attr.id]="stepperID + '-prevBtn'"
       (click)="previousBtn($event)"
       [attr.aria-labelledby]="stepperID + '-prevBtn-label'"
     >
-      <i class="sds bi-chevron-left"></i>Previous
+      <usa-icon size="x" [icon]="'chevron-left'"></usa-icon>
+      Previous
     </button>
   </div>
 
-  <div *ngIf="stepperButtonsNew" class="flex-10 flex-justify-start">
-    <button
-      class="usa-button radius-pill usa-button--base usa-button--outline display-inline-flex"
-    >
-      <i class="sds bi-x size-lg text-ink"></i> Cancel
-    </button>
-  </div>
-
-  <div *ngIf="stepperButtonsNew">
+  <div *ngIf="stepperButtonsNew" class="flex-justify-end">
     <button
       *ngIf="showNextButton()"
       sdsStepperNext
       [attr.id]="stepperID + '-nextBtn'"
-      class="usa-button radius-pill flex-align-self-center"
+      (click)="nextBtn($event)"
+      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
     >
-      Next <i class="bi-chevron-right bi-bold"></i>
+      <span class="padding-left-2"> Next</span>
+      <div>
+        <usa-icon size="x" [icon]="'chevron-right'"></usa-icon>
+      </div>
+    </button>
+  </div>
+
+  <div class="flex-justify-end" *ngIf="stepperButtonsNew && showSubmitButton()">
+    <button
+      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
+      (click)="submitBtn($event)"
+    >
+      <span class="padding-left-2"> Submit</span>
+      <div>
+        <usa-icon size="x" [icon]="'chevron-right'"></usa-icon>
+      </div>
     </button>
   </div>
 

@@ -3,7 +3,7 @@
 <sam-layouts-stepper [hideSideNav]="false" [queryParamKey]="'sdsAdvancedStepper'" [model]="model"
   [stepValidityMap]="stepValidityMap" (stepChange)="onStepChange($event)" [linear]="linear"
   (saveData)="onSaveData($event)" expirationDate="N/A" [versions]="versions" [customSave]="true"
-  [hideValidationIconForIDs]="['welcome']" [hideFooter]="false">
+  [hideValidationIconForIDs]="['welcome']" [hideFooter]="false" [stepperButtonsNew]="true">
 
   <sam-layouts-stepper-header-with-status 
     title="Test Title" 
@@ -53,8 +53,7 @@
   <sds-step id="review" text="Review and Submit" [isReview]="true" [stepTemplate]="reviewTemplate"
     [stepValidationFn]="stepMap.review.validationFn">
   </sds-step>
-
-  <ng-container stepper-footer-save-and-continue>
+ <!-- <ng-container stepper-footer-save-and-continue>
     <button 
       sdsStepperNext
       class="usa-button 
@@ -71,8 +70,8 @@
     <label id="btn-save-and-continue-label" for="btn-save-and-continue" 
       class="text-left usa-link cursor-pointer display-block margin-top-2">
       Save and Continue
-    </label>
-  </ng-container>
+    </label> 
+  </ng-container>  -->
 
 </sam-layouts-stepper>
 
