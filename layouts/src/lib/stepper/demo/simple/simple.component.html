@@ -1,5 +1,5 @@
 <div class="display-flex flex-justify-center">
-  <sam-layouts-stepper [stepperButtonsNew]="true" [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
+  <sam-layouts-stepper [stepperButtonsNew]="true" [isFormValid]="false" [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
 
     <sam-layouts-stepper-header [template]="customHeader" >
       <ng-template #customHeader></ng-template>

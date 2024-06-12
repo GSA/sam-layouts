@@ -24,6 +24,7 @@ export class SLStepperComponent extends SdsStepper {
   @Input() customSave = false;
   @Input() hideValidationIconForIDs = [];
   @Input() stepperButtonsNew :boolean;
+  @Input() isFormValid :boolean;
 
   @Output() versionChange = new EventEmitter<any>();
   @Output() previousClick = new EventEmitter<any>();

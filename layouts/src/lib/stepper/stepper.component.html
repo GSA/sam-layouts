@@ -90,7 +90,8 @@
       (nextBtnClick)="nextClick.emit($event)"
       (submitBtnClick)="submitClick.emit($event)" 
       (cancelBtnClick)="cancelClick.emit($event)" 
-      [stepperButtonsNew]="stepperButtonsNew">
+      [stepperButtonsNew]="stepperButtonsNew"
+      [isFormValid]="isFormValid">
       <ng-content select="[stepper-footer]"></ng-content>
       <ng-content select="[stepper-footer-save-and-continue]" 
         ngProjectAs="[stepper-footer-save-and-continue]"></ng-content>
