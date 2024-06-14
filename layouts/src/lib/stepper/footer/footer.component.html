@@ -122,6 +122,7 @@
     <button
       class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
       (click)="submitBtn($event)"
+      [disabled]="!isFormValid"
     >
       <span class="padding-left-2"> Submit</span>
       <div>
