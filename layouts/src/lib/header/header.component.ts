@@ -51,6 +51,8 @@ export class SdsHeaderComponent {
    */
   @Input() model: HeaderModel;
 
+  @Input() flagPath: string;  
+
   @Input() topBannerDescription = '';
 
   @Input() showHeaderLogo = true;

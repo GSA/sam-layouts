@@ -1,4 +1,4 @@
-<sds-top-banner *ngIf="showTopBanner" [description]="topBannerDescription"></sds-top-banner>
+<sds-top-banner *ngIf="showTopBanner" [flagPath]="flagPath" [description]="topBannerDescription"></sds-top-banner>
 
 <div *ngIf="alertsTemplate && !hideAlerts">
   <ng-container [ngTemplateOutlet]="alertsTemplate"></ng-container>
