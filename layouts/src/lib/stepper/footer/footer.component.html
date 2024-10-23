@@ -84,7 +84,7 @@
       class="usa-button radius-pill usa-button--base usa-button--outline display-inline-flex space-x-1"
       [attr.id]="stepperID + '-cancBtn'"
       (click)="cancelBtn($event)"
-      [attr.aria-labelledby]="stepperID + '-cancBtn-label'"
+      [attr.aria-label]="'Cancel button'"
     >
       <usa-icon class="padding-left-05" size="x" [icon]="'x'"></usa-icon> Cancel
     </button>
@@ -96,7 +96,7 @@
       class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
       [attr.id]="stepperID + '-prevBtn'"
       (click)="previousBtn($event)"
-      [attr.aria-labelledby]="stepperID + '-prevBtn-label'"
+      [attr.aria-label]="'Previous button'"
     >
       <usa-icon size="x" [icon]="'chevron-left'"></usa-icon>
       Previous
