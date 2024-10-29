@@ -11,6 +11,7 @@ export * from './sds-feedback/sds-feedback.component';
 export * from './footer/model/FooterModel';
 export * from './header/model/HeaderModel';
 export * from './header/header.component';
+export * from './header/help.component';
 export * from './footer/footer.component';
 export * from './system-alert/system-alert.module';
 export * from './system-alert/system-alert.component';

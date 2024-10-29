@@ -62,6 +62,6 @@ export const group_8_login_gov_icon = "<svg width=\"12.9839416px\" height=\"16.5
     SdsHeaderHelpComponent,
     HelpContentComponent,
   ],
-  exports: [SdsHeaderComponent],
+  exports: [SdsHeaderComponent, HelpContentComponent],
 })
 export class SdsHeaderModule {}
