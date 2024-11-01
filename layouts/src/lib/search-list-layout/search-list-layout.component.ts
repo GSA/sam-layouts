@@ -19,7 +19,7 @@ import {
   SearchListConfiguration,
   ResultsModel,
 } from './model/search-list-layout.model';
-import { bufferTime, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators'; 
+import { distinctUntilChanged} from 'rxjs/operators'; 
 import {
   SDSFormlyUpdateComunicationService,
   SDSFormlyUpdateModelService,
