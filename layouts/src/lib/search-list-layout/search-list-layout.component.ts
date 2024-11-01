@@ -19,6 +19,7 @@ import {
   SearchListConfiguration,
   ResultsModel,
 } from './model/search-list-layout.model';
+import { distinctUntilChanged} from 'rxjs/operators'; 
 import {
   SDSFormlyUpdateComunicationService,
   SDSFormlyUpdateModelService,
@@ -138,12 +139,17 @@ export class SearchListLayoutComponent implements OnInit {
 
   private skipUpdate = false;
 
+  // Introduce a variable to store the last distinct filter state
+  private lastKnownFilter = null;
+
+
   @HostListener('window:popstate', ['$event'])
   onpopstate(event) {
     this.triggeredByPopState = true;
     if (this.isHistoryEnabled) {
       this.getHistoryModel();
     }
+    
   }
 
   ngOnInit() {
@@ -157,14 +163,24 @@ export class SearchListLayoutComponent implements OnInit {
     this.paginationChange.subscribe(() => {
       this.updateContent();
     });
-    if (this.formlyUpdateComunicationService) {
-      this.formlySubscription =
-        this.formlyUpdateComunicationService.filterUpdate.subscribe(
-          (filter) => {
-            this.updateFilter(filter);
-          }
-        );
-    }
+    this.formlySubscription = this.formlyUpdateComunicationService.filterUpdate
+  .pipe(
+    distinctUntilChanged((prev, curr) => {
+      if (this.triggeredByPopState) {
+        this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
+        // popstateEvent = false; // Reset flag after handling
+        return false; // Allow this event through
+      }
+
+      // If not popstate, use equality check
+      const isEqual = !_.isEqual(this.lastKnownFilter,curr);
+      this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
+      return !isEqual; // Only pass distinct events afterward
+    })
+  )
+  .subscribe(filter => {
+    this.updateFilter(filter);
+  });
   }
 
   ngOnDestroy() {
@@ -296,7 +312,6 @@ export class SearchListLayoutComponent implements OnInit {
      * overwrite the top of the history stack
      */
     if (!triggeredByFilter || this.triggeredByPopState) {
-      this.triggeredByPopState = false;
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: params,
@@ -305,8 +320,9 @@ export class SearchListLayoutComponent implements OnInit {
           window.location.hash?.length > 1
             ? window.location.hash.substring(1)
             : undefined,
-        replaceUrl: skipHistoryOnNav,
+        replaceUrl: skipHistoryOnNav || this.triggeredByPopState,
       });
+    this.triggeredByPopState = false;
     } else {
       const urlTree = this.router.parseUrl(this.loc.path());
       urlTree.queryParams = params;
