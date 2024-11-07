@@ -69,7 +69,7 @@ export class SearchListLayoutComponent implements OnInit {
 
   @Input() showCustomSearchMessage = false;
 
-  @Input() searchMessageHeader = "Select a category above to view results.";
+  @Input() searchMessageHeader = "Select Criteria";
 
   @Input() searchMessageText = "Choose your filters and run your report to begin.";
 
