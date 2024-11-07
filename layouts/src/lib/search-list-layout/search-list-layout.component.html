@@ -26,21 +26,38 @@
 <div class="grid-row">
   <div class="grid-col-12">
     <div *ngIf="!loading; else loadingScreen">
-      <sds-search-result-list [model]="items" [customResultsTemplate]="customResultsTemplate"
+      <ng-container
+        *ngIf="showCustomSearchMessage; then customTemplate; else searchTemplate">
+      </ng-container>
+      <ng-template #customTemplate>
+        <sds-search-result-list [model]="items" [customResultsTemplate]="customSearchMessage"
         [isDefaultModel]="isDefaultModel">
-        <ng-container>
-          <ng-template #resultContent let-item>
-              <ng-container *ngTemplateOutlet="resultContentTemplate, context: { $implicit: item }">
-              </ng-container>
-          </ng-template>
-        </ng-container>
-      </sds-search-result-list>
+        </sds-search-result-list>
+      </ng-template>
+      <ng-template #searchTemplate>
+        <sds-search-result-list [model]="items" [customResultsTemplate]="customResultsTemplate"
+          [isDefaultModel]="isDefaultModel">
+          <ng-container>
+            <ng-template #resultContent let-item>
+                <ng-container *ngTemplateOutlet="resultContentTemplate, context: { $implicit: item }">
+                </ng-container>
+            </ng-template>
+          </ng-container>
+        </sds-search-result-list>
+      </ng-template>
     </div>
     <sds-pagination *ngIf="!loading && items?.length" [paginationConfiguration]="bottom" [(page)]="page"
       (pageChange)="paginationChange.next($event)">
     </sds-pagination>
   </div>
 </div>
+
+<ng-template #customSearchMessage let-item>
+  <div class="sds-card__body margin-2">
+    <h1 class="sds-card__title">{{ searchMessageHeader }}</h1>
+    <p>{{ searchMessageText }}</p>
+  </div>
+</ng-template>
 
 <ng-template #loadingScreen>
   <div *ngFor="let a of loadingArray">
