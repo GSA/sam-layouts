@@ -67,6 +67,12 @@ export class SearchListLayoutComponent implements OnInit {
 
   @Input() enableApiCall: boolean = true;
 
+  @Input() showCustomSearchMessage = false;
+
+  @Input() searchMessageHeader = "Select Criteria";
+
+  @Input() searchMessageText = "Choose your filters and run your report to begin.";
+
   @Output() sortFieldChange = new EventEmitter<string>();
 
   /**
