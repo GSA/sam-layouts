@@ -6,6 +6,7 @@ import {
   SelectionMode,
 } from '@gsa-sam/components';
 import { AutocompleteService } from './examples/services/autocomplete.service';
+import { SUBHEADERACTIONSTYLE } from './subheader.component'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -64,8 +65,8 @@ import { AutocompleteService } from './examples/services/autocomplete.service';
           </sds-button-group-option>
         </sds-button-group>
       </ng-container>
-
       <sds-subheader-actions
+      [mobileTabletStyle]="buttonStyle"
         [model]="actionsModel"
         (clicks)="actionsClicks.emit($event)"
       >
@@ -80,14 +81,19 @@ export class DemoSubheaderComponent {
   @Input() showButtonGroup = false;
   @Output() actionsClicks = new EventEmitter<string>();
 
+  buttonStyle = SUBHEADERACTIONSTYLE.SECONDARY_DARK;
+
+  //DEFAULT, PRIMARY, SECONDARY, SECONDARY_DARK, OUTLINE, OUTLINE_SECONDARY, WHITE, ACCENT_COOL, DANGER
+
   constructor(public autocompleteService: AutocompleteService) {
+
     this.autocompleteSetup();
   }
 
   autocompleteSettings = new SDSAutocompletelConfiguration();
 
   autocompleteModel = new SDSSelectedItemModel();
-
+  SUBHEADERACTIONSTYLE
   actionsModel = {
     actions: [
       { id: 'Download', text: 'Download' },
