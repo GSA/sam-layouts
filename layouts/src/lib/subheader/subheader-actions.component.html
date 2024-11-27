@@ -5,18 +5,28 @@
     [sdsMenuTriggerFor]="menu"
   >
     Actions
-    <usa-icon [icon]="'three-dots-vertical'" [size]="'lg'" class="ellipsis-icon"></usa-icon>
+    <usa-icon
+      [icon]="'three-dots-vertical'"
+      [size]="'lg'"
+      class="ellipsis-icon"
+    ></usa-icon>
   </button>
 </span>
 
 <!-- Actions Menu Trigger: Tablet -->
-<span class="desktop:display-none ">
+<span class="desktop:display-none">
   <span class="display-none tablet-lg:display-inline-block">
     <button
-      class="sds-button sds-button--circular actions-button"
+      [class]="
+        ' sds-button--circle  actions-button ' + getButtonStyle()
+      "
       [sdsMenuTriggerFor]="menu"
     >
-      <usa-icon [icon]="'three-dots-vertical'" [size]="'lg'" class="ellipsis-icon"></usa-icon>
+      <usa-icon
+        [icon]="'three-dots-vertical'"
+        [size]="'lg'"
+        class="ellipsis-icon"
+      ></usa-icon>
       <span class="usa-sr-only">Toggle Actions Menu</span>
     </button>
   </span>
@@ -25,11 +35,19 @@
 <!-- Actions Menu Trigger: Mobile -->
 <span class="tablet-lg:display-none">
   <button
-  class="sds-button sds-button--circular actions-button margin-top-05 tablet:margin-top-0"
+  
+    [class]="
+      ' actions-button margin-top-05 tablet:margin-top-0 ' +
+      getButtonStyle()
+    "
     [sdsMenuTriggerFor]="menu"
   >
-  <usa-icon [icon]="'three-dots-vertical'" [size]="'lg'" class="ellipsis-icon"></usa-icon>
-  <span class="usa-sr-only">Toggle Actions Menu</span>
+    <usa-icon
+      [icon]="'three-dots-vertical'"
+      [size]="'lg'"
+      class="ellipsis-icon"
+    ></usa-icon>
+    <span class="usa-sr-only">Toggle Actions Menu</span>
   </button>
 </span>
 
