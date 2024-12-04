@@ -83,26 +83,27 @@
 
     <div style="flex: 1; display: flex; justify-content: flex-start;">
       <button
-      class="usa-button radius-pill usa-button--base usa-button--outline"
-      [attr.id]="stepperID + '-cancBtn'"
-      (click)="cancelBtn($event)"
-      [attr.aria-label]="'Cancel button'"
-      style="padding: 12px 24px; padding: 12px; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+            class="usa-button radius-pill usa-button--base usa-button--outline"
+            [attr.id]="stepperID + '-cancBtn'"
+            (click)="cancelBtn($event)"
+            [attr.aria-label]="'Cancel button'"
+            style="padding: 12px 24px; background-color: #ffffff; color: #212121; border: 2px solid #212121; display: flex; align-items: center; justify-content: center;"
       >
-      <usa-icon size="x" [icon]="'x'"></usa-icon> CANCEL
+      <usa-icon size="x" [icon]="'x'"></usa-icon> 
+      CANCEL
       </button>
-    </div>
+      </div>
   
 
   
     <div style="flex: 1; display: flex; justify-content: flex-end; gap: 2px;">
-      <button
-      sdsStepperPrevious
-      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
-      [attr.id]="stepperID + '-prevBtn'"
-      (click)="previousBtn($event)"
-      [attr.aria-label]="'Previous button'"
-      style="padding: 12px 24px; padding: 12px; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+      <button 
+            sdsStepperPrevious
+            class="usa-button radius-pill"
+            [attr.id]="stepperID + '-prevBtn'"
+            (click)="previousBtn($event)"
+            [attr.aria-label]="'Previous button'"
+            style="padding: 12px 24px; background-color: #e6f7e6; color: #212121; border: 2px solid #32CD32 !important; display: flex; align-items: center; justify-content: center;"
       >
       <usa-icon size="x" [icon]="'chevron-left'"></usa-icon>
       PREVIOUS
@@ -110,35 +111,33 @@
     
       
       <button
-      *ngIf="showNextButton()"
-      sdsStepperNext
-      [attr.id]="stepperID + '-nextBtn'"
-      (click)="nextBtn($event)"
-      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
-      style="padding: 12px 24px; padding: 12px; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+            *ngIf="showNextButton()"
+            sdsStepperNext
+            [attr.id]="stepperID + '-nextBtn'"
+            (click)="nextBtn($event)"
+            class="usa-button radius-pill"
+            style="padding: 12px 24px; background-color: #32CD32; color: #212121; border: none; font-size: 1em; display: flex; align-items: center; justify-content: center;"
       >
       <span style="display: flex; align-items: center;">
         NEXT
-      
-        <usa-icon style="margin-left: 4px;" size="x" [icon]="'chevron-right'"></usa-icon>
+      <usa-icon style="margin-left: 4px;" size="x" [icon]="'chevron-right'"></usa-icon>
       </span>
       </button>
     
  
 
       <div *ngIf="stepperButtonsNew && showSubmitButton()">
-      <button
-      class="usa-button radius-pill bg-primary-lighter display-inline-flex display-inline-flex space-x-1"
-      style="padding: 12px 24px; padding: 12px; font-size: 1em; display: flex; align-items: center; justify-content: center; margin-right: 2px;"
-      (click)="submitBtn($event)"
-      [disabled]="!isFormValid"
-      >
-      <span style="display: flex; align-items: center;">
-      SUBMIT
-      
+        <button
+              class="usa-button radius-pill"
+              style="padding: 12px 24px; background-color: #32CD32; color: #212121; border: none; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+              (click)="submitBtn($event)"
+              [disabled]="!isFormValid"
+        >
+        <span style="display: flex; align-items: center;">
+        SUBMIT
         <usa-icon style="margin-left: 4px;" size="x" [icon]="'chevron-right'"></usa-icon>
-      </span>
-      </button>
+        </span>
+        </button>
       </div>
     </div>
   </div>
