@@ -27,9 +27,9 @@
   <div class="grid-col-12">
     <div *ngIf="!loading; else loadingScreen">
       <ng-container
-        *ngIf="showCustomSearchMessage && !items?.length; then customTemplate; else searchTemplate">
+        *ngIf="showDefaultModelSearchMessage && isDefaultModel && !items?.length; then defaultModelSearchTemplate; else searchTemplate">
       </ng-container>
-      <ng-template #customTemplate>
+      <ng-template #defaultModelSearchTemplate>
         <sds-search-result-list [model]="items" [customResultsTemplate]="customSearchMessage"
         [isDefaultModel]="isDefaultModel">
         </sds-search-result-list>

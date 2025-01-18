@@ -67,7 +67,7 @@ export class SearchListLayoutComponent implements OnInit {
 
   @Input() enableApiCall: boolean = true;
 
-  @Input() showCustomSearchMessage = false;
+  @Input() showDefaultModelSearchMessage = false;
 
   @Input() searchMessageHeader = "Select Criteria";
 
