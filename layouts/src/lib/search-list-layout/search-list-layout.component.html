@@ -27,10 +27,10 @@
   <div class="grid-col-12">
     <div *ngIf="!loading; else loadingScreen">
       <ng-container
-        *ngIf="showCustomSearchMessage && !items?.length; then customTemplate; else searchTemplate">
+        *ngIf="templateForDefaultModel && isDefaultModel && !items?.length; then defaultModelSearchTemplate; else searchTemplate">
       </ng-container>
-      <ng-template #customTemplate>
-        <sds-search-result-list [model]="items" [customResultsTemplate]="customSearchMessage"
+      <ng-template #defaultModelSearchTemplate>
+        <sds-search-result-list [model]="items" [customResultsTemplate]="templateForDefaultModel"
         [isDefaultModel]="isDefaultModel">
         </sds-search-result-list>
       </ng-template>
@@ -51,13 +51,6 @@
     </sds-pagination>
   </div>
 </div>
-
-<ng-template #customSearchMessage let-item>
-  <div class="sds-card__body margin-2">
-    <h1 class="sds-card__title">{{ searchMessageHeader }}</h1>
-    <p>{{ searchMessageText }}</p>
-  </div>
-</ng-template>
 
 <ng-template #loadingScreen>
   <div *ngFor="let a of loadingArray">
