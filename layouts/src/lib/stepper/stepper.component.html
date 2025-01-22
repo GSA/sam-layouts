@@ -133,11 +133,11 @@
 </ng-template>
 
 <ng-template #sidenavIcon let-step>
-  <span>
+  <span [attr.aria-label]="_isReviewAndSubmitDisabled ? step.text + ' step is disabled': step.valid ? step.text + ' step is completed' : step.text + ' step is not completed'">
     <ng-container [ngSwitch]="step.valid">
-      <usa-icon *ngSwitchCase="true" [icon]="'check-circle-fill'" class="text-primary"></usa-icon>
-      <usa-icon *ngSwitchCase="false" [icon]="'slash-circle-fill'" class="text-error"></usa-icon>
-      <usa-icon *ngSwitchDefault [icon]="'circle'"></usa-icon>
+      <usa-icon *ngSwitchCase="true" [icon]="'check-circle-fill'" class="text-primary" aria-hidden="true"></usa-icon>
+      <usa-icon *ngSwitchCase="false" [icon]="'slash-circle-fill'" class="text-error" aria-hidden="true"></usa-icon>
+      <usa-icon *ngSwitchDefault [icon]="'circle'" aria-hidden="true"></usa-icon>
     </ng-container>
   </span>
 </ng-template>
