@@ -67,7 +67,12 @@ export class SearchListLayoutComponent implements OnInit {
 
   @Input() enableApiCall: boolean = true;
 
-  @Input() showDefaultModelSearchMessage = false;
+  @Input() messageForDefaultModel = false;
+
+  /**
+   * Allow to insert a customized template for default model search message
+   */
+  @Input() templateForDefaultModel: TemplateRef<any>;
 
   @Input() searchMessageHeader = "Select Criteria";
 

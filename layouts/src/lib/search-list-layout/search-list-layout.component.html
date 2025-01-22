@@ -27,10 +27,10 @@
   <div class="grid-col-12">
     <div *ngIf="!loading; else loadingScreen">
       <ng-container
-        *ngIf="showDefaultModelSearchMessage && isDefaultModel && !items?.length; then defaultModelSearchTemplate; else searchTemplate">
+        *ngIf="messageForDefaultModel && isDefaultModel && !items?.length; then defaultModelSearchTemplate; else searchTemplate">
       </ng-container>
       <ng-template #defaultModelSearchTemplate>
-        <sds-search-result-list [model]="items" [customResultsTemplate]="customSearchMessage"
+        <sds-search-result-list [model]="items" [customResultsTemplate]="templateForDefaultModel ?? customSearchMessage"
         [isDefaultModel]="isDefaultModel">
         </sds-search-result-list>
       </ng-template>
