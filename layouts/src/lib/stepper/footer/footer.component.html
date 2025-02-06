@@ -81,29 +81,35 @@
 
   <div *ngIf="stepperButtonsNew" style="display: flex;  justify-content: space-between; align-items: center;  width: 100%; padding: 1rem;">
 
-    <div style="flex: 1; display: flex; justify-content: flex-start;">
+    <div style="flex: 0; display: flex; justify-content: flex-start; align-items: center; align-self: center;">
       <button
-            class="usa-button radius-pill usa-button--base usa-button--outline"
+            class="usa-button radius-pill"
             [attr.id]="stepperID + '-cancBtn'"
             (click)="cancelBtn($event)"
             [attr.aria-label]="'Cancel button'"
-            style="padding: 12px 24px; background-color: #ffffff; color: #212121; border: 2px solid #212121; display: flex; align-items: center; justify-content: center;"
+            style="flex: 1;min-width: 80px; max-width: 120px; padding: 10px 16px; background-color: #ffffff; color: #212121; border: 2px solid #212121; white-space: nowrap; text-align: center; font-size: 14px;"
       >
-      <usa-icon size="x" [icon]="'x'"></usa-icon> 
+      <usa-icon [icon]="'x'" size="x"></usa-icon> 
       CANCEL
       </button>
       </div>
   
 
   
-    <div style="flex: 1; display: flex; justify-content: flex-end; gap: 2px;">
+    <div style="flex: 0; display: flex; justify-content: flex-end; gap: 2px;">
       <button 
             sdsStepperPrevious
             class="usa-button radius-pill"
             [attr.id]="stepperID + '-prevBtn'"
             (click)="previousBtn($event)"
             [attr.aria-label]="'Previous button'"
-            style="padding: 12px 24px; background-color: #e6f7e6; color: #212121; border: 2px solid #32CD32 !important; display: flex; align-items: center; justify-content: center;"
+            [disabled]="isFirstStep()"
+            [ngStyle]="{ 
+              'background-color': isFirstStep() ? 'white' : '#e6f7e6',
+              'color': isFirstStep() ? '#A0A0A0' : '#212121',
+              'border': isFirstStep() ? '2px solid #D3D3D3' : '2px solid #32CD32'
+            }"
+            style="flex: 1;min-width: 80px; max-width: 120px; padding: 10px 16px; background-color: #e6f7e6; color: #212121; border: 2px solid #32CD32; white-space: nowrap; text-align: center; font-size: 14px;"
       >
       <usa-icon size="x" [icon]="'chevron-left'"></usa-icon>
       PREVIOUS
@@ -116,29 +122,33 @@
             [attr.id]="stepperID + '-nextBtn'"
             (click)="nextBtn($event)"
             class="usa-button radius-pill"
-            style="padding: 12px 24px; background-color: #32CD32; color: #212121; border: none; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+            style="flex: 1; min-width: 80px; max-width: 120px; padding: 10px 16px; background-color: #32CD32 !important; color: #212121; border: none; white-space: nowrap; text-align: center; font-size: 14px;"
       >
       <span style="display: flex; align-items: center;">
         NEXT
-      <usa-icon style="margin-left: 4px;" size="x" [icon]="'chevron-right'"></usa-icon>
+      <usa-icon style="margin-left: 8px;" size="x" [icon]="'chevron-right'"></usa-icon>
       </span>
       </button>
     
  
-
-      <div *ngIf="stepperButtonsNew && showSubmitButton()">
         <button
-              class="usa-button radius-pill"
-              style="padding: 12px 24px; background-color: #32CD32; color: #212121; border: none; font-size: 1em; display: flex; align-items: center; justify-content: center;"
+              *ngIf="stepperButtonsNew && showSubmitButton()"
               (click)="submitBtn($event)"
               [disabled]="!isFormValid"
+              [ngStyle]="{ 
+                'background-color': !isFormValid ? 'white' : '#32CD32',
+                'color': !isFormValid ? '#A0A0A0' : '#212121',
+                'border': !isFormValid ? '1px solid #D3D3D3' : 'none'
+              }"
+              class="usa-button radius-pill"
+              style="flex: 1; min-width: 80px; max-width: 120px; padding: 10px 16px; background-color: #32CD32; color: #212121; border: none; white-space: nowrap; text-align: center; font-size: 14px;"
         >
         <span style="display: flex; align-items: center;">
         SUBMIT
-        <usa-icon style="margin-left: 4px;" size="x" [icon]="'chevron-right'"></usa-icon>
+        <usa-icon style="margin-left: 8px;" size="x" [icon]="'chevron-right'"></usa-icon>
         </span>
         </button>
-      </div>
+      
     </div>
   </div>
 
@@ -147,4 +157,3 @@
     <ng-content select="[stepper-footer-save-and-continue]"></ng-content>
   </div>
 </div>
-

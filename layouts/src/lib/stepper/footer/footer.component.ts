@@ -7,7 +7,6 @@ import { SdsStepper } from '@gsa-sam/sam-formly';
   templateUrl: './footer.component.html',
 })
 export class SLStepperFooterComponent {
-  @Input() customSave = false;
   @Output() previousBtnClick = new EventEmitter<any>();
   @Output() nextBtnClick = new EventEmitter<any>();
   @Output() submitBtnClick = new EventEmitter<any>();
@@ -55,6 +54,11 @@ export class SLStepperFooterComponent {
   isLastStep(): boolean {
     const currentIndex = this.stepper.flatSteps.findIndex(step => step.id === this.stepper.currentStepId);
     return currentIndex === this.stepper.flatSteps.length - 1;
+  }
+
+  isFirstStep(): boolean {
+    const currentIndex = this.stepper.flatSteps.findIndex(step => step.id === this.stepper.currentStepId);
+    return currentIndex === 0; // If index is 0, it's the first step
   }
 
 }
