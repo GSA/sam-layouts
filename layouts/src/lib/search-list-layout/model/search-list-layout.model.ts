@@ -106,6 +106,8 @@ export class SearchListConfiguration {
     queryParamsHandling?: QueryParamsHandling;
 
     excludeFilterFields?: SearchExcludeField[];
+
+    isDefaultFilter?: (filter: {[key: string] : any}) => boolean;
 }
 
 export interface ResultsModel {
