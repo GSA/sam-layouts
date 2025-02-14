@@ -12,6 +12,7 @@ import {
   question,
   save,
   x,
+  list,
 } from 'ngx-bootstrap-icons';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsStepperModule } from '@gsa-sam/sam-formly';
@@ -43,6 +44,7 @@ import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from '
       question,
       save,
       x,
+      list,
     }),
     IconModule,
     SdsStepperModule,

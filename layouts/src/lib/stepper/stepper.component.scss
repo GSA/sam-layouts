@@ -6,3 +6,7 @@
     opacity: 60%;
     pointer-events: none;
  }
+::ng-deep sds-side-toolbar #responsiveViewButton{
+    display: flex !important;
+    flex-direction: row-reverse !important;
+}
