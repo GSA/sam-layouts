@@ -1,5 +1,5 @@
 import { moduleMetadata } from '@storybook/angular';
-import { Meta, Story } from '@storybook/angular';
+import { Meta, StoryObj } from '@storybook/angular';
 import {
   SdsLandingCardComponent,
   SdsLandingCardTitleDirective,
@@ -12,22 +12,21 @@ export default {
     moduleMetadata({
       declarations: [SdsLandingCardComponent, SdsLandingCardTitleDirective],
     }),
-  ]
-} as Meta;
+  ],
+} satisfies Meta<SdsLandingCardComponent>;
 
-const Template: Story<SdsLandingCardComponent> = (args) => ({
-  props: args,
-  template: `
-    <sds-landing-card>
-      <h2 sdsLandingCardTitle>Rhoncus id ullamcorper sed</h2>
-      <ng-container landing-page-card-content>
-        Ut et aliquam nunc, vitae facilisis metus. Vestibulum sed finibus ex, ut
-        posuere dui. Sed vel lobortis felis. Vestibulum pretium arcu non lorem
-        lobortis vulputate.
-      </ng-container>
-    </sds-landing-card>
-  `,
-});
-
-export const Card = Template.bind({});
-Card.args = {};
+export const Default: StoryObj<SdsLandingCardComponent> = {
+  args: {},
+  render: (args) => ({
+    props: args,
+    template: `
+      <sds-landing-card>
+        <h2 sdsLandingCardTitle>Rhoncus id ullamcorper sed</h2>
+        <ng-container landing-page-card-content>
+          Ut et aliquam nunc, vitae facilisis metus. Vestibulum sed posuere dui.
+          Sed vel lobortis felis. Vestibulum pretium augue lobortis vulputate.
+        </ng-container>
+      </sds-landing-card>
+    `,
+  }),
+};

@@ -1,4 +1,3 @@
-import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { action } from '@storybook/addon-actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoSubheaderComponent } from './subheader.demo';
@@ -16,12 +15,18 @@ import { FormsModule } from '@angular/forms';
 import { SdsSubheaderModule } from './subheader.module';
 import { SdsSubheaderComponent } from './subheader.component';
 
-<Meta
-  title="Subheader"
-  component={SdsSubheaderComponent}
-  decorators={[
+const Component = () => {
+  return <SyntaxHighlighter />;
+};
+
+export default {
+  title: 'Subheader',
+  component: SdsSubheaderComponent,
+
+  decorators: [
     moduleMetadata({
       declarations: [DemoSubheaderComponent],
+
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -31,77 +36,94 @@ import { SdsSubheaderComponent } from './subheader.component';
         SdsSubheaderModule,
         SdsButtonGroupModule,
       ],
+
       providers: [AutocompleteService],
     }),
-  ]}
-/>
-
-# Suheader
-
-## SCSS example
-
-```scss
-$font-stack: Helvetica, sans-serif;
-$primary-color: #333;
-
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
-}
-```
-
-export const Component = () => {
-  return <SyntaxHighlighter />;
+  ],
 };
 
-<Canvas>
-  <Story inline={true} name="Basic" args={{}}>
-    {(args) => ({
-      props: { ...args, clicks: action('Button Click') },
-      template: `<demo-subheader (actionsClicks)="clicks($event)"></demo-subheader>`,
-    })}
-  </Story>
-</Canvas>
+export const Basic = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
 
-<Story inline={true} name="Data Entry" args={{}}>
-  {(args) => ({
-    props: { ...args, clicks: action('Button Click') },
+    template: `<demo-subheader (actionsClicks)="clicks($event)"></demo-subheader>`,
+  }),
+
+  inline: true,
+  name: 'Basic',
+  args: {},
+};
+
+export const DataEntry = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
+
     template: `
         <demo-subheader
           (actionsClicks)="clicks($event)"
           [showButtons]="true">
         </demo-subheader>
       `,
-  })}
-</Story>
+  }),
 
-<Story inline={true} name="Search" args={{}}>
-  {(args) => ({
-    props: { ...args, clicks: action('Button Click') },
+  inline: true,
+  name: 'Data Entry',
+  args: {},
+};
+
+export const Search = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
+
     template: `
         <demo-subheader
           (actionsClicks)="clicks($event)"
           [showSearch]="true">
         </demo-subheader>
       `,
-  })}
-</Story>
+  }),
 
-<Story inline={true} name="Search with Autocomplete" args={{}}>
-  {(args) => ({
-    props: { ...args, clicks: action('Button Click') },
+  inline: true,
+  name: 'Search',
+  args: {},
+};
+
+export const SearchWithAutocomplete = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
+
     template: `
         <demo-subheader
           (actionsClicks)="clicks($event)"
           [showAutocomplete]="true">
         </demo-subheader>
       `,
-  })}
-</Story>
+  }),
 
-<Story inline={true} name="Search with Sub-Pages" args={{}}>
-  {(args) => ({
-    props: { ...args, clicks: action('Button Click') },
+  inline: true,
+  name: 'Search with Autocomplete',
+  args: {},
+};
+
+export const SearchWithSubPages = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
+
     template: `
         <demo-subheader
           (actionsClicks)="clicks($event)"
@@ -109,12 +131,20 @@ export const Component = () => {
           [showButtonGroup]="true">
         </demo-subheader>
       `,
-  })}
-</Story>
+  }),
 
-<Story inline={true} name="Tier 2 Workspace" args={{}}>
-  {(args) => ({
-    props: { ...args, clicks: action('Button Click') },
+  inline: true,
+  name: 'Search with Sub-Pages',
+  args: {},
+};
+
+export const Tier2Workspace = {
+  render: (args) => ({
+    props: {
+      ...args,
+      clicks: action('Button Click'),
+    },
+
     template: `
         <demo-subheader
           (actionsClicks)="clicks($event)"
@@ -122,7 +152,9 @@ export const Component = () => {
           [showButtons]="true">
         </demo-subheader>
       `,
-  })}
-</Story>
+  }),
 
-<ArgsTable of={SdsSubheaderComponent} />
+  inline: true,
+  name: 'Tier 2 Workspace',
+  args: {},
+};

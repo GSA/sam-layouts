@@ -1,4 +1,3 @@
-import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { moduleMetadata } from '@storybook/angular';
 import { SdsLandingListComponent } from './list.component.ts';
 import { SdsLandingLinkModule } from '../link/link.module';
@@ -10,60 +9,66 @@ import {
   fileEarmarkText,
 } from 'ngx-bootstrap-icons';
 
-<Meta
-  title="Landing/List"
-  component={SdsLandingListComponent}
-  decorators={[
+const Template = (args) => ({ props: args });
+
+export default {
+  title: 'Landing/List',
+  component: SdsLandingListComponent,
+
+  decorators: [
     moduleMetadata({
       declarations: [],
+
       imports: [
         IconModule,
         SdsLandingLinkModule,
-        NgxBootstrapIconsModule.pick({ search, playBtn, fileEarmarkText }),
+        NgxBootstrapIconsModule.pick({
+          search,
+          playBtn,
+          fileEarmarkText,
+        }),
       ],
     }),
-  ]}
-/>
+  ],
+};
 
-# List
+export const List = {
+  render: Template.bind({}),
+  inline: true,
+  name: 'List',
 
-export const Template = (args) => ({ props: args });
-
-<Canvas>
-  <Story
-    inline={true}
-    name="List"
-    args={{
-      list: {
-        title: 'Lorem ipsum dolor sit amet',
-        intro:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium hendrerit velit, nec congue orci accumsan ac. Morbi et ultricies ligula.',
-        items: [
-          {
-            text: 'Curabitur ut enim id eros auctor auctor.',
-          },
-          {
-            text: 'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
-          },
-          {
-            text: 'Ut sit amet dui in elit faucibus aliquet eu ac erat.',
-          },
-        ],
-      },
-    }}
-  >
-    {Template.bind({})}
-  </Story>
-</Canvas>
-
-<Story
-  inline={true}
-  name="List with links"
-  args={{
+  args: {
     list: {
       title: 'Lorem ipsum dolor sit amet',
       intro:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium hendrerit velit, nec congue orci accumsan ac. Morbi et ultricies ligula.',
+
+      items: [
+        {
+          text: 'Curabitur ut enim id eros auctor auctor.',
+        },
+        {
+          text: 'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
+        },
+        {
+          text: 'Ut sit amet dui in elit faucibus aliquet eu ac erat.',
+        },
+      ],
+    },
+  },
+};
+
+export const ListWithLinks = {
+  render: Template.bind({}),
+  inline: true,
+  name: 'List with links',
+
+  args: {
+    list: {
+      title: 'Lorem ipsum dolor sit amet',
+      intro:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium hendrerit velit, nec congue orci accumsan ac. Morbi et ultricies ligula.',
+
       items: [
         {
           link: {
@@ -86,26 +91,28 @@ export const Template = (args) => ({ props: args });
         },
       ],
     },
-  }}
->
-  {Template.bind({})}
-</Story>
+  },
+};
 
-<Story
-  inline={true}
-  name="List with icons"
-  args={{
+export const ListWithIcons = {
+  render: Template.bind({}),
+  inline: true,
+  name: 'List with icons',
+
+  args: {
     list: {
       title: 'Lorem ipsum dolor sit amet',
       intro:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium hendrerit velit, nec congue orci accumsan ac. Morbi et ultricies ligula.',
       iconList: true,
+
       items: [
         {
           link: {
             innerHtml: 'Curabitur ut enim id eros auctor auctor.',
             href: 'http://sam.gov',
           },
+
           icon: {
             icon: 'file-earmark-text',
             prefix: 'bs',
@@ -117,6 +124,7 @@ export const Template = (args) => ({ props: args });
               'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
             href: 'http://sam.gov',
           },
+
           icon: {
             icon: 'search',
             prefix: 'bs',
@@ -127,6 +135,7 @@ export const Template = (args) => ({ props: args });
             innerHtml: 'Ut sit amet dui in elit faucibus aliquet eu ac erat.',
             href: 'http://sam.gov',
           },
+
           icon: {
             icon: 'playBtn',
             prefix: 'bs',
@@ -134,9 +143,5 @@ export const Template = (args) => ({ props: args });
         },
       ],
     },
-  }}
->
-  {Template.bind({})}
-</Story>
-
-<ArgsTable of={SdsLandingListComponent} />
+  },
+};
