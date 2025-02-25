@@ -60,6 +60,9 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       { text: 'Entity Name', value: 'legalBusinessName' },
       { text: 'Status', value: 'registrationStatus' },
     ],
+    // consider the filter config to be default if there is a keyword tag with 
+    // text 'ignore'. This is for demo purpose.
+    isDefaultFilter: (filter) =>  filter?.keyword?.keywordTags?.some((keywordTag) => keywordTag?.text === 'ignore')
   };
 
   /* Sort config change demo */
