@@ -6,16 +6,34 @@ const config: StorybookConfig = {
       '../../../layouts/src/lib/**/*.stories.@(js|jsx|ts|tsx)',
       '../../../layouts/src/lib/**/*.mdx'
   ],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
-  framework: {
-    name: '@storybook/angular',
-    options: {},
-  },
+  addons: ['@storybook/addon-essentials', '@storybook/addon-interactions', '@storybook/react'],
+  framework: '@storybook/angular',
   staticDirs: [
     {from: '../src/assets', to: 'assets/' },
     {from: '../../../node_modules/@uswds/uswds/dist/fonts/', to: 'assets/uswds/fonts' },
     {from: '../../../node_modules/@uswds/uswds/dist/img/', to: 'assets/uswds/img' }
-  ]
+  ],
+  webpackFinal: async (config) => {
+    config.module.rules.push({
+      test: /\.(js|jsx|ts|tsx)$/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-env',
+            '@babel/preset-react',
+            '@babel/preset-typescript'
+          ]
+        }
+      }
+    });
+  
+    return config;
+  },  
+  docs: {
+    autodocs: false
+  }
+
 };
 
 export default config;
