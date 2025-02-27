@@ -19,7 +19,7 @@ import {
   SearchListConfiguration,
   ResultsModel,
 } from './model/search-list-layout.model';
-import { distinctUntilChanged} from 'rxjs/operators'; 
+import { distinctUntilChanged } from 'rxjs/operators';
 import {
   SDSFormlyUpdateComunicationService,
   SDSFormlyUpdateModelService,
@@ -47,7 +47,7 @@ export class SearchListLayoutComponent implements OnInit {
     private formlyUpdateComunicationService: SDSFormlyUpdateComunicationService,
     private filterUpdateModelService: SDSFormlyUpdateModelService,
     private loc: Location
-  ) {}
+  ) { }
 
   /**
    * Input service to be called when items change
@@ -154,7 +154,7 @@ export class SearchListLayoutComponent implements OnInit {
     if (this.isHistoryEnabled) {
       this.getHistoryModel();
     }
-    
+
   }
 
   ngOnInit() {
@@ -169,23 +169,23 @@ export class SearchListLayoutComponent implements OnInit {
       this.updateContent();
     });
     this.formlySubscription = this.formlyUpdateComunicationService.filterUpdate
-  .pipe(
-    distinctUntilChanged((prev, curr) => {
-      if (this.triggeredByPopState) {
-        this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
-        // popstateEvent = false; // Reset flag after handling
-        return false; // Allow this event through
-      }
+      .pipe(
+        distinctUntilChanged((prev, curr) => {
+          if (this.triggeredByPopState) {
+            this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
+            // popstateEvent = false; // Reset flag after handling
+            return false; // Allow this event through
+          }
 
-      // If not popstate, use equality check
-      const isEqual = !_.isEqual(this.lastKnownFilter,curr);
-      this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
-      return !isEqual; // Only pass distinct events afterward
-    })
-  )
-  .subscribe(filter => {
-    this.updateFilter(filter);
-  });
+          // If not popstate, use equality check
+          const isEqual = !_.isEqual(this.lastKnownFilter, curr);
+          this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
+          return !isEqual; // Only pass distinct events afterward
+        })
+      )
+      .subscribe(filter => {
+        this.updateFilter(filter);
+      });
   }
 
   ngOnDestroy() {
@@ -258,7 +258,7 @@ export class SearchListLayoutComponent implements OnInit {
   isDefaultFilter(filter) {
     const cleanModel = this.flatten(filter);
     const op = this.flatten(this.configuration.defaultFilterValue);
-    this.isDefaultModel = _.isEqual(cleanModel, op);
+    this.isDefaultModel = this.configuration.isDefaultFilter?.(filter) ?? _.isEqual(cleanModel, op);
   }
 
   flatten(input, reference?, output?) {
@@ -327,7 +327,7 @@ export class SearchListLayoutComponent implements OnInit {
             : undefined,
         replaceUrl: skipHistoryOnNav || this.triggeredByPopState,
       });
-    this.triggeredByPopState = false;
+      this.triggeredByPopState = false;
     } else {
       const urlTree = this.router.parseUrl(this.loc.path());
       urlTree.queryParams = params;
@@ -411,7 +411,7 @@ export class SearchListLayoutComponent implements OnInit {
       this.filterData &&
       this.service &&
       this.enableApiCall &&
-      !this.isDefaultModel &&  
+      !this.isDefaultModel &&
       this.skipUpdate === false
     ) {
       this.loading = true;
