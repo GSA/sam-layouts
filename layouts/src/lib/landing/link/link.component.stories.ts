@@ -1,9 +1,9 @@
 import { moduleMetadata } from '@storybook/angular';
-import { Meta, Story } from '@storybook/angular';
+import { Meta, StoryObj } from '@storybook/angular';
 import { SdsLandingLinkComponent } from './link.component';
 import { SdsLandingLinkModule } from './link.module';
-import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Link } from './link.model';
 
 export default {
   title: 'Landing/Link',
@@ -17,26 +17,23 @@ export default {
       ]
     }),
   ],
-} as Meta;
+} as Meta<SdsLandingLinkComponent>;
 
-const Template: Story<SdsLandingLinkComponent> = (args) => ({
-  props: args,
-  template: `
-  <sds-landing-link [link]="externalLink"></sds-landing-link>
-  |
-  <sds-landing-link [link]="internalLink"></sds-landing-link>
-  `,
-});
-
-export const Link:any = Template.bind({});
-Link.args = {
-  externalLink : {
-    href: 'http://google.com',
-    target: '_blank',
-    innerHtml: 'External Link',
+export const ExternalLink: StoryObj<SdsLandingLinkComponent> = {
+  args: {
+    link: {
+      href: 'http://google.com',
+      target: '_blank',
+      innerHtml: 'External Link',
+    } as Link,
   },
-  internalLink : {
-    routerLink: 'internal-link',
-    innerHtml: 'Internal Link',
-  }
+};
+
+export const InternalLink: StoryObj<SdsLandingLinkComponent> = {
+  args: {
+    link: {
+      routerLink: 'internal-link',
+      innerHtml: 'Internal Link',
+    } as Link,
+  },
 };

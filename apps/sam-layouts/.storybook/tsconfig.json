@@ -1,7 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "allowJs": true,
   },
   "exclude": ["../**/*.spec.ts"],
   "include": [

@@ -7,7 +7,10 @@
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "allowJs": true,
   },
   "files": [],
   "include": [],

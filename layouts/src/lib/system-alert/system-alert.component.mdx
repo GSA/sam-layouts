@@ -1,0 +1,26 @@
+import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
+import { moduleMetadata } from '@storybook/angular';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import {
+  NgxBootstrapIconsModule,
+  x,
+  exclamationTriangle,
+  caretDownFill,
+} from 'ngx-bootstrap-icons';
+import { SdsSystemAlertComponent } from './system-alert.component';
+import { SdsSystemAlertModule } from './system-alert.module';
+import * as SystemAlertComponentStories from './system-alert.component.stories';
+
+<Meta of={SystemAlertComponentStories} />
+
+# System Alerts
+
+export const Template = (args) => ({ props: args });
+
+<Canvas>
+  <Story of={SystemAlertComponentStories.SingleAlert} />
+</Canvas>
+
+<Story of={SystemAlertComponentStories.MultipleAlerts} />
+
+<Controls />

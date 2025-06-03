@@ -1,4 +1,4 @@
-import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
 import { moduleMetadata } from '@storybook/angular';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -6,22 +6,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SLStepperComponent } from './stepper.component';
 import { DemoStepperSimpleModule } from './demo/simple/simple.module';
 import { DemoStepperAdvancedModule } from './demo/advanced/advanced.module';
+import * as StepperComponentStories from './stepper.component.stories';
 
-<Meta
-  title="Stepper"
-  component={SLStepperComponent}
-  decorators={[
-    moduleMetadata({
-      declarations: [],
-      imports: [
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        DemoStepperSimpleModule,
-        DemoStepperAdvancedModule
-      ],
-    }),
-  ]}
-/>
+<Meta of={StepperComponentStories} />
 
 # Stepper
 
@@ -29,11 +16,7 @@ Wrapper component for [sds-stepper](https://cg-fa19003e-5296-4960-ac2e-caccfeb62
 It provides the most common uses for `sds-stepper` component.
 
 <Canvas>
-  <Story inline={true} name="Stepper" args={{}}>
-    {(args) => ({
-      template: `<demo-stepper-simple></demo-stepper-simple>`,
-    })}
-  </Story>
+  <Story of={StepperComponentStories.Stepper} />
 </Canvas>
 
 ## Stepper Wrapper (*sam-layouts-stepper*)
@@ -41,7 +24,7 @@ It provides the most common uses for `sds-stepper` component.
 `sam-layouts-stepper` extends `sds-stepper` so all inputs and outputs found in `sds-stepper` can be used. There is only one additional input added `hideSideNav`.
 For more information about this input look at the Stepper with navigation section
 
-For more information about the `sds-stepper` component, visit the [design system docs]([sds-stepper](https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system).) -> Formly -> Stepper
+For more information about the `sds-stepper` component, visit the [design system docs]([sds-stepper]\(https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system\).) -> Formly -> Stepper
 
 ```html
 <sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)" ... >
@@ -52,6 +35,7 @@ For more information about the `sds-stepper` component, visit the [design system
 ## How to use
 
 ### Add the stepper to your module
+
 ```typescript
 import { SdsStepperModule } from '@gsa-sam/sam-formly';
 import { SLStepperModule } from '@gsa-sam/layouts';
@@ -65,6 +49,7 @@ export class DemoStepperSimpleModule {}
 ```
 
 ### Create your steps using formly
+
 ```typescript
 export class MyStepperComponent {
   stepOne: FormlyFieldConfig = {
@@ -97,7 +82,9 @@ export class MyStepperComponent {
     ],
   };
 ```
+
 ### Create your steps using templates
+
 ```html
 <ng-template #stepTwo>
   <h1 class="margin-top-0">
@@ -203,7 +190,6 @@ Pass an angular template to the `template` input in `sam-layouts-stepper-header`
 </sam-layouts-stepper>
 ```
 
-
 ## How to add more options to the footer
 
 Add the `stepper-footer` to any container,  use the `sam-layouts-stepper-footer-custom-action` component and provide and icon and text.
@@ -228,11 +214,7 @@ Add the `stepper-footer` to any container,  use the `sam-layouts-stepper-footer-
 # Stepper with Navigation
 
 <Canvas>
-  <Story inline={true} name="Stepper with Navigation" args={{}}>
-    {(args) => ({
-      template: `<demo-stepper-advanced></demo-stepper-advanced>`,
-    })}
-  </Story>
+  <Story of={StepperComponentStories.StepperWithNavigation} />
 </Canvas>
 
 ### Enable Navigation

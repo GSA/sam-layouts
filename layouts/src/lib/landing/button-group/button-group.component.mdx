@@ -1,0 +1,15 @@
+import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
+import { SdsLandingButtonGroupComponent } from './button-group.component';
+import * as ButtonGroupComponentStories from './button-group.component.stories';
+
+<Meta of={ButtonGroupComponentStories} />
+
+# Button Group
+
+export const Template = (args) => ({ props: args });
+
+<Canvas>
+  <Story of={ButtonGroupComponentStories.ButtonGroup} />
+</Canvas>
+
+<Controls />

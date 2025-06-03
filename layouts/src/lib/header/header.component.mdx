@@ -1,0 +1,38 @@
+import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
+import { moduleMetadata } from '@storybook/angular';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SdsHeaderComponent } from './header.component';
+import { SdsHeaderModule } from './header.module';
+import { NavigationMode } from '@gsa-sam/components';
+import {
+  NgxBootstrapIconsModule,
+  squareFill,
+  xCircle,
+  filePdf,
+  files,
+} from 'ngx-bootstrap-icons';
+import {
+  request,
+  messages,
+  workspace,
+  logOut,
+  bars,
+} from '@gsa-sam/ngx-uswds-icons';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { SdsLandingListComponent } from '../landing/list/list.component';
+import { NavigationHelper } from '@gsa-sam/components';
+import { BrowserModule } from '@angular/platform-browser';
+import * as HeaderComponentStories from './header.component.stories';
+
+<Meta of={HeaderComponentStories} />
+
+# Header
+
+<Canvas>
+  <Story of={HeaderComponentStories.Header} />
+</Canvas>
+
+<Controls />
