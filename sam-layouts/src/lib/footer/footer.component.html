@@ -1,0 +1,111 @@
+<footer class="usa-footer" role="contentinfo">
+  <div *ngIf="feedbackTemplate; else defaultFeedback">
+    <ng-container *ngTemplateOutlet="feedbackTemplate"></ng-container>
+  </div>
+
+  <ng-template #defaultFeedback>
+    <sds-feedback (feedbackSubmit)="onFeedbackSubmitClicked($event)"></sds-feedback>
+  </ng-template>
+
+  <div class="usa-footer__primary-section">
+    <div
+      class="grid-container margin-x-0 mobile-lg:margin-x-auto padding-x-0 mobile-lg:padding-x-auto display-none tablet:display-block">
+      <div class="grid-row grid-gap-0 mobile-lg:grid-gap">
+        <div class="tablet:grid-col-12">
+          <nav class="usa-footer__nav margin-x-0 mobile-lg:margin-x-2 padding-x-0 mobile-lg:padding-x-2"
+            aria-label="Footer Navigation Links">
+            <div class="grid-row grid-gap-0 mobile-lg:grid-gap-4">
+              <div class="mobile-lg:grid-col-6 desktop:grid-col-3" *ngFor="let section of model.linkSections">
+                <section class="usa-footer__primary-content usa-footer__primary-content--collapsible">
+                  <span class="h4 usa-footer__primary-link">{{ section.text }}</span>
+                  <ul class="usa-list usa-list--unstyled">
+                    <li class="usa-footer__secondary-link" *ngFor="let link of section.links">
+                      <ng-container [ngTemplateOutlet]="
+                          navigationHelper.isLinkInternal(link)
+                            ? footerRouteLinkTemplate
+                            : navigationHelper.isLinkExternal(link)
+                            ? footerHREFLinkTemplate
+                            : footerEVENTLinkTemplate
+                        " [ngTemplateOutletContext]="{ $implicit: link }"></ng-container>
+                    </li>
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <nav class="sds-footer__nav--accordion display-block tablet:display-none" aria-label="Footer Navigation Links">
+      <usa-accordion [singleSelect]="false" [bordered]="true">
+        <usa-accordion-item *ngFor="let section of model.linkSections; let $index=index" [header]="section.text">
+          <ng-template UsaAccordionContent>
+            <ul class="usa-list usa-list--unstyled padding-y-1">
+              <li class="usa-footer__secondary-link" *ngFor="let link of section.links">
+                <ng-container [ngTemplateOutlet]="
+                    navigationHelper.isLinkInternal(link)
+                      ? footerRouteLinkTemplate
+                      : navigationHelper.isLinkExternal(link)
+                      ? footerHREFLinkTemplate
+                      : footerEVENTLinkTemplate
+                  " [ngTemplateOutletContext]="{ $implicit: link }"></ng-container>
+              </li>
+            </ul>
+          </ng-template>
+        </usa-accordion-item>
+      </usa-accordion>
+    </nav>
+  </div>
+  <div class="usa-footer__secondary-section">
+    <div class="grid-container margin">
+      <div class="grid-row grid-gap flex-no-wrap">
+        <div class="grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-4 margin-bottom-4">
+          <div class="sds-footer__logo">
+            <a class="sds-footer__logo-link" [attr.href]="model.footerLogo.href">
+              <img *ngIf="model.footerLogo" class="usa-footer__logo-img" [attr.src]="model.footerLogo.imageSourcePath"
+                [attr.alt]="model.footerLogo.imageAltText" />
+            </a>
+          </div>
+        </div>
+        <div class="display-block">
+          <span class="text-base display-inline-flex text-base-darker">
+            <usa-icon [icon]="'exclamation-triangle'" [class]="'sds-alert--header__icon-mobile'" [size]="'1x'"></usa-icon>
+            <div class="font-mono-xs margin-left-1 text-semibold">WARNING</div>
+          </span>
+          <div class="sds-footer__note grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-8 font-body-3xs width-auto" [innerHTML]="model.disclaimer">
+      </div>
+    </div>
+    </div>
+  </div>
+  </div>
+  <div class="usa-identifier bg-base-darker margin-bottom-neg-4">
+    <section
+      class="usa-identifier__section usa-identifier__section--masthead"
+      aria-label="Agency identifier,">
+      <div class="usa-identifier__container">
+        <section
+          class="usa-identifier__identity"
+          aria-label="Agency description,">
+          <p class="usa-identifier__identity-domain font-body-lg text-white text-no-tabular text-semibold">SAM.gov</p>
+          <p class="usa-identifier__identity-domain font-body-lg text-white text-no-tabular text-semibold">
+            An official website of the U.S. General Services Administration
+          </p>
+        </section>
+      </div>
+    </section>
+  </div>
+</footer>
+
+<ng-template #footerRouteLinkTemplate let-link>
+  <a class="usa-link" [routerLink]="[link.route]">{{ link.text }}</a>
+</ng-template>
+
+<ng-template #footerHREFLinkTemplate let-link>
+  <a class="usa-link" [attr.aria-label]="link.text" [hideIcon]="link.hideIcon" [href]="link.route">{{ link.text }}</a>
+</ng-template>
+
+<ng-template #footerEVENTLinkTemplate let-link>
+  <a href="javascript:void(0)" (click)="linkClickEvent(link)">{{
+    link.text
+  }}</a>
+</ng-template>

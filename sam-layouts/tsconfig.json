@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": false,
+    "strict": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "strictPropertyInitialization": false, //TODO: enable 
+    "noImplicitReturns": false,
+    "noImplicitAny": false, //TODO: enable
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": false, //TODO: enable,
+    "suppressExcessPropertyErrors": false
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ],
+  "extends": "../tsconfig.base.json",
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": false,
+    "strictInputAccessModifiers": false,
+    "strictTemplates": false //TODO: enable
+  }
+}

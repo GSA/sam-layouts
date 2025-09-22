@@ -1,0 +1,18 @@
+<a
+  *ngIf="link.href; else internalLink"
+  class="usa-link"
+  [ngClass]="link.classes"
+  [href]="link.href"
+  [innerHtml]="link.innerHtml"
+></a>
+
+<ng-template #internalLink>
+  <a
+    class="usa-link"
+    [ngClass]="link.classes"
+    [routerLink]="link.routerLink"
+    [queryParams]="link.queryParams"
+    [innerHtml]="link.innerHtml"
+    [attr.aria-label]="link.ariaLabel"
+  ></a>
+</ng-template>

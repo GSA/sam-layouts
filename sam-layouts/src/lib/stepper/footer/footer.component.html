@@ -1,0 +1,159 @@
+<div class="grid-row grid-gap flex-justify-center margin-top-4">
+  <div *ngIf="!stepperButtonsNew" class="margin-right-1">
+    <button
+      sdsStepperPrevious
+      class="usa-button sds-button--circle bg-base-lighter usa-button--base usa-button--big padding-2"
+      [attr.id]="stepperID + '-prevBtn'"
+      (click)="previousBtn($event)"
+      [attr.aria-labelledby]="stepperID + '-prevBtn-label'"
+    >
+      <usa-icon [icon]="'chevron-left'"></usa-icon>
+    </button>
+
+    <label
+      [attr.id]="stepperID + '-prevBtn-label'"
+      [attr.for]="stepperID + '-prevBtn'"
+      class="text-right usa-link cursor-pointer display-block margin-top-2"
+    >
+      Previous
+    </label>
+  </div>
+
+  <ng-content></ng-content>
+
+  <div *ngIf="!stepperButtonsNew" class="margin-right-1">
+    <button
+      sdsStepperSave
+      class="usa-button sds-button--circle usa-button--big usa-button--base bg-base-lighter bg-base-lighter"
+      [attr.id]="stepperID + '-saveBtn'"
+      [attr.aria-labelledby]="stepperID + '-saveBtn-label'"
+    >
+      <usa-icon [icon]="'save'"></usa-icon>
+    </button>
+    <label
+      [attr.id]="stepperID + '-saveBtn-label'"
+      [attr.for]="stepperID + '-saveBtn'"
+      class="usa-link cursor-pointer display-block margin-top-2"
+    >
+      Save
+    </label>
+  </div>
+
+  <div *ngIf="!stepperButtonsNew && !customSave" class="margin-right-1">
+    <button
+      #saveAndContinueBtn
+      sdsStepperNext
+      class="usa-button sds-button--circle usa-button--base bg-base-lighter usa-button--big usa-button--active padding-2"
+      [attr.id]="stepperID + '-nextBtn'"
+      (click)="nextBtn($event)"
+      [attr.aria-labelledby]="stepperID + '-nextBtn-label'"
+    >
+      <usa-icon [icon]="'chevron-right'"></usa-icon>
+    </button>
+    <label
+      [attr.id]="stepperID + '-nextBtn-label'"
+      [attr.for]="stepperID + '-nextBtn'"
+      class="text-left usa-link cursor-pointer display-block margin-top-2"
+    >
+      Save and Continue
+    </label>
+  </div>
+  <div
+    class="flex-justify-end"
+    *ngIf="!stepperButtonsNew && showSubmitButton()"
+  >
+    <button
+      class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
+      (click)="submitBtn($event)"
+    >
+      Submit
+    </button>
+
+    <div *ngIf="!stepperButtonsNew && showReviewButton()">
+      <button
+        sdsStepperNext
+        class="usa-button bg-primary-lighter radius-pill flex-align-self-center"
+      >
+        Review <i class="bi-chevron-right bi-bold"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="stepperButtonsNew" style="display: flex;  justify-content: space-between; align-items: center;  width: 100%; padding: 1rem; max-width: 100%; flex-wrap: nowrap;">
+
+    <div style="flex: 0; display: flex; justify-content: flex-start;">
+      <button
+            class="usa-button radius-pill"
+            [attr.id]="stepperID + '-cancBtn'"
+            (click)="cancelBtn($event)"
+            [attr.aria-label]="'Cancel button'"
+            style="flex: 1;min-width: 80px; max-width: 120px; padding: 8px 12px; background-color: #ffffff; color: #212121; border: 2px solid #212121; white-space: nowrap; text-align: center; font-size: 14px;"
+      >
+      <usa-icon [icon]="'x'" size="lg"></usa-icon> 
+      CANCEL
+      </button>
+      </div>
+  
+
+  
+    <div style="flex: 0; display: flex; justify-content: flex-end; gap: 2px;">
+      <button 
+            sdsStepperPrevious
+            class="usa-button radius-pill"
+            [attr.id]="stepperID + '-prevBtn'"
+            (click)="previousBtn($event)"
+            [attr.aria-label]="'Previous button'"
+            [disabled]="isFirstStep()"
+            [ngStyle]="{ 
+              'background-color': isFirstStep() ? 'white' : '#e6f7e6',
+              'color': isFirstStep() ? '#A0A0A0' : '#212121',
+              'border': isFirstStep() ? '2px solid #D3D3D3' : '2px solid #32CD32'
+            }"
+            style="flex: 1;min-width: 80px; max-width: 120px; padding: 10px 16px; background-color: #e6f7e6; color: #212121; border: 2px solid #32CD32; white-space: nowrap; text-align: center; font-size: 14px;"
+      >
+      <usa-icon size="x" [icon]="'chevron-left'"></usa-icon>
+      PREVIOUS
+      </button>
+    
+      
+      <button
+            *ngIf="showNextButton()"
+            sdsStepperNext
+            [attr.id]="stepperID + '-nextBtn'"
+            (click)="nextBtn($event)"
+            class="usa-button radius-pill"
+            style="flex: 1; min-width: 80px; max-width: 120px; padding: 8px 12px; background-color: #32CD32 !important; color: #212121; border: none; white-space: nowrap; text-align: center; font-size: 14px;"
+      >
+      <span style="display: flex; align-items: center;">
+        NEXT
+      <usa-icon style="margin-left: 8px;" size="x" [icon]="'chevron-right'"></usa-icon>
+      </span>
+      </button>
+    
+ 
+        <button
+              *ngIf="stepperButtonsNew && showSubmitButton()"
+              (click)="submitBtn($event)"
+              [disabled]="!isFormValid"
+              [ngStyle]="{ 
+                'background-color': !isFormValid ? 'white' : '#32CD32',
+                'color': !isFormValid ? '#A0A0A0' : '#212121',
+                'border': !isFormValid ? '1px solid #D3D3D3' : 'none'
+              }"
+              class="usa-button radius-pill"
+              style="flex: 1; min-width: 80px; max-width: 120px; padding: 8px 12px; background-color: #32CD32; color: #212121; border: none; white-space: nowrap; text-align: center; font-size: 14px; padding-right: 10px;"
+        >
+        <span style="display: flex; align-items: center;">
+        SUBMIT
+        <usa-icon style="margin-left: 8px;" size="x" [icon]="'chevron-right'"></usa-icon>
+        </span>
+        </button>
+      
+    </div>
+  </div>
+
+
+  <div *ngIf="customSave" class="margin-right-1">
+    <ng-content select="[stepper-footer-save-and-continue]"></ng-content>
+  </div>
+</div>

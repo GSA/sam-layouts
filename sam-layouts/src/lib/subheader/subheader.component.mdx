@@ -1,0 +1,54 @@
+import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
+import { action } from '@storybook/addon-actions';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DemoSubheaderComponent } from './subheader.demo';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { moduleMetadata } from '@storybook/angular';
+import {
+  SdsMenuModule,
+  SdsSearchModule,
+  SdsAutocompleteModule,
+} from '@gsa-sam/components';
+import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
+import { AutocompleteService } from './examples/services/autocomplete.service';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { FormsModule } from '@angular/forms';
+import { SdsSubheaderModule } from './subheader.module';
+import { SdsSubheaderComponent } from './subheader.component';
+import * as SubheaderComponentStories from './subheader.component.stories';
+
+<Meta of={SubheaderComponentStories} />
+
+# Suheader
+
+## SCSS example
+
+```scss
+$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+```
+
+export const Component = () => {
+  return <SyntaxHighlighter />;
+};
+
+<Canvas>
+  <Story of={SubheaderComponentStories.Basic} />
+</Canvas>
+
+<Story of={SubheaderComponentStories.DataEntry} />
+
+<Story of={SubheaderComponentStories.Search} />
+
+<Story of={SubheaderComponentStories.SearchWithAutocomplete} />
+
+<Story of={SubheaderComponentStories.SearchWithSubPages} />
+
+<Story of={SubheaderComponentStories.Tier2Workspace} />
+
+<Controls />
