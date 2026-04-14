@@ -11,14 +11,14 @@ updates:
         patterns:
           - "@angular*"
         update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-patch"
+          - "minor"
+          - "patch"
       storybook-dependencies:
         patterns:
           - "@storybook*"
         update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-patch"
+          - "minor"
+          - "patch"
     # Limit the number of open pull requests to avoid noise
     open-pull-requests-limit: 10
     # Ignore major updates to avoid breaking changes unless reviewed manually
