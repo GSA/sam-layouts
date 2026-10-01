@@ -78,7 +78,7 @@ describe('SearchListLayoutComponent', () => {
     let service = fixture.debugElement.injector.get(
       SDSFormlyUpdateModelService
     );
-    const serviceSpy = spyOn(service, 'updateModel').and.callThrough(); // create spy
+    const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)
     const filterData = {
       filterModel: { searchKeyword: 'test', entity: 'testEntity' },
     };
