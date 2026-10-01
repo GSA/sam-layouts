@@ -3,9 +3,10 @@ export default {
   preset: '../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
   coverageDirectory: '../coverage/sam-layouts',
-  // The stubs below are harness scaffolding, not product code — keep them out
-  // of the coverage number that the Wave 3 floor will be derived from.
-  coveragePathIgnorePatterns: ['<rootDir>/test-stubs/'],
+  // The stubs and the transformer below are harness scaffolding, not product
+  // code — keep them out of the coverage number that the Wave 3 floor will be
+  // derived from.
+  coveragePathIgnorePatterns: ['<rootDir>/test-stubs/', '<rootDir>/test-harness/'],
   moduleNameMapper: {
     // `@gsa-sam/components` imports from `ngx-toastr` without declaring it as a
     // dependency, so the package is not installed. See the header comment in
@@ -29,6 +30,18 @@ export default {
     '^lodash-es/(.*)$': 'lodash/$1',
   },
   transform: {
+    // `@gsa-sam/*` bundles go through a `jest-preset-angular` wrapper that
+    // re-materialises the `standalone: false` flag ngc <= 18 left implicit.
+    // The wrapper gates on the emitting Angular major read from each package's
+    // own manifest, so on the current `^19` tree it forwards the source
+    // byte-for-byte unchanged. See the header comment in the harness.
+    '[\\\\/]node_modules[\\\\/]@gsa-sam[\\\\/].+\\.m?js$': [
+      '<rootDir>/test-harness/ngc18-compat.cjs',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+        stringifyContentPathRegex: '\\.(html|svg)$',
+      },
+    ],
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
       {
