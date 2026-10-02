@@ -13,7 +13,10 @@ import {
 } from './model/search-list-layout.model';
 import { of, Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
+import {
+  SDSFormlyUpdateComunicationService,
+  SDSFormlyUpdateModelService,
+} from '@gsa-sam/sam-formly';
 import { SimpleChange } from '@angular/core';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
@@ -32,7 +35,15 @@ describe('SearchListLayoutComponent', () => {
         RouterTestingModule.withRoutes([]),
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
       ],
-      providers: [SDSFormlyUpdateModelService],
+      // `SearchListLayoutComponent` injects `SDSFormlyUpdateComunicationService`
+      // with `@Optional()` but dereferences `.filterUpdate` unguarded in
+      // `ngOnInit`, so the test module has to provide it. `@gsa-sam/sam-formly`
+      // declares it as a bare `@Injectable()` with no `providedIn`, so it is
+      // never available by default.
+      providers: [
+        SDSFormlyUpdateModelService,
+        SDSFormlyUpdateComunicationService,
+      ],
     }).compileComponents();
   }));
 
@@ -78,7 +89,7 @@ describe('SearchListLayoutComponent', () => {
     let service = fixture.debugElement.injector.get(
       SDSFormlyUpdateModelService
     );
-    const serviceSpy = spyOn(service, 'updateModel').and.callThrough(); // create spy
+    const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)
     const filterData = {
       filterModel: { searchKeyword: 'test', entity: 'testEntity' },
     };

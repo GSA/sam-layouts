@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NavigationMode } from '@gsa-sam/components';
 
 import { SdsAccordionModule } from '@gsa-sam/sam-material-extensions';
+import { UsaAccordionModule } from '@gsa-sam/ngx-uswds';
 import { FooterLogo } from './model/FooterModel';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SdsFeedbackModule } from '../sds-feedback/sds-feedback.module';
@@ -22,6 +23,7 @@ describe('SdsFooterComponent', () => {
         RouterTestingModule,
         IconModule,
         SdsAccordionModule,
+        UsaAccordionModule,
         SdsFeedbackModule,
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
       ]
@@ -45,7 +47,7 @@ describe('SdsFooterComponent', () => {
 
   it('event click', () => {
     let navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
-    spyOn(component.linkEvent, 'emit');
+    jest.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);
   });

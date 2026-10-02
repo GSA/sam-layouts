@@ -53,7 +53,7 @@ describe('SystemAlertComponent', () => {
   });
 
   it('Should emit event when see all alerts is clicked', () => {
-    const seeAllAlertsSpy = spyOn(component.seeAllAlerts, 'emit');
+    const seeAllAlertsSpy = jest.spyOn(component.seeAllAlerts, 'emit');
     const seeAllAlertsBtn = fixture.debugElement.query(By.css('#seeAllAlertsTabletBtn'));
     seeAllAlertsBtn.triggerEventHandler('click', null);
     fixture.detectChanges();

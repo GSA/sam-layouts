@@ -37,7 +37,7 @@ describe('SdsFeedbackComponent', () => {
 
   it('Should emit feedback content on submit click', () => {
     component.feedbackModel.setValue('Test Feedback');
-    const feedbackSubmitSpy = spyOn(component.feedbackSubmit, 'emit');
+    const feedbackSubmitSpy = jest.spyOn(component.feedbackSubmit, 'emit');
 
     const feedbackSubmitButton = fixture.debugElement.query(By.css('#feedbackSubmit'));
     feedbackSubmitButton.triggerEventHandler('click', null);
