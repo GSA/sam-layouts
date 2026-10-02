@@ -2,6 +2,9 @@
   "name": "@sam-layouts/source",
   "version": "0.0.0",
   "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
   "scripts": {},
   "private": true,
   "dependencies": {
