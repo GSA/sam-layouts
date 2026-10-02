@@ -169,24 +169,26 @@ export class SearchListLayoutComponent implements OnInit {
     this.paginationChange.subscribe(() => {
       this.updateContent();
     });
-    this.formlySubscription = this.formlyUpdateComunicationService.filterUpdate
-      .pipe(
-        distinctUntilChanged((prev, curr) => {
-          if (this.triggeredByPopState) {
-            this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
-            // popstateEvent = false; // Reset flag after handling
-            return false; // Allow this event through
-          }
+    if (this.formlyUpdateComunicationService) {
+      this.formlySubscription = this.formlyUpdateComunicationService.filterUpdate
+        .pipe(
+          distinctUntilChanged((prev, curr) => {
+            if (this.triggeredByPopState) {
+              this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
+              // popstateEvent = false; // Reset flag after handling
+              return false; // Allow this event through
+            }
 
-          // If not popstate, use equality check
-          const isEqual = !_.isEqual(this.lastKnownFilter, curr);
-          this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
-          return !isEqual; // Only pass distinct events afterward
-        })
-      )
-      .subscribe(filter => {
-        this.updateFilter(filter);
-      });
+            // If not popstate, use equality check
+            const isEqual = !_.isEqual(this.lastKnownFilter, curr);
+            this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
+            return !isEqual; // Only pass distinct events afterward
+          })
+        )
+        .subscribe(filter => {
+          this.updateFilter(filter);
+        });
+    }
   }
 
   ngOnDestroy() {

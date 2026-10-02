@@ -117,6 +117,56 @@ describe('SearchListLayoutComponent', () => {
   });
 });
 
+// Regression coverage for GSA/sam-layouts#63:
+// `SDSFormlyUpdateComunicationService` is injected with `@Optional()`, so
+// consumers are explicitly permitted to render `search-list-layout` without
+// providing it. ngOnInit must not throw in that case.
+describe('SearchListLayoutComponent without SDSFormlyUpdateComunicationService', () => {
+  let component: SearchListLayoutComponent;
+  let fixture: ComponentFixture<SearchListLayoutComponent>;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SearchListLayoutComponent],
+      imports: [
+        PaginationModule,
+        SdsSearchResultListModule,
+        FormsModule,
+        RouterTestingModule.withRoutes([]),
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
+      ],
+      // Intentionally omit `SDSFormlyUpdateComunicationService` from providers
+      // to reproduce the absent-service path permitted by `@Optional()`.
+      providers: [SDSFormlyUpdateModelService],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SearchListLayoutComponent);
+    component = fixture.componentInstance;
+    component.configuration = {
+      sortList: [{ text: 'Id', value: 'id' }],
+      defaultSortValue: 'id',
+      pageSize: 25,
+    };
+    component.service = new TestService();
+  });
+
+  it('does not throw on ngOnInit when the service is absent', () => {
+    expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('still updates the filter when triggered directly, with no formly subscription', fakeAsync(() => {
+    fixture.detectChanges();
+
+    const filterData = { searchKeyword: 'test', entity: 'testEntity' };
+    component.updateFilter(filterData);
+    fixture.detectChanges();
+    tick(100);
+    expect(component.page.default).toBe(false);
+  }));
+});
+
 class TestService implements SearchListInterface {
   getData(search: SearchParameters): Observable<SearchResult> {
     return of({
