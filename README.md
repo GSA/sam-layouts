@@ -118,11 +118,11 @@ When `main` was scaffolded fresh via Nx, it looked like 30+ Jira fixes from the 
 ```sh
 git fetch origin refs/pull/49/head # angular-18 head, a79508e
 git diff -w --stat FETCH_HEAD:layouts/src/lib origin/main:sam-layouts/src/lib
-# 31 files changed, 58 insertions(+)
+# 28 files changed, 47 insertions(+)
 ```
 
 - **Zero deletions** across the entire library diff — nothing on `angular-18` was dropped.
-- Of the 58 added lines, **47 are `standalone: false,`** stamped onto existing components; the remaining 11 are the leftover Nx scaffold component `layouts.component.{ts,html,css}` (`<p>Layouts works!</p>`), whose removal is handled in [#58](https://github.com/GSA/sam-layouts/pull/58).
+- All 47 added lines are `standalone: false,` stamped onto existing components. (Before [#58](https://github.com/GSA/sam-layouts/pull/58) removed the leftover Nx scaffold component `layouts.component.{ts,html,css}` — `<p>Layouts works!</p>` — this diff read `31 files changed, 58 insertions(+)`, the extra 11 lines being that scaffold.)
 - Spot-check: `stepper.component.html`, `stepper.component.scss`, and `stepper.module.ts` are **byte-identical** between the `angular-18` head and `main` — IAEMOD-39957 (stepper list icon) and IAEMOD-39122 (screen-reader message) are both present on `main`.
 
 **This is a git-hygiene problem, not a content-recovery problem.** No cherry-pick or port of any `angular-*`/`IAEMOD-*` commit is required.
