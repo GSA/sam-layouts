@@ -55,5 +55,6 @@ Closes #<!-- issue number, e.g. 123 -->
 - [ ] `build` passes for the demo app (`npx nx build sam-layouts`)
 - [ ] Tests pass for the library (`npx nx test layouts`)
 - [ ] Tests pass for the demo app (`npx nx test sam-layouts`)
+- [ ] Storybook builds (`npx nx build-storybook sam-layouts`) — required if this PR touches components, stories, or dependencies
 - [ ] If this change requires a documentation update, I have updated it accordingly
 - [ ] If there are dependent changes, they have been merged and published in downstream modules
