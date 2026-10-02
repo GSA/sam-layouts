@@ -44,16 +44,22 @@ jobs:
       - name: Build sam-layouts (app)
         run: npx nx build sam-layouts
 
+      # `--codeCoverage` is required: without it the Jest executor writes no
+      # coverage output at all and the upload step below collects nothing.
+      # Verified locally — a plain `nx test layouts` leaves `coverage/` absent.
       - name: Test layouts (library)
-        run: npx nx test layouts
+        run: npx nx test layouts --codeCoverage
 
       - name: Test sam-layouts (app)
-        run: npx nx test sam-layouts
+        run: npx nx test sam-layouts --codeCoverage
 
+      # Both projects write under `coverage/` but to different subdirectories
+      # (`coverage/sam-layouts` for the library, `coverage/apps/sam-layouts`
+      # for the demo app), so the whole tree is uploaded as one artifact.
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage
           path: coverage/
-          if-no-files-found: warn
+          if-no-files-found: error
