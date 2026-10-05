@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # TODO: promote this to a blocking step once the lint-debt baseline
+      # (121 errors) is cleared by the Wave 2 "ESLint template a11y gate +
+      # lint-debt baseline" issue tracked under GSA/sam-layouts#52.
+      - name: Lint (non-blocking)
+        run: npx nx run-many -t lint
+        continue-on-error: true
+
+      - name: Build layouts (library)
+        run: npx nx build layouts
+
+      - name: Build sam-layouts (app)
+        run: npx nx build sam-layouts
+
+      # `--codeCoverage` is required: without it the Jest executor writes no
+      # coverage output at all and the upload step below collects nothing.
+      # Verified locally — a plain `nx test layouts` leaves `coverage/` absent.
+      - name: Test layouts (library)
+        run: npx nx test layouts --codeCoverage
+
+      - name: Test sam-layouts (app)
+        run: npx nx test sam-layouts --codeCoverage
+
+      # Both projects write under `coverage/` but to different subdirectories
+      # (`coverage/sam-layouts` for the library, `coverage/apps/sam-layouts`
+      # for the demo app), so the whole tree is uploaded as one artifact.
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: error
