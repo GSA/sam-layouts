@@ -2,7 +2,7 @@
   "name": "layouts",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "sam-layouts/src",
-  "prefix": "lib",
+  "prefix": "sds",
   "projectType": "library",
   "release": {
     "version": {

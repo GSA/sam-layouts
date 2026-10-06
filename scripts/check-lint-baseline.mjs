@@ -67,10 +67,38 @@ if (!Array.isArray(report)) {
   process.exit(1);
 }
 
+// Fail closed on an empty report. An empty array is *valid* JSON and would
+// otherwise total to 0 errors / 0 warnings and sail through the gate — but it
+// proves no files were linted at all, which means the lint target, its file
+// globs, or the project name passed to `lint:report` is broken. A silent PASS
+// there is strictly worse than a hard failure, and `--bump` would compound it
+// by ratcheting the baseline down to 0.
+if (report.length === 0) {
+  console.error(
+    `✖ ${project}: ESLint report at ${reportPath} is empty — no files were linted.`
+  );
+  console.error(
+    '  An empty report cannot prove the project is clean; it means the lint\n' +
+      '  target, its file globs, or the project name is wrong. Check that\n' +
+      `  \`npx nx run ${project}:lint\` actually matches source files, then re-run\n` +
+      '  `npm run lint:report`.'
+  );
+  process.exit(1);
+}
+
 for (const result of report) {
   if (!result || typeof result !== 'object') {
     console.error(
       `✖ Invalid ESLint report format: report contains non-object results.`
+    );
+    process.exit(1);
+  }
+  // Same reasoning as the empty-array guard, one level down: a result with no
+  // filePath is not a linted file, so it must not be allowed to contribute a
+  // reassuring 0/0 to the totals.
+  if (typeof result.filePath !== 'string' || result.filePath.length === 0) {
+    console.error(
+      `✖ Invalid ESLint report format: result has a missing or empty filePath.`
     );
     process.exit(1);
   }

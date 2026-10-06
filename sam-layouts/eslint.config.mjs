@@ -27,11 +27,14 @@ export default [
   {
     files: ['**/*.ts'],
     rules: {
-      // The Nx library generator stamped `prefix: 'lib'` here, but this
-      // library has never used `lib-*`. `@gsa-sam/layouts` is a published
-      // design library, so its selectors are public API: renaming them to
-      // satisfy the scaffold default would break every consumer. The prefixes
-      // below are the ones actually in use in `src/`:
+      // The Nx library generator stamped `prefix: 'lib'` in
+      // `sam-layouts/project.json`, but this library has never used `lib-*`.
+      // That generator prefix is now `sds` so newly scaffolded components are
+      // lint-clean on the first try instead of landing as `lib-*` and
+      // immediately failing the rule below. `@gsa-sam/layouts` is a published
+      // design library, so its selectors are public API: renaming the existing
+      // ones to satisfy the old scaffold default would break every consumer.
+      // The prefixes below are the ones actually in use in `src/`:
       //
       //   sds          24 components + 7 directives (sds-header, sds-footer,
       //                [sdsLandingPageTitle], ...) — the SAM Design System

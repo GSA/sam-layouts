@@ -255,6 +255,49 @@ test('fails closed if the report is not a JSON array', () => {
   });
 });
 
+test('fails closed if the report is an empty array (nothing was linted)', () => {
+  withBaselines({ layouts: 10 }, () => {
+    withTempDir((dir) => {
+      const path = join(dir, 'eslint-report.json');
+      writeFileSync(path, JSON.stringify([]));
+      const { status, stderr } = run(['layouts', path]);
+      assert.equal(status, 1);
+      assert.match(stderr, /is empty — no files were linted/);
+    });
+  });
+});
+
+test('--bump refuses to ratchet the baseline from an empty report', () => {
+  withBaselines({ layouts: 10 }, () => {
+    withTempDir((dir) => {
+      const path = join(dir, 'eslint-report.json');
+      writeFileSync(path, JSON.stringify([]));
+      const { status, stderr } = run(['--bump', 'layouts', path]);
+      assert.equal(status, 1);
+      assert.match(stderr, /is empty — no files were linted/);
+      const written = JSON.parse(readFileSync(baselinePath, 'utf8'));
+      assert.equal(written.layouts, 10);
+    });
+  });
+});
+
+test('fails closed if a result has no filePath (no real file was linted)', () => {
+  withBaselines({ layouts: 10 }, () => {
+    withTempDir((dir) => {
+      const path = join(dir, 'eslint-report.json');
+      writeFileSync(
+        path,
+        JSON.stringify([
+          { filePath: '', messages: [], errorCount: 0, warningCount: 0 },
+        ])
+      );
+      const { status, stderr } = run(['layouts', path]);
+      assert.equal(status, 1);
+      assert.match(stderr, /missing or empty filePath/);
+    });
+  });
+});
+
 test('fails closed if report contains non-object results', () => {
   withBaselines({ layouts: 10 }, () => {
     withTempDir((dir) => {
