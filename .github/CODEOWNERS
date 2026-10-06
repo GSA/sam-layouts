@@ -1,0 +1,9 @@
+# All files — sam-shared-frontend team owns this repo
+* @GSA/sam-shared-frontend
+
+# Changes to GitHub Actions workflows and repo configuration require
+# DevSecOps (sam-shared-frontend-admin) review in addition to the
+# default owners. This is a merge-time guardrail against unauthorized
+# modifications to the OIDC/npm publish path (see .github/workflows/publish.yml)
+# and to dependency automation.
+/.github/ @GSA/sam-shared-frontend-admin
