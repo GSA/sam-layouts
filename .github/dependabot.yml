@@ -34,19 +34,19 @@ updates:
         versions: [">= 19.0.0"]
       - dependency-name: "typescript"
         versions: [">= 6.0.0"]
-    # Group all updates together to avoid excessive PRs
+    # Group minor/patch updates by update-type to match the fleet convention
+    # (ngx-uswds-icons, sam-styles, sam-ui-elements, sam-design-system). Majors
+    # stay ungrouped and human-gated via the ignore block above.
     groups:
-      angular-dependencies:
+      minor:
         patterns:
-          - "@angular*"
+          - "*"
         update-types:
           - "minor"
-          - "patch"
-      storybook-dependencies:
+      patch:
         patterns:
-          - "@storybook*"
+          - "*"
         update-types:
-          - "minor"
           - "patch"
     # Labels to apply to npm PRs
     labels:
