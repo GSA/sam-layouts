@@ -11,7 +11,7 @@ jobs:
     if: github.event.pull_request.head.ref == 'test-codeowners-verify-77'
     steps:
       - name: Approve via GITHUB_TOKEN (github-actions[bot] identity)
-        run: gh pr review --approve "$PR_URL" -b "Disposable probe for issue #77: does a bot-token review satisfy ruleset 15065977 with no CODEOWNERS file present?"
+        run: gh pr review --approve "$PR_URL" -b "Disposable probe: does a bot-token review satisfy ruleset 15065977 with no CODEOWNERS file present"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
