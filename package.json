@@ -5,7 +5,14 @@
   "engines": {
     "node": ">=24.0.0 <25"
   },
-  "scripts": {},
+  "scripts": {
+    "lint": "nx run-many -t lint",
+    "lint:report": "nx run-many -t lint --skip-nx-cache --force --format json --output-file \"tmp/lint/{projectName}.json\"",
+    "lint:baseline": "npm run lint:report && npm run lint:baseline:check",
+    "lint:baseline:check": "node scripts/check-lint-baseline.mjs layouts tmp/lint/layouts.json && node scripts/check-lint-baseline.mjs sam-layouts tmp/lint/sam-layouts.json",
+    "lint:baseline:bump": "npm run lint:report && node scripts/check-lint-baseline.mjs --bump layouts tmp/lint/layouts.json && node scripts/check-lint-baseline.mjs --bump sam-layouts tmp/lint/sam-layouts.json",
+    "test:scripts": "node --test scripts/*.test.mjs"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~19.2.0",
