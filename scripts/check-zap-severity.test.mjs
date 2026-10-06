@@ -269,6 +269,45 @@ test('a rule-wide exception covers an instance-shaped alert', () => {
   assert.equal(result.status, 0);
 });
 
+test('an instance with no URI is uncovered, so a scoped waiver still blocks', () => {
+  const report = reportWith([
+    {
+      pluginid: '10003',
+      alert: 'Vulnerable JS Library',
+      riskcode: '3',
+      riskdesc: 'High (Medium)',
+      count: '2',
+      instances: [
+        { uri: 'http://127.0.0.1:4200/main-ABC.js', method: 'GET' },
+        { method: 'GET' },
+      ],
+    },
+  ]);
+  const result = withFixtures(
+    { report, rules: ruleRow('10003', '/main-') },
+    run
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /\[10003\]/);
+  assert.match(result.stderr, /instance with no url/);
+  // The instance the waiver really does cover is not re-reported.
+  assert.doesNotMatch(result.stderr, /main-ABC\.js/);
+});
+
+test('a rule-wide waiver still covers an alert with incomplete instance data', () => {
+  const report = reportWith([
+    {
+      pluginid: '10003',
+      alert: 'Vulnerable JS Library',
+      riskcode: '3',
+      riskdesc: 'High (Medium)',
+      instances: [{ uri: 'http://127.0.0.1:4200/main-ABC.js' }, {}],
+    },
+  ]);
+  const result = withFixtures({ report, rules: ruleRow('10003', '*') }, run);
+  assert.equal(result.status, 0);
+});
+
 test('an alert with no URL anywhere cannot be suppressed by a narrow scope', () => {
   const report = reportWith([
     { pluginid: '10055', alert: 'CSP', riskcode: '2', riskdesc: 'Medium' },
@@ -301,6 +340,25 @@ test('fails closed on a site with no alerts array', () => {
   assert.match(result.stderr, /no "alerts" array/);
 });
 
+// `{"site":[]}` means ZAP produced a report without ever scanning the target
+// (bad target URL, container networking failure, server died before the scan).
+// Nothing else in the job proves ZAP visited the runtime, so an empty `site`
+// must block rather than read as "clean".
+test('fails closed on a report with an empty site array (nothing was scanned)', () => {
+  const result = withFixtures({ report: { site: [] } }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /no scanned site/);
+});
+
+test('a scanned site reporting zero alerts is a legitimate clean scan', () => {
+  const result = withFixtures(
+    { report: { site: [{ '@name': 'http://127.0.0.1:4200', alerts: [] }] } },
+    run
+  );
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /no unexcepted medium- or high-risk alerts/);
+});
+
 test('fails closed on invalid top-level JSON (array instead of object)', () => {
   const result = withFixtures({ report: [] }, run);
   assert.equal(result.status, 1);
@@ -323,4 +381,71 @@ test('fails closed on a non-numeric riskcode', () => {
   const result = withFixtures({ report }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing or non-numeric riskcode/);
+});
+
+// `Number(null)`, `Number('')` and `Number(false)` all yield 0, which would
+// read a corrupted severity field as "informational" and sail past the gate.
+test('fails closed on a null riskcode rather than reading it as informational', () => {
+  const report = reportWith([
+    {
+      pluginid: '10038',
+      alert: 'Null riskcode',
+      riskcode: null,
+      riskdesc: 'Medium',
+    },
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing or non-numeric riskcode/);
+});
+
+test('fails closed on a blank-string riskcode', () => {
+  const report = reportWith([
+    {
+      pluginid: '10038',
+      alert: 'Blank riskcode',
+      riskcode: '   ',
+      riskdesc: 'Medium',
+    },
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing or non-numeric riskcode/);
+});
+
+test('fails closed on a boolean riskcode', () => {
+  const report = reportWith([
+    {
+      pluginid: '10038',
+      alert: 'Boolean riskcode',
+      riskcode: false,
+      riskdesc: 'Medium',
+    },
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing or non-numeric riskcode/);
+});
+
+test("fails closed on a riskcode outside ZAP's supported 0-3 range", () => {
+  const report = reportWith([
+    {
+      pluginid: '10038',
+      alert: 'Out of range',
+      riskcode: '7',
+      riskdesc: 'Medium',
+    },
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing or non-numeric riskcode/);
+});
+
+test('still accepts the four supported riskcodes as numbers, not only strings', () => {
+  const report = reportWith([
+    { pluginid: '1', alert: 'Info', riskcode: 0, riskdesc: 'Informational' },
+    { pluginid: '2', alert: 'Low', riskcode: 1, riskdesc: 'Low' },
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 0);
 });
