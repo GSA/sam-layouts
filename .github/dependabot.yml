@@ -5,6 +5,35 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Limit the number of open pull requests to avoid noise
+    open-pull-requests-limit: 10
+    # Cooldown before Dependabot opens a PR for a new release. Majors get a
+    # much longer cooldown so transient/yanked releases don't trigger a PR
+    # we'd otherwise ignore anyway (see the ignore block below).
+    cooldown:
+      default-days: 5
+      semver-major-days: 60
+    # Ignore major updates to avoid breaking changes unless reviewed manually.
+    # The explicit per-package ceilings below are an additional Angular-major
+    # safety valve: even if the blanket semver-major ignore above were ever
+    # loosened, these packages still cannot cross their next major on their
+    # own. Angular 20/21 is intentionally left to Wave 3 (see GSA/sam-layouts#52),
+    # not to Dependabot.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@angular/*"
+        versions: [">= 20.0.0"]
+      - dependency-name: "@angular-devkit/*"
+        versions: [">= 20.0.0"]
+      - dependency-name: "angular-eslint"
+        versions: [">= 20.0.0"]
+      - dependency-name: "ng-packagr"
+        versions: [">= 20.0.0"]
+      - dependency-name: "@gsa-sam/*"
+        versions: [">= 19.0.0"]
+      - dependency-name: "typescript"
+        versions: [">= 6.0.0"]
     # Group all updates together to avoid excessive PRs
     groups:
       angular-dependencies:
@@ -19,27 +48,28 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # Limit the number of open pull requests to avoid noise
-    open-pull-requests-limit: 10
-    # Ignore major updates to avoid breaking changes unless reviewed manually
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
     # Labels to apply to npm PRs
     labels:
       - "dependencies"
       - "npm"
-    cooldown:
-      default-days: 5
 
   # Keep GitHub Actions up to date
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 5
+    # Group minor/patch action bumps into a single PR to match the fleet
+    # convention; majors stay ungrouped and human-gated.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     # Labels to apply to GitHub Actions PRs
     labels:
       - "dependencies"
       - "github-actions"
-    cooldown:
-      default-days: 5
