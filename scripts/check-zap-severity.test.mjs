@@ -39,19 +39,23 @@ function run(args) {
   }
 }
 
-/** Write fixtures to a fresh temp dir, run the gate, then clean up. */
-function withFixtures({ report, rules }, run_) {
+/**
+ * Write fixtures to a fresh temp dir, run the gate, then clean up.
+ *
+ * A rules file is ALWAYS written — empty unless the caller supplies one — and
+ * always passed explicitly. Letting the script fall back to its default
+ * `.zap/rules.tsv` would make these tests depend on the repo's real waiver
+ * ledger and on the cwd, so adding a production waiver would silently flip a
+ * test's expected outcome.
+ */
+function withFixtures({ report, rules = '' }, run_) {
   const dir = mkdtempSync(join(tmpdir(), 'zap-gate-'));
   try {
     const reportPath = join(dir, 'report_json.json');
     writeFileSync(reportPath, JSON.stringify(report));
-    const args = [reportPath];
-    if (rules !== undefined) {
-      const rulesPath = join(dir, 'rules.tsv');
-      writeFileSync(rulesPath, rules);
-      args.push(rulesPath);
-    }
-    return run_(args);
+    const rulesPath = join(dir, 'rules.tsv');
+    writeFileSync(rulesPath, rules);
+    return run_([reportPath, rulesPath]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -194,6 +198,90 @@ test('aggregates alerts across multiple sites', () => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /\[2\] B/);
 });
+
+// --- Real-report shape ---------------------------------------------------
+// ZAP 0.15.0 does NOT put a `url` on an alert: it groups observations under
+// `alert.instances[].uri`. The fixtures above use the flat `url` shape the
+// upstream ngx-uswds tests assumed, which is why the upstream scope matching
+// was never exercised against a real report. These tests pin the actual shape,
+// taken from the recorded run on GSA/sam-layouts#80.
+
+function instanceAlert(pluginId, name, riskcode, uris) {
+  return {
+    pluginid: pluginId,
+    alert: name,
+    riskcode,
+    riskdesc: riskcode === '3' ? 'High (Medium)' : 'Medium (High)',
+    count: String(uris.length),
+    instances: uris.map((uri) => ({ uri, method: 'GET', evidence: '' })),
+  };
+}
+
+test('reports instance URLs, not "no url", for a real ZAP alert', () => {
+  const report = reportWith([
+    instanceAlert('10055', 'CSP: style-src unsafe-inline', '2', [
+      'http://127.0.0.1:4200/',
+      'http://127.0.0.1:4200/robots.txt',
+    ]),
+  ]);
+  const result = withFixtures({ report }, run);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /\[10055\]/);
+  assert.match(result.stderr, /robots\.txt/);
+  assert.doesNotMatch(result.stderr, /no url/);
+});
+
+test('a URL-scoped exception matches instances[].uri', () => {
+  const report = reportWith([
+    instanceAlert('10055', 'CSP', '2', ['http://127.0.0.1:4200/robots.txt']),
+  ]);
+  const result = withFixtures(
+    { report, rules: ruleRow('10055', '/robots.txt') },
+    run
+  );
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /no unexcepted/);
+});
+
+test('a scoped exception covering only some instances still blocks on the rest', () => {
+  const report = reportWith([
+    instanceAlert('10055', 'CSP', '2', [
+      'http://127.0.0.1:4200/robots.txt',
+      'http://127.0.0.1:4200/sitemap.xml',
+    ]),
+  ]);
+  const result = withFixtures(
+    { report, rules: ruleRow('10055', '/robots.txt') },
+    run
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /sitemap\.xml/);
+  assert.doesNotMatch(result.stderr, /robots\.txt/);
+});
+
+test('a rule-wide exception covers an instance-shaped alert', () => {
+  const report = reportWith([
+    instanceAlert('10003', 'Vulnerable JS Library', '3', [
+      'http://127.0.0.1:4200/main-OS7FNWK6.js',
+    ]),
+  ]);
+  const result = withFixtures({ report, rules: ruleRow('10003', '*') }, run);
+  assert.equal(result.status, 0);
+});
+
+test('an alert with no URL anywhere cannot be suppressed by a narrow scope', () => {
+  const report = reportWith([
+    { pluginid: '10055', alert: 'CSP', riskcode: '2', riskdesc: 'Medium' },
+  ]);
+  const result = withFixtures(
+    { report, rules: ruleRow('10055', '/robots.txt') },
+    run
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /no url/);
+});
+
+// --- Fail-closed ---------------------------------------------------------
 
 test('exits non-zero on an unreadable report', () => {
   const result = run([join(tmpdir(), 'does-not-exist-zap.json')]);

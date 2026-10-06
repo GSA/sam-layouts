@@ -6,8 +6,9 @@
 # 7-column reviewed-exception ledger, not ZAP's 2-column rule config, so the
 # workflow deliberately does not pass it via `rules_file_name`.
 #
-# There are currently no exceptions: the demo runtime is served with a locked-down
-# CSP by scripts/serve-security-scan.mjs, so nothing needed baselining. The raw
-# finding counts from the first real run are recorded on GSA/sam-layouts#80.
-# Any row added here must carry a tracking issue, an owner, an expiry date and a
-# rationale, and must use the narrowest scope that suppresses the reviewed instance.
+# Both rows below correspond to real findings from the first recorded run against
+# the demo runtime (see GSA/sam-layouts#80 for the raw counts). Neither is
+# header noise and neither is dismissed: each is scoped as narrowly as the finding
+# allows, points at a tracking issue, and carries an expiry that forces a re-review.
+10003	IGNORE	/main-	https://github.com/GSA/sam-layouts/issues/65	sam-layouts maintainers	2027-04-30	ZAP fingerprints the demo bundle's ng-version and reports @angular/core 19.2.25 as vulnerable (CVE-2026-88057 / GHSA-hh8m-fm6v-7cvg, CVE-2026-54267 / GHSA-rgjc-h3x7-9mwg). This is a true positive and is already tracked: Angular 19 is EOL and BOTH advisories have vulnerableVersionRange '<= 19.2.25' with firstPatchedVersion null, so there is no 19.x remediation at any patch level — the only fix is the Wave 3 Angular 20/21 upgrade under #65. Waived here rather than ignored because #80 is explicitly scoped to exclude Angular version changes, and a permanently red gate would get switched off. Scope is '/main-' (the hashed demo entry bundle) so this covers only the demo runtime fingerprint, not any future vulnerable-library finding elsewhere. MUST be removed, not renewed, when #65 lands.
+10055	IGNORE	127.0.0.1:4200	https://github.com/GSA/sam-layouts/issues/80	sam-layouts maintainers	2027-10-06	The demo shell renders app-nx-welcome, a generated scaffolding component with encapsulation: ViewEncapsulation.None and a literal <style> block in its template, so the served CSP must allow style-src 'unsafe-inline' or the page the scanner crawls does not render. Tightening the header purely to clear this alert would make the scanned headers unrepresentative of what the demo actually needs, which is worse than a documented waiver. Every other CSP directive is locked down and the published 'layouts' library is unaffected — the demo app is internal tooling with no runtime surface in the package. GSA/ngx-uswds baselines the same rule for the same reason. Scope is the DAST server's own origin, so the waiver can never follow this policy into a real deployment. Prefer a nonce or hash over renewing this if the demo shell is reworked.

@@ -45,11 +45,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # The severity gate is the only thing standing between us and a DAST
-      # check that is green against nothing, so its own tests run before it is
-      # trusted — same reasoning as the Storybook guard in ci.yml.
+      # Both guards run before the scan, so a broken gate or a stale waiver
+      # fails fast and loudly instead of quietly passing a scan nobody read.
       - name: Verify ZAP severity gate
         run: node --test scripts/check-zap-severity.test.mjs
+
+      - name: Verify ZAP exception ledger validator
+        run: node --test scripts/check-zap-exceptions.test.mjs
+
+      # Every waiver in .zap/rules.tsv must still be well formed, tracked to an
+      # issue, and unexpired. This is what gives the `expiry` column teeth.
+      - name: Validate ZAP exception ledger
+        run: node scripts/check-zap-exceptions.mjs .zap/rules.tsv
 
       # Nx translation of the sibling's `npm run build:demo`. `sam-layouts` is
       # the demo application; its build target defaults to the `production`

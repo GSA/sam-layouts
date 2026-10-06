@@ -22,9 +22,17 @@
  *   every current and future instance of that ZAP rule across all URLs. This
  *   preserves the new-code gate and the "narrowest available scope" policy.
  *   A literal `*` in the scope column means rule-wide and must be justified in
- *   review.
+ *   review. An alert is suppressed only when *every* one of its instance URLs
+ *   is covered; any uncovered instance is reported and blocks.
  *
- * Ported from GSA/ngx-uswds; see GSA/sam-layouts#80.
+ * Ported from GSA/ngx-uswds; see GSA/sam-layouts#80. One deliberate divergence
+ * from the upstream script, found by running it against a real report: ZAP
+ * 0.15.0 emits NO top-level `url` on an alert — the URLs live in
+ * `alert.instances[].uri`, with the alert itself acting as a group. Reading
+ * `alert.url` therefore yields `undefined` for every real finding, which
+ * silently broke URL-scoped exceptions (they could never match) and printed
+ * "no url" in the failure output. We read `instances[].uri` and fall back to
+ * `alert.url` only for compatibility.
  *
  * Usage:
  *   node scripts/check-zap-severity.mjs [report_json.json] [.zap/rules.tsv]
@@ -77,14 +85,45 @@ function readExceptions(path) {
     }));
 }
 
-function isException(alert, exceptions) {
+/**
+ * Every URL this alert was observed at. ZAP groups instances under one alert
+ * and does not set a top-level `url`; `alert.url` is read only as a fallback
+ * for hand-written fixtures and older report shapes.
+ */
+function urlsOf(alert) {
+  const fromInstances = Array.isArray(alert.instances)
+    ? alert.instances
+        .map((instance) => String(instance?.uri ?? ''))
+        .filter((uri) => uri.length > 0)
+    : [];
+  if (fromInstances.length > 0) return fromInstances;
+  return alert.url === undefined || alert.url === null
+    ? []
+    : [String(alert.url)];
+}
+
+/**
+ * The instance URLs of `alert` that no reviewed exception covers. An empty
+ * result means the whole alert is excepted. An alert carrying no URL at all
+ * can only be suppressed rule-wide (`*`) — fail-closed, so a report missing
+ * instance data cannot be waved through by a narrow scope.
+ */
+function unexceptedUrls(alert, exceptions) {
   const pluginId = String(alert.pluginid);
-  const url = String(alert.url ?? '');
-  return exceptions.some((exception) => {
-    if (exception.pluginId !== pluginId) return false;
-    if (exception.scope === '*') return true;
-    return exception.scope.length > 0 && url.includes(exception.scope);
-  });
+  const forThisRule = exceptions.filter(
+    (exception) => exception.pluginId === pluginId
+  );
+  if (forThisRule.some((exception) => exception.scope === '*')) return [];
+
+  const urls = urlsOf(alert);
+  if (urls.length === 0) return ['no url'];
+  return urls.filter(
+    (url) =>
+      !forThisRule.some(
+        (exception) =>
+          exception.scope.length > 0 && url.includes(exception.scope)
+      )
+  );
 }
 
 /** ZAP reports risk as a numeric string; anything non-numeric is suspicious. */
@@ -140,17 +179,18 @@ if (suspicious.length > 0) {
   process.exit(1);
 }
 
-const blockingAlerts = alerts.filter(
-  (alert) => riskcodeOf(alert) >= 2 && !isException(alert, exceptions)
-);
+const blockingAlerts = alerts
+  .filter((alert) => riskcodeOf(alert) >= 2)
+  .map((alert) => ({ alert, urls: unexceptedUrls(alert, exceptions) }))
+  .filter(({ urls }) => urls.length > 0);
 
 if (blockingAlerts.length > 0) {
   console.error('ZAP found medium- or high-risk alerts:');
-  for (const alert of blockingAlerts) {
+  for (const { alert, urls } of blockingAlerts) {
     console.error(
-      `- [${alert.pluginid}] ${alert.alert}: ${alert.riskdesc} (${
-        alert.url ?? 'no url'
-      })`
+      `- [${alert.pluginid}] ${alert.alert}: ${alert.riskdesc} (${urls.join(
+        ', '
+      )})`
     );
   }
   process.exit(1);

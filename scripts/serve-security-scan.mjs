@@ -41,13 +41,21 @@ const contentTypes = {
 };
 
 /**
- * `style-src 'unsafe-inline'` is deliberate and demo-only: the generated
- * `app-nx-welcome` component template carries a literal `<style>` block that
- * Angular renders into the document at runtime, so a nonce/hash-free policy
- * without `'unsafe-inline'` would break the demo page the scanner crawls. Every
- * other directive is locked down. ZAP rule 10055 flags the policy itself for
- * this reason; if it shows up as medium it is baselined in `.zap/rules.tsv`
- * with a rationale, not waved through.
+ * `style-src 'unsafe-inline'` is deliberate, and it is the reason ZAP rule
+ * 10055 fires. It stays, rather than being tightened to make a finding
+ * disappear: the generated `app-nx-welcome` scaffolding component declares
+ * `encapsulation: ViewEncapsulation.None` and carries a literal `<style>` block
+ * inside its template, and `app.component.html` renders `<app-nx-welcome>` on
+ * the demo's root route. Angular therefore injects that `<style>` element into
+ * the live document, so a nonce/hash-free policy without `'unsafe-inline'`
+ * would break the very page the scanner is pointed at.
+ *
+ * Dropping it would silence 10055 while making the served headers
+ * *unrepresentative* of what the demo actually needs — a worse outcome than a
+ * documented waiver. GSA/ngx-uswds baselines the same rule for the same reason.
+ * Every other directive is locked down. The waiver lives in `.zap/rules.tsv`
+ * with a rationale and an expiry; prefer a nonce or hash over renewing it if
+ * the demo shell is ever reworked.
  */
 const securityHeaders = {
   'Content-Security-Policy':
