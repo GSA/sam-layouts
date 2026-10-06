@@ -32,8 +32,17 @@ name: Publish to npm
 #        Organization = GSA, Repository = sam-layouts
 #        Workflow filename = publish.yml
 #        Environment name = release)
-#   - Quality gates (lint, library build, library tests with coverage) must
-#     pass before publish.
+#   - Quality gates run before publish. The library build and the library
+#     tests (with coverage) are blocking and must pass. Lint is currently
+#     NON-blocking (`continue-on-error: true`), so a lint failure does not
+#     stop a publish — it mirrors the posture already in ci.yml while the
+#     lint-debt baseline is being cleared (GSA/sam-layouts#52).
+#   - Values that come from outside the workflow file (`vars.DRY_RUN`,
+#     `inputs.dry-run`, the ref name) are passed into `run` steps through
+#     `env:` and read as quoted shell variables. `${{ }}` interpolation is
+#     substituted into the script *text* before bash parses it, which would
+#     let a value containing shell metacharacters execute commands — in the
+#     one job holding `id-token: write`.
 #
 # HITL handoff to DevSecOps:
 #   Until the Trusted Publisher connection is live, this workflow runs
@@ -80,12 +89,18 @@ jobs:
           fetch-depth: 0
 
       - name: Validate trigger safety and release ancestry
+        env:
+          # Passed via env (not `${{ }}` in the script body) so untrusted
+          # content can never be parsed as shell syntax. See the security
+          # model note in the header.
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_DRY_RUN: ${{ inputs.dry-run }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry-run }}" != "true" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$DISPATCH_DRY_RUN" != "true" ]; then
             echo "::error::Manual workflow_dispatch runs are rehearsal-only and must specify dry-run=true."
             exit 1
           fi
-          if [ "${{ github.event_name }}" = "release" ]; then
+          if [ "$EVENT_NAME" = "release" ]; then
             git fetch origin main
             if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
               echo "::error::Release commit $GITHUB_SHA is not an ancestor of origin/main. Releases must be cut from main."
@@ -106,7 +121,10 @@ jobs:
       # TODO: promote this to a blocking step once the lint-debt baseline
       # (121 errors) is cleared by the Wave 2 "ESLint template a11y gate +
       # lint-debt baseline" issue tracked under GSA/sam-layouts#52. Matches
-      # the non-blocking posture already in ci.yml.
+      # the non-blocking posture already in ci.yml. GSA/sam-layouts#76 (PR
+      # #88) replaces ci.yml's non-blocking lint with a blocking ratcheting
+      # baseline gate; once that lands, revisit this step so the publish
+      # pipeline's lint posture matches CI again.
       - name: Lint (non-blocking)
         run: npx nx lint layouts
         continue-on-error: true
@@ -171,18 +189,30 @@ jobs:
 
       - name: Determine dry-run mode
         id: mode
+        env:
+          # NEVER interpolate these with `${{ }}` inside the script body:
+          # expression interpolation is substituted into the script *text*
+          # before bash parses it, so a DRY_RUN value such as
+          # `true"; echo PWNED; #` would execute before the boolean
+          # validation below could reject it. This job holds
+          # `id-token: write` for npm Trusted Publishing, so the blast
+          # radius is publish credentials. Read them as quoted shell
+          # variables instead.
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_DRY_RUN: ${{ inputs.dry-run }}
+          VARS_DRY_RUN: ${{ vars.DRY_RUN }}
         run: |
           # Priority: workflow_dispatch input > repo/env variable DRY_RUN > default true.
           # Manual dispatch is rehearsal-only; only a published Release may
           # perform a live publish.
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            DRY="${{ inputs.dry-run }}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            DRY="$DISPATCH_DRY_RUN"
             if [ "$DRY" != "true" ]; then
               echo "::error::workflow_dispatch runs must use dry-run=true. Publish a GitHub Release to run a live publish."
               exit 1
             fi
           else
-            DRY="${{ vars.DRY_RUN }}"
+            DRY="$VARS_DRY_RUN"
           fi
           # Default to the safe mode when unset.
           DRY="${DRY:-true}"
