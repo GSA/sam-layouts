@@ -1,4 +1,4 @@
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoSubheaderComponent } from './subheader.demo';
 import { moduleMetadata } from '@storybook/angular';
