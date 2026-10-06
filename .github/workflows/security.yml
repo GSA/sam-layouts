@@ -1,0 +1,123 @@
+name: Security
+
+# SAST is intentionally absent from this file. CodeQL already runs on this
+# repository via GitHub's *code scanning default setup* — a dynamic workflow
+# with no file in `.github/workflows` — and it is already a merge gate through
+# repository ruleset 15065977 (`code_scanning` rule: tool CodeQL,
+# security_alerts_threshold `high_or_higher`, alerts_threshold `errors`).
+# Adding a `codeql.yml` here would duplicate a working, enforced scan and
+# requires `admin` we do not hold. No sibling repo has one either.
+# DAST is the genuinely missing half, and is what this workflow adds.
+# See GSA/sam-layouts#80.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least-privilege default. The DAST job builds and executes PR-controlled code
+# (checkout, npm install scripts, the built demo app) and must never hold a
+# write credential.
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dast:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The severity gate is the only thing standing between us and a DAST
+      # check that is green against nothing, so its own tests run before it is
+      # trusted — same reasoning as the Storybook guard in ci.yml.
+      - name: Verify ZAP severity gate
+        run: node --test scripts/check-zap-severity.test.mjs
+
+      # Nx translation of the sibling's `npm run build:demo`. `sam-layouts` is
+      # the demo application; its build target defaults to the `production`
+      # configuration and `dependsOn: ^build` pulls in the `layouts` library
+      # first, so this one command produces the full runtime.
+      - name: Build the demo runtime
+        run: CI=1 npx nx build sam-layouts --configuration production
+
+      # Guard against a silent output-path drift: the scan root below is
+      # `dist/apps/sam-layouts/browser` (the Angular `application` builder
+      # writes the browser bundle into a `browser/` subdirectory of
+      # `outputPath`). If that ever changes, fail here with a clear message
+      # rather than serving an empty directory and scanning nothing.
+      - name: Verify the build output path the scanner will serve
+        run: test -f dist/apps/sam-layouts/browser/index.html
+
+      - name: Serve the demo runtime with production security headers
+        run: node scripts/serve-security-scan.mjs &
+
+      - name: Wait for the demo runtime
+        run: |
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:4200/ >/dev/null && exit 0
+            sleep 1
+          done
+          echo "Demo runtime did not start within 30 seconds" >&2
+          exit 1
+
+      # `fail_action: false` is deliberate: ZAP's own WARN/FAIL rule actions
+      # never decide the build outcome. The severity gate below owns the
+      # medium/high policy, reading ZAP's JSON report. `.zap/rules.tsv` is a
+      # 7-column reviewed-exception ledger for that script, not ZAP's 2-column
+      # rule config, so it is deliberately NOT passed as `rules_file_name`.
+      - name: Scan runtime with OWASP ZAP
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          target: 'http://127.0.0.1:4200'
+          fail_action: false
+          allow_issue_writing: false
+          cmd_options: '-a'
+
+      # Raw counts by severity, printed into the job log so the "is DAST useful
+      # against a static Angular SPA" question is answered with data on every
+      # run rather than with an opinion.
+      - name: Summarise ZAP findings by severity
+        if: always()
+        run: |
+          test -f report_json.json || { echo "No report_json.json produced"; exit 0; }
+          node -e '
+            const r = JSON.parse(require("fs").readFileSync("report_json.json", "utf8"));
+            const a = (r.site ?? []).flatMap((s) => s.alerts ?? []);
+            const names = ["Informational", "Low", "Medium", "High"];
+            const counts = [0, 0, 0, 0];
+            for (const x of a) { const c = Number(x.riskcode); if (Number.isFinite(c) && counts[c] !== undefined) counts[c]++; }
+            console.log("ZAP findings by severity:");
+            names.forEach((n, i) => console.log(`  ${n}: ${counts[i]}`));
+            for (const x of a) console.log(`  - [${x.pluginid}] ${x.alert} (${x.riskdesc})`);
+          '
+
+      - name: Enforce medium/high severity gate
+        run: node scripts/check-zap-severity.mjs report_json.json .zap/rules.tsv
+
+      - name: Upload ZAP report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: zap-report
+          path: |
+            report_*.html
+            report_json.json
+          if-no-files-found: warn
