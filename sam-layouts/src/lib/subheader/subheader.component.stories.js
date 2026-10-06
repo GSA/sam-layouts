@@ -1,7 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoSubheaderComponent } from './subheader.demo';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { moduleMetadata } from '@storybook/angular';
 import {
   SdsMenuModule,
@@ -15,9 +14,18 @@ import { FormsModule } from '@angular/forms';
 import { SdsSubheaderModule } from './subheader.module';
 import { SdsSubheaderComponent } from './subheader.component';
 
-const Component = () => {
-  return <SyntaxHighlighter />;
-};
+// Removed: an unexported, unreferenced `const Component = () => <SyntaxHighlighter />`
+// and its `react-syntax-highlighter` import. This is a `.js` story, so webpack
+// hands it to `@angular-devkit/build-angular`'s Babel loader, which has no JSX
+// support and no JSX plugin installed:
+//
+//   SyntaxError: Support for the experimental syntax 'jsx' isn't currently
+//   enabled (19:10) ... Add @babel/preset-react
+//
+// It was dead code — nothing in this module or any other read it — and the
+// equivalent live snippet still renders from `subheader.component.mdx`, where
+// MDX compiles JSX natively. Deleting it is what keeps GSA/sam-layouts#75 from
+// having to add a Babel preset the repo does not have. See #75.
 
 export default {
   title: 'Subheader',
