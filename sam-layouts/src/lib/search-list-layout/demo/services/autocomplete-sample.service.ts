@@ -16,9 +16,9 @@ export class AutocompleteSampleDataService implements SDSAutocompleteServiceInte
     }
 
     getDataByText(currentItems: number, searchValue?: string): Observable<SDSHiercarchicalServiceResult> {
-        let itemIncrease = 25;
-        let data = of(this.loadedData);
-        let itemsOb: Observable<Object[]>;
+        const itemIncrease = 25;
+        const data = of(this.loadedData);
+        let itemsOb: Observable<object[]>;
 
         if (searchValue) {
             itemsOb = data.pipe(map(items => items.filter(itm =>
@@ -35,15 +35,15 @@ export class AutocompleteSampleDataService implements SDSAutocompleteServiceInte
                 items = result;
             }
         );
-        let totalItemCount = items.length;
+        const totalItemCount = items.length;
 
         let maxSectionPosition = currentItems + itemIncrease;
         if (maxSectionPosition > totalItemCount) {
             maxSectionPosition = totalItemCount;
         }
-        let selectedtems = items.slice(currentItems, maxSectionPosition);
+        const selectedtems = items.slice(currentItems, maxSectionPosition);
 
-        let returnItem = {
+        const returnItem = {
             items: selectedtems,
             totalItems: totalItemCount
         };

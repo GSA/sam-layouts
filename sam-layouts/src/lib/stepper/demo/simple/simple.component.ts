@@ -5,7 +5,6 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'demo-stepper-simple',
   templateUrl: './simple.component.html',
   providers: [

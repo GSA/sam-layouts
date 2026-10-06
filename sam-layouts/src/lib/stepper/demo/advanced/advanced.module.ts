@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormlyModule } from '@ngx-formly/core';
 import { SdsStepperModule } from '@gsa-sam/sam-formly';
 
-import { SLStepperModule } from '@gsa-sam/layouts';
+import { SLStepperModule } from '../../stepper.module';
 import { DemoStepperAdvancedComponent } from './advanced.component';
 import {
   AddSubawardeeDialogDemo,

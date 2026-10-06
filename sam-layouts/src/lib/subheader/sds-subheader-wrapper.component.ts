@@ -27,7 +27,7 @@ export class SdsSubheaderWrapperComponent implements OnInit {
 
   @Input() tabs: TabModel[];
 
-  @Input() searchEnabled: boolean = false;
+  @Input() searchEnabled = false;
 
   @Output() action = new EventEmitter<string>();
 

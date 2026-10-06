@@ -64,7 +64,7 @@ describe('SystemAlertComponent', () => {
   it('Should display/hide alert description when show details is clicked', () => {
     const showDetailsButton = fixture.debugElement.query(By.css('.sds-alert--header__content .sds-alert--header__link'));
 
-    let alertDescription = fixture.debugElement.query(By.css('#alertDescription0'));
+    const alertDescription = fixture.debugElement.query(By.css('#alertDescription0'));
 
     // ensure description is initially not present
     expect(alertDescription.classes['display-none']).toEqual(true);

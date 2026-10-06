@@ -86,7 +86,7 @@ describe('SearchListLayoutComponent', () => {
   }));
 
   it('should call updateFilterModel', () => {
-    let service = fixture.debugElement.injector.get(
+    const service = fixture.debugElement.injector.get(
       SDSFormlyUpdateModelService
     );
     const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)

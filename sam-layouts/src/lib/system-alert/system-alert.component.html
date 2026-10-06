@@ -28,7 +28,7 @@
         <div #alertsContent class="grid-row width-full display-none tablet:display-inline-block" id="collapseTarget">
           <div class="grid-col-fill">
             <div class="grid-row">
-              <ng-container [ngTemplateOutlet]="alerts && alerts.length == 1 ? singleAlert : multipleAlerts"
+              <ng-container [ngTemplateOutlet]="alerts && alerts.length === 1 ? singleAlert : multipleAlerts"
                 [ngTemplateOutletContext]="{$implicit: alerts}">
               </ng-container>
             </div>

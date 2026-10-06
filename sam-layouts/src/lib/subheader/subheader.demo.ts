@@ -10,7 +10,6 @@ import { SUBHEADERACTIONSTYLE } from './subheader.component'
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'demo-subheader',
   template: `
     <sds-subheader>

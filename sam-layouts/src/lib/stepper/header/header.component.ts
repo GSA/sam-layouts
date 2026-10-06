@@ -8,7 +8,6 @@ import { SdsStepper } from '@gsa-sam/sam-formly';
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'sam-layouts-stepper-header',
   templateUrl: './header.component.html',
 })
@@ -43,7 +42,6 @@ export class SLStepperHeaderComponent
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'sam-layouts-stepper-header-with-status',
   templateUrl: './header-with-status.component.html',
 })
