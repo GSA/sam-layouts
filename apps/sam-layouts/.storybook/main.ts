@@ -1,5 +1,14 @@
 import type { StorybookConfig } from '@storybook/angular';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Storybook 10 loads this config as a real ES module, so the CommonJS
+// `__dirname` that worked under Storybook 8 is no longer defined:
+//
+//   ReferenceError: __dirname is not defined in ES module scope
+//
+// Derive it from `import.meta.url` instead. See GSA/sam-layouts#81.
+const configDir = dirname(fileURLToPath(import.meta.url));
 
 // `@gsa-sam/components@18.0.1` imports from three packages inside its fesm2022
 // bundle that it declares in neither `dependencies` nor `peerDependencies`, and
@@ -32,7 +41,7 @@ import { join } from 'node:path';
 // failure attached. Delete these aliases once `@gsa-sam/components` declares
 // its own dependencies.
 const testStubs = join(
-  __dirname,
+  configDir,
   '..',
   '..',
   '..',
@@ -56,11 +65,22 @@ const config: StorybookConfig = {
   stories: [
     '../../../sam-layouts/src/lib/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
   ],
-  addons: ['@storybook/addon-essentials'],
+  // Storybook 10 dissolved `@storybook/addon-essentials` and eight of the
+  // nine addons it bundled into `storybook` core (actions, backgrounds,
+  // controls, highlight, measure, outline, toolbars, viewport). None of them
+  // has a 10.x line — the highest ever published is a 9.x alpha — so they are
+  // removed rather than bumped (GSA/sam-layouts#81). Docs is the one piece
+  // that is still a separate package and still has to be registered here, or
+  // the eight `.mdx` files stop producing docs entries.
+  addons: ['@storybook/addon-docs'],
   framework: {
     name: '@storybook/angular',
     options: {},
   },
+  // `@storybook/angular@10.6.1` still depends on `@storybook/builder-webpack5`
+  // and still drives `@ngtools/webpack`, so `webpackFinal` survives the 8 -> 10
+  // move unchanged. Vite is only the default for the frameworks that ship a
+  // Vite builder; the Angular framework is not one of them.
   webpackFinal: async (webpackConfig) => {
     webpackConfig.resolve = webpackConfig.resolve ?? {};
     webpackConfig.resolve.alias = {
