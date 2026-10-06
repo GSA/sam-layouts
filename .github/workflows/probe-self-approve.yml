@@ -1,0 +1,18 @@
+name: Probe self-approve (disposable)
+
+on: pull_request
+
+permissions:
+  pull-requests: write
+
+jobs:
+  probe-approve:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.ref == 'test-codeowners-probe-v2'
+    steps:
+      - name: Approve via GITHUB_TOKEN
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review --approve "$PR_URL" -b "Disposable probe: does a bot-token review satisfy ruleset 15065977 with no CODEOWNERS file present?"
