@@ -53,6 +53,36 @@ jobs:
       - name: Test sam-layouts (app)
         run: npx nx test sam-layouts --codeCoverage
 
+      # The guard script below is the only thing standing between us and
+      # another check that is green against nothing, so its own tests run
+      # first.
+      - name: Verify Storybook story-count guard
+        run: node --test scripts/check-storybook-stories.test.mjs
+
+      # `CI=1` is mandatory, not decorative. On a failed build Storybook 8
+      # prints an interactive prompt — "Would you like to help improve
+      # Storybook by sending anonymous crash reports? (Y/n)" — and then waits
+      # forever at 0% CPU. In CI that turns a fast failure into a job that
+      # burns to the timeout. GitHub Actions already exports `CI=true`; it is
+      # set explicitly here so the step behaves identically when run locally.
+      # See GSA/sam-layouts#75.
+      - name: Build Storybook (sam-layouts app)
+        run: CI=1 npx nx build-storybook sam-layouts
+
+      # `build-storybook` exits 0 on an empty Storybook, which is exactly how
+      # `main` shipped `{"v":5,"entries":{}}` unnoticed. A bare successful
+      # build is therefore not evidence; the registered entry count is.
+      # The floor (34 = 26 stories + 8 docs) is a floor rather than an
+      # equality so adding a story does not break CI, and the two subheader
+      # titles are pinned by name because they come from two separate files.
+      - name: Assert Storybook registered its stories
+        run: |
+          node scripts/check-storybook-stories.mjs \
+            dist/storybook/sam-layouts/index.json \
+            --min 34 \
+            --require-title 'Subheader' \
+            --require-title 'Subheader/Modes'
+
       # Both projects write under `coverage/` but to different subdirectories
       # (`coverage/sam-layouts` for the library, `coverage/apps/sam-layouts`
       # for the demo app), so the whole tree is uploaded as one artifact.

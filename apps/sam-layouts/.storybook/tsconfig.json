@@ -1,15 +1,27 @@
 {
-  "extends": "../tsconfig.json",
+  // The stories live in the *library* tree (`sam-layouts/src/lib`), so the
+  // program that `@ngtools/webpack` type-checks for the Storybook build has to
+  // contain the library's sources, not the demo app's. With the old
+  // `../src/**` include, every story's imports failed with
+  // "<file> is missing from the TypeScript compilation" once the `stories`
+  // glob was corrected (GSA/sam-layouts#75).
+  //
+  // This therefore extends the *library* tsconfig rather than the demo app's:
+  // the files in the program are the library's, and they are written against
+  // the library's looser compiler options (`strict: false` and friends).
+  // Nothing under `apps/sam-layouts/src` declares a story, so no app source is
+  // dropped from type-checking by this change.
+  "extends": "../../../sam-layouts/tsconfig.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true
   },
-  "exclude": ["../**/*.spec.ts"],
+  "exclude": ["../../../sam-layouts/src/**/*.spec.ts", "../**/*.spec.ts"],
   "include": [
-    "../src/**/*.stories.ts",
-    "../src/**/*.stories.js",
-    "../src/**/*.stories.jsx",
-    "../src/**/*.stories.tsx",
-    "../src/**/*.stories.mdx",
+    "../../../sam-layouts/src/**/*.ts",
+    // The `webpackFinal` aliases in `main.ts` resolve two undeclared
+    // `@gsa-sam/components` imports into these stubs, so they are part of the
+    // compilation too.
+    "../../../sam-layouts/test-stubs/**/*.ts",
     "*.js",
     "*.ts"
   ]
