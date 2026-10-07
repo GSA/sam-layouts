@@ -22,8 +22,9 @@ jobs:
       #
       # FAILS CLOSED: any gh/jq error or an empty commit list aborts the job
       # (set -euo pipefail), so an API failure is never mistaken for "signed".
-      # all-signed=false -> the steps below are skipped, the run stays green, and
-      # a human handles the unsigned PR; nothing is auto-merged.
+      # all-signed=false -> the steps below are skipped and the "Cancel
+      # auto-merge" step below revokes any auto-merge a previous signed run
+      # enabled, so an unsigned head cannot reach main via this workflow.
       - name: Require every commit to carry a verified signature
         id: signatures
         env:
@@ -52,6 +53,30 @@ jobs:
 
           echo "Verified ${count} commit(s); all carry a verified signature."
           echo "all-signed=true" >> "$GITHUB_OUTPUT"
+
+      # GitHub persists the auto-merge setting across pushes, so skipping the
+      # steps below is not enough on its own: a signed push could have enabled
+      # auto-merge, and a later unsigned push would otherwise still merge once
+      # the remaining branch conditions were met. Revoke it explicitly.
+      #
+      # This is defence in depth rather than the only guard. The branch ruleset
+      # also stops it, because dismiss_stale_reviews_on_push drops the approval
+      # on the unsigned push and required_approving_review_count is 1, so
+      # auto-merge can no longer be satisfied. That protection is a ruleset
+      # setting this workflow does not own, so do not rely on it here.
+      #
+      # FAILS CLOSED: `gh pr merge --disable-auto` is a no-op when auto-merge is
+      # not enabled, but a genuine API failure must not pass silently, so the
+      # step is not tolerated with `|| true`.
+      - name: Cancel auto-merge for an unsigned head
+        if: steps.signatures.outputs.all-signed != 'true'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "::notice::Revoking any auto-merge enabled by an earlier signed run."
+          gh pr merge --disable-auto "$PR_URL"
 
       - name: Fetch Dependabot metadata
         id: metadata
