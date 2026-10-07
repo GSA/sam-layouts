@@ -23,13 +23,34 @@ concurrency:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    # Finding 2 (human-push bypass): there is deliberately NO job-level
-    # `if: github.actor == 'dependabot[bot]'`. A job-level actor gate skips the
-    # entire job on a human push, so the revocation step below would never run
-    # when a human pushes to a Dependabot PR that already has auto-merge enabled,
-    # leaving a stale auto-merge in place. The actor condition is pushed down to
-    # the metadata/enable steps, so the enable path stays restricted to
-    # Dependabot while the revocation path stays reachable for every actor.
+    # Finding 2 (human-push bypass): gate on the PR OPENER, not the pusher.
+    #
+    # `github.actor` is the actor of the current event, so a job-level
+    # `if: github.actor == 'dependabot[bot]'` skips the whole job when a human
+    # pushes to a Dependabot PR -- which is exactly when a stale auto-merge
+    # needs revoking. `github.event.pull_request.user.login` is the PR opener
+    # and never changes across `synchronize`, so this condition still holds for
+    # a human push to a Dependabot PR and keeps the revocation step reachable.
+    # The per-step `github.actor` conditions below additionally restrict the
+    # metadata/enable path to pushes Dependabot itself made.
+    #
+    # Dropping the job-level gate entirely would make this job run on EVERY PR
+    # in the repo, which breaks two ways:
+    #   - On a human-authored PR the revocation condition below is satisfied
+    #     (the actor is not Dependabot), so a maintainer's own `--auto` would be
+    #     silently revoked on their next push.
+    #   - This repository is public and has forks. A `pull_request` event from a
+    #     fork receives a read-only GITHUB_TOKEN regardless of `permissions:`,
+    #     so `gh pr merge --disable-auto` would 403 and fail the step (it is
+    #     deliberately not tolerated with `|| true`), reporting a red
+    #     "Dependabot auto-merge" check on every fork PR.
+    # The opener gate avoids both: the job only ever runs on same-repo
+    # Dependabot PRs. Mirrors the job-level gate in dependabot-auto-approve.yml.
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository == 'GSA/sam-layouts' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+
     steps:
       # Finding 1 (missing all-commit authorship): mirror the reference gate in
       # dependabot-auto-approve.yml ("Require every commit to be authored by
@@ -165,8 +186,10 @@ jobs:
       # conditions were met. This step runs for every head this workflow does NOT
       # enable auto-merge for -- human pushes, unsigned or non-Dependabot heads,
       # majors, and gate failures -- and revokes any persisted auto-merge.
-      #   - Finding 2: reachable on human pushes, because there is no job-level
-      #     actor gate and this step is not actor-restricted.
+      #   - Finding 2: reachable on human pushes to a Dependabot PR, because the
+      #     job-level gate keys on the PR opener (which never changes) rather
+      #     than on `github.actor`, and this step is not actor-restricted. The
+      #     job-level gate still keeps this off human-authored and fork PRs.
       #   - Finding 4: `!cancelled()` runs this step even after the authorship or
       #     signature step fails (a transient gh/jq error or the empty-commit-list
       #     `exit 1`). It is deliberately NOT `always()`: a run cancelled by a
