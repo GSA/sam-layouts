@@ -1,4 +1,4 @@
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { SdsFooterComponent } from './footer.component';
 import { SdsFeedbackModule } from '../sds-feedback/sds-feedback.module';
 import { moduleMetadata } from '@storybook/angular';

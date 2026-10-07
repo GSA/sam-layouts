@@ -1,8 +1,7 @@
-import { Meta, Story, Canvas, Controls } from '@storybook/blocks';
-import { action } from '@storybook/addon-actions';
+import { Meta, Story, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import { action } from 'storybook/actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoSubheaderComponent } from './subheader.demo';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { moduleMetadata } from '@storybook/angular';
 import {
   SdsMenuModule,
@@ -33,9 +32,26 @@ body {
 }
 ```
 
-export const Component = () => {
-  return <SyntaxHighlighter />;
-};
+{/*
+  Removed: an exported-but-unreferenced
+  `const Component = () => <SyntaxHighlighter />` and its
+  `react-syntax-highlighter` import. Nothing rendered `<Component />`, here or
+  anywhere else, so it was dead code and the page is byte-identical without it.
+
+  It also resolved only by accident. `react-syntax-highlighter` is not in this
+  repo's `package.json`; it is hoisted into the tree as a transitive of
+  `@gsa-sam/sam-styles@3.1.1`, which declares it as a plain `dependency` even
+  though it is a React library and `sam-styles` ships no React. That makes the
+  package an implementation detail of somebody else's manifest that we were
+  silently importing — a third instance of the undeclared-dependency class
+  tracked by GSA/sam-layouts#64 and GSA/sam-layouts#72, and the same shape as
+  the `ngx-toastr` aliasing in `.storybook/main.ts`.
+
+  Deleting the import is preferred over adding `react-syntax-highlighter` to
+  our manifest for an unused snippet. The SCSS block above already renders
+  highlighted via Storybook's own `Source`/Markdown handling. See
+  GSA/sam-layouts#81.
+*/}
 
 <Canvas>
   <Story of={SubheaderComponentStories.Basic} />

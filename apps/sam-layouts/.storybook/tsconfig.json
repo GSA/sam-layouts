@@ -13,7 +13,23 @@
   // dropped from type-checking by this change.
   "extends": "../../../sam-layouts/tsconfig.json",
   "compilerOptions": {
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    // Every Storybook 10 package is exports-only: `storybook`,
+    // `@storybook/angular` and `@storybook/addon-docs` all declare
+    // `"type": "module"` with an `exports` map and no `main` or `types` field
+    // at all. `tsconfig.base.json` sets the legacy `"moduleResolution":
+    // "node"`, which cannot read `exports`, so after the 8 -> 10 bump every
+    // story failed to type-check with
+    //
+    //   error TS2307: Cannot find module '@storybook/angular' or its
+    //   corresponding type declarations.
+    //
+    // `bundler` is the resolver that matches what webpack actually does here,
+    // and it is what resolves the subpath entry points this upgrade moves to
+    // (`storybook/actions`, `@storybook/addon-docs/blocks`). Scoped to the
+    // Storybook program only; the library and app builds keep the workspace
+    // default. See GSA/sam-layouts#81.
+    "moduleResolution": "bundler"
   },
   "exclude": ["../../../sam-layouts/src/**/*.spec.ts", "../**/*.spec.ts"],
   "include": [

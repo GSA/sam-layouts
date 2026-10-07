@@ -1,5 +1,5 @@
 import { moduleMetadata } from '@storybook/angular';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { Meta, StoryObj } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SubHeaderWrapperMode } from './sds-subheader-wrapper.component';
