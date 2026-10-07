@@ -43,8 +43,13 @@ export default [
       //                (sam-layouts-stepper, ...)
       //   demo          demo-only components shipped for the Storybook/demo
       //                app (demo-subheader, demo-stepper-simple, ...)
-      //   search        search-list-layout (legacy, unprefixed, public API)
-      //   result        result-item (legacy, unprefixed, demo-only)
+      //
+      // Two legacy, unprefixed selectors (`search-list-layout`, public API;
+      // and `result-item`, demo-only) are NOT admitted by this allowlist.
+      // Adding `search`/`result` as prefixes would silently make every future
+      // `search-*` / `result-*` selector lint-clean, permanently weakening a
+      // public-API gate to accommodate two sites. They instead carry
+      // file-local `eslint-disable-next-line` comments at their declarations.
       //
       // A few remaining legacy demo selectors use `-demo` as a *suffix*
       // (`subawardee-demo`, `add-subawardee-dialog-demo`) and keep their
@@ -62,7 +67,7 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: ['sds', 'sam-layouts', 'demo', 'search', 'result'],
+          prefix: ['sds', 'sam-layouts', 'demo'],
           style: 'kebab-case',
         },
       ],
