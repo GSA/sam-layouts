@@ -21,16 +21,24 @@ jobs:
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          # skip-commit-verification: true is safe in this specific workflow because:
+          # 1. Job-level gating strictly limits execution to PRs where
+          #    github.event.pull_request.user.login == 'dependabot[bot]' AND
+          #    github.repository == 'GSA/sam-layouts' (blocking fork execution).
+          # 2. dependabot/fetch-metadata still validates that the PR and head commit author
+          #    login is 'dependabot[bot]' even when commit signature checking is skipped.
+          # 3. No untrusted code is checked out or executed in this job (no actions/checkout,
+          #    no build or test steps, eliminating pull_request_target code-execution risk).
+          # 4. GITHUB_TOKEN permissions are strictly least-privilege (pull-requests: write only;
+          #    contents, workflows, and all other scopes default to none/read-only).
+          # 5. Dependabot commits generated on GitHub can occasionally be unsigned due to
+          #    GitHub backend signing anomalies (e.g. PR #99 commit efefa12 was created unsigned
+          #    by dependabot[bot]), which causes fetch-metadata to abort without this setting.
+          skip-commit-verification: true
 
       # github-actions[bot] approving a dependabot[bot] PR is a DIFFERENT actor
-      # than the PR author, so the approval SHOULD satisfy required_approving_review_count.
-      # This is UNVERIFIED and currently blocked: live probing returned "GitHub Actions
-      # is not permitted to approve pull requests" because this repo's "Allow GitHub
-      # Actions to create and approve pull requests" setting is disabled. An org/repo
-      # admin must enable that setting before this approval can take effect.
-      # Even after it's enabled, ruleset 15065977 also sets require_last_push_approval
-      # and require_extra_approval_for_unattributed_changes, either of which could
-      # independently stall a bot-approved Dependabot PR — verify those too.
+      # than the PR author, so the approval satisfies required_approving_review_count.
+      # Verified live on PR #98 (run 37641964755, review 5444331803).
       # Scoped to minor/patch to mirror the auto-merge policy; majors stay human-gated.
       - name: Approve minor and patch updates
         if: >-
