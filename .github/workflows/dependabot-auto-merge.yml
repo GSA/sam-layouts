@@ -12,16 +12,59 @@ jobs:
     if: github.actor == 'dependabot[bot]'
 
     steps:
+      # Enforce the 100%-signed-commits policy before enabling auto-merge, and
+      # convert GitHub's intermittently-unsigned Dependabot commits (PR #99
+      # commit efefa12d: authored by dependabot[bot], verification.verified ==
+      # false, reason "unsigned") from a noisy fetch-metadata failure into a
+      # clean skip. Without this gate, fetch-metadata below calls core.setFailed
+      # on an unsigned commit (verified_commits.ts getMessage() returns false ->
+      # main.ts setFailed), turning the job red.
+      #
+      # FAILS CLOSED: any gh/jq error or an empty commit list aborts the job
+      # (set -euo pipefail), so an API failure is never mistaken for "signed".
+      # all-signed=false -> the steps below are skipped, the run stays green, and
+      # a human handles the unsigned PR; nothing is auto-merged.
+      - name: Require every commit to carry a verified signature
+        id: signatures
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, verified: (.commit.verification.verified // false)}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to auto-merge."
+            exit 1
+          fi
+
+          unsigned="$(jq -r '[.[] | select(.verified != true) | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unsigned" ]; then
+            echo "::notice::PR #${PR_NUMBER} has unsigned commit(s): ${unsigned}. Skipping auto-merge; a human must review. (GitHub occasionally leaves Dependabot commits unsigned; this is GitHub-side.)"
+            echo "all-signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Verified ${count} commit(s); all carry a verified signature."
+          echo "all-signed=true" >> "$GITHUB_OUTPUT"
+
       - name: Fetch Dependabot metadata
         id: metadata
+        if: steps.signatures.outputs.all-signed == 'true'
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-merge minor and patch updates
         if: >-
-          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+          steps.signatures.outputs.all-signed == 'true' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch')
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

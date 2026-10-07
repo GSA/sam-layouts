@@ -81,20 +81,71 @@ jobs:
           echo "Verified ${count} commit(s), all authored by dependabot[bot], tip ${tip}."
           echo "verified-sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
 
+      # Enforce the organization's 100%-signed-commits policy at the auto-approve
+      # gate. GitHub intermittently publishes Dependabot commits with no
+      # signature — PR #99 commit efefa12d is authored by dependabot[bot] with
+      # verification.verified == false, reason "unsigned" — and this is
+      # GitHub-side, not ours: every human commit on this repo verifies as valid.
+      #
+      # This step lists the PR's commits and their GitHub-reported signature
+      # state. It FAILS CLOSED: any gh/jq error or an empty commit list aborts the
+      # job (set -euo pipefail), so an API failure can never be mistaken for
+      # "signed". If every commit is verified it sets all-signed=true and the
+      # approval proceeds. If any commit is unsigned it sets all-signed=false and
+      # exits 0, so the metadata and approval steps below are skipped cleanly —
+      # the run stays green, nothing is auto-approved, and a human handles the
+      # unsigned PR. Unsigned work is therefore never auto-approved, which is what
+      # the signed-commits policy requires.
+      #
+      # This is the control that replaces the removed skip-commit-verification
+      # bypass. Without this gate, removing that bypass would make fetch-metadata
+      # call core.setFailed on an unsigned commit (verified_commits.ts
+      # getMessage() returns false -> main.ts setFailed), turning every
+      # intermittently-unsigned Dependabot PR into a red, broken-looking job.
+      - name: Require every commit to carry a verified signature
+        id: signatures
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          # pipefail + set -e make a gh or jq error abort the job rather than
+          # yield an empty list, so every failure mode here fails closed.
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, verified: (.commit.verification.verified // false)}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to approve."
+            exit 1
+          fi
+
+          # A commit whose verification object is absent maps to false and so
+          # also counts as unsigned.
+          unsigned="$(jq -r '[.[] | select(.verified != true) | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unsigned" ]; then
+            echo "::notice::PR #${PR_NUMBER} has unsigned commit(s): ${unsigned}. Skipping auto-approval; a human must review and approve. (GitHub occasionally leaves Dependabot commits unsigned; this is GitHub-side.)"
+            echo "all-signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Verified ${count} commit(s); all carry a verified signature."
+          echo "all-signed=true" >> "$GITHUB_OUTPUT"
+
+      # Signature verification is NOT skipped here: the skip-commit-verification
+      # bypass has been removed to comply with the 100%-signed-commits policy.
+      # This step only runs when the signatures gate above proved every commit is
+      # verified, so fetch-metadata's own commits[0] signature check passes
+      # instead of calling core.setFailed.
       - name: Fetch Dependabot metadata
         id: metadata
+        if: steps.signatures.outputs.all-signed == 'true'
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # skip-commit-verification: true drops exactly one check in
-          # verified_commits.ts: commit.verification.verified on commits[0]. The
-          # PR-author and commits[0]-author checks still run. It is required
-          # because GitHub intermittently produces unsigned Dependabot commits —
-          # PR #99 commit efefa12d is authored by dependabot[bot] with
-          # verification.verified == false, reason "unsigned" — which otherwise
-          # aborts this step. Authorship of the code being approved is
-          # established by the preceding step, which does not rely on signatures.
-          skip-commit-verification: true
 
       # github-actions[bot] is a different actor from dependabot[bot], so this
       # approval counts toward required_approving_review_count. Verified live on
@@ -104,8 +155,9 @@ jobs:
       # because the authorship step proved every commit is Dependabot's.
       - name: Approve minor and patch updates
         if: >-
-          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+          steps.signatures.outputs.all-signed == 'true' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
