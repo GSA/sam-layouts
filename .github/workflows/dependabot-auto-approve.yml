@@ -97,8 +97,8 @@ jobs:
       # unsigned PR. Unsigned work is therefore never auto-approved, which is what
       # the signed-commits policy requires.
       #
-      # This is the control that replaces the removed skip-commit-verification
-      # bypass. Without this gate, removing that bypass would make fetch-metadata
+      # This is the control that replaces the removed fetch-metadata
+      # verification-skipping input. Without this gate, removing that bypass would make fetch-metadata
       # call core.setFailed on an unsigned commit (verified_commits.ts
       # getMessage() returns false -> main.ts setFailed), turning every
       # intermittently-unsigned Dependabot PR into a red, broken-looking job.
@@ -135,8 +135,9 @@ jobs:
           echo "Verified ${count} commit(s); all carry a verified signature."
           echo "all-signed=true" >> "$GITHUB_OUTPUT"
 
-      # Signature verification is NOT skipped here: the skip-commit-verification
-      # bypass has been removed to comply with the 100%-signed-commits policy.
+      # Signature verification is NOT skipped here: the fetch-metadata
+      # verification-skipping input has been removed to comply with the
+      # 100%-signed-commits policy.
       # This step only runs when the signatures gate above proved every commit is
       # verified, so fetch-metadata's own commits[0] signature check passes
       # instead of calling core.setFailed.
