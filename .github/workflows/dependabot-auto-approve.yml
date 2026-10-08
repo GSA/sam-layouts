@@ -2,41 +2,188 @@ name: Dependabot auto-approve
 
 on: pull_request_target
 
+# pull-requests: write is the only scope. It covers submitting the approval and,
+# via its read half, listing the PR's commits (GitHub REST "List commits on a
+# pull request" and "Get a pull request" both require only Pull requests: read).
 permissions:
   pull-requests: write
 
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
-    # pull_request_target gives the workflow a writable token for Dependabot PRs.
-    # Keep this job free of checkout/build/test steps so untrusted PR code never runs
-    # in the trusted target-repository context.
+    # pull_request_target gives this job a writable token in the trusted
+    # target-repository context. Keep it free of actions/checkout and of any
+    # build/test step so PR-supplied code never executes here.
+    #
+    # pull_request.user.login is the PR *opener* and never changes, while
+    # pull_request_target re-runs on `synchronize`. This condition therefore does
+    # NOT establish that the current head was authored by Dependabot; the
+    # "Require every commit to be authored by Dependabot" step below does.
     if: >-
       github.event.pull_request.user.login == 'dependabot[bot]' &&
-      github.repository == 'GSA/sam-layouts'
+      github.repository == 'GSA/sam-layouts' &&
+      github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
+      # dependabot/fetch-metadata does not perform this check. In v3.1.0,
+      # src/dependabot/verified_commits.ts getMessage() author-checks only
+      # commits[0] of pulls.listCommits and never looks at
+      # pull_request.head.sha or any later commit — its own test
+      # "returns the commit message for a PR authored exclusively by Dependabot"
+      # passes with a trailing commit that has no author field at all.
+      #
+      # Scope of this gate: it rejects any PR whose commit list is empty, whose
+      # tip is not the head this run fired for, or that contains a commit GitHub
+      # does not attribute to dependabot[bot] (including unattributed commits).
+      # It does not defeat an actor with push access who deliberately forges the
+      # Dependabot author identity on a commit; residual risk there is held by
+      # the branch ruleset (require_last_push_approval,
+      # dismiss_stale_reviews_on_push, require_extra_approval_for_unattributed_changes).
+      - name: Require every commit to be authored by Dependabot
+        id: authorship
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # pipefail + set -e make an API error abort the job rather than yield
+          # an empty list, so every failure mode here fails closed.
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, author: (.author.login // "")}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to approve."
+            exit 1
+          fi
+
+          # A commit with no linked GitHub author maps to "" and so also fails.
+          unauthorized="$(jq -r '[.[] | select(.author != "dependabot[bot]") | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unauthorized" ]; then
+            echo "::error::PR #${PR_NUMBER} has commits not authored by dependabot[bot]: ${unauthorized}"
+            exit 1
+          fi
+
+          # This endpoint returns at most 250 commits, so the check above could
+          # miss a tail. Requiring the listed tip to equal the head SHA this run
+          # was triggered for closes that hole and also catches a push that raced
+          # the run.
+          tip="$(jq -r '.[-1].sha' <<<"$commits")"
+          if [ "$tip" != "$HEAD_SHA" ]; then
+            echo "::error::PR #${PR_NUMBER} commit-list tip ${tip} is not the head SHA this run fired for (${HEAD_SHA}); refusing to approve."
+            exit 1
+          fi
+
+          echo "Verified ${count} commit(s), all authored by dependabot[bot], tip ${tip}."
+          echo "verified-sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+
+      # Enforce the organization's 100%-signed-commits policy at the auto-approve
+      # gate. GitHub intermittently publishes Dependabot commits with no
+      # signature — PR #99 commit efefa12d is authored by dependabot[bot] with
+      # verification.verified == false, reason "unsigned" — and this is
+      # GitHub-side, not ours: every human commit on this repo verifies as valid.
+      #
+      # This step lists the PR's commits and their GitHub-reported signature
+      # state. It FAILS CLOSED: any gh/jq error or an empty commit list aborts the
+      # job (set -euo pipefail), so an API failure can never be mistaken for
+      # "signed". If every commit is verified it sets all-signed=true and the
+      # approval proceeds. If any commit is unsigned it sets all-signed=false and
+      # exits 0, so the metadata and approval steps below are skipped cleanly —
+      # the run stays green, nothing is auto-approved, and a human handles the
+      # unsigned PR. Unsigned work is therefore never auto-approved, which is what
+      # the signed-commits policy requires.
+      #
+      # This is the control that replaces the removed fetch-metadata
+      # verification-skipping input. Without this gate, removing that bypass would make fetch-metadata
+      # call core.setFailed on an unsigned commit (verified_commits.ts
+      # getMessage() returns false -> main.ts setFailed), turning every
+      # intermittently-unsigned Dependabot PR into a red, broken-looking job.
+      - name: Require every commit to carry a verified signature
+        id: signatures
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          # pipefail + set -e make a gh or jq error abort the job rather than
+          # yield an empty list, so every failure mode here fails closed.
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, verified: (.commit.verification.verified // false)}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to approve."
+            exit 1
+          fi
+
+          # A commit whose verification object is absent maps to false and so
+          # also counts as unsigned.
+          unsigned="$(jq -r '[.[] | select(.verified != true) | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unsigned" ]; then
+            echo "::notice::PR #${PR_NUMBER} has unsigned commit(s): ${unsigned}. Skipping auto-approval; a human must review and approve. (GitHub occasionally leaves Dependabot commits unsigned; this is GitHub-side.)"
+            echo "all-signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Verified ${count} commit(s); all carry a verified signature."
+          echo "all-signed=true" >> "$GITHUB_OUTPUT"
+
+      # Signature verification is NOT skipped here: the fetch-metadata
+      # verification-skipping input has been removed to comply with the
+      # 100%-signed-commits policy.
+      # This step only runs when the signatures gate above proved every commit is
+      # verified, so fetch-metadata's own commits[0] signature check passes
+      # instead of calling core.setFailed.
       - name: Fetch Dependabot metadata
         id: metadata
+        if: steps.signatures.outputs.all-signed == 'true'
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # github-actions[bot] approving a dependabot[bot] PR is a DIFFERENT actor
-      # than the PR author, so the approval SHOULD satisfy required_approving_review_count.
-      # This is UNVERIFIED and currently blocked: live probing returned "GitHub Actions
-      # is not permitted to approve pull requests" because this repo's "Allow GitHub
-      # Actions to create and approve pull requests" setting is disabled. An org/repo
-      # admin must enable that setting before this approval can take effect.
-      # Even after it's enabled, ruleset 15065977 also sets require_last_push_approval
-      # and require_extra_approval_for_unattributed_changes, either of which could
-      # independently stall a bot-approved Dependabot PR — verify those too.
+      # github-actions[bot] is a different actor from dependabot[bot], so this
+      # approval counts toward required_approving_review_count. Verified live on
+      # PR #98: run 37641964755 submitted review 5444331803 as github-actions[bot].
       # Scoped to minor/patch to mirror the auto-merge policy; majors stay human-gated.
+      # update-type is parsed from commits[0]'s message, so it is only trustworthy
+      # because the authorship step proved every commit is Dependabot's.
       - name: Approve minor and patch updates
         if: >-
-          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: gh pr review --approve "$PR_URL"
+          steps.signatures.outputs.all-signed == 'true' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch')
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          VERIFIED_SHA: ${{ steps.authorship.outputs.verified-sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERIFIED_SHA}" ]; then
+            echo "::error::No verified head SHA available; refusing to approve."
+            exit 1
+          fi
+
+          # Re-read the live head immediately before approving. This narrows the
+          # window in which a push could land between the authorship check and
+          # the approval. It does not eliminate it; dismiss_stale_reviews_on_push
+          # and require_last_push_approval in the branch ruleset cover the rest.
+          live_head="$(gh api "repos/${REPO}/pulls/${PR_NUMBER}" --jq '.head.sha')"
+          if [ "$live_head" != "$VERIFIED_SHA" ]; then
+            echo "::error::Head moved from ${VERIFIED_SHA} to ${live_head} after verification; refusing to approve."
+            exit 1
+          fi
+
+          # commit_id records the verified SHA on the review itself, so the
+          # approval is auditable against the commit whose authorship was checked.
+          gh api "repos/${REPO}/pulls/${PR_NUMBER}/reviews" \
+            --method POST \
+            --raw-field event=APPROVE \
+            --raw-field commit_id="${VERIFIED_SHA}"

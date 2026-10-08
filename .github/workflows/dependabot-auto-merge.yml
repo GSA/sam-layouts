@@ -6,23 +6,220 @@ permissions:
   contents: write
   pull-requests: write
 
+# Finding 3 (stale snapshot / overlapping-run race): serialize runs per PR and
+# cancel any in-flight run when a newer push arrives. Without this, an older run
+# that already read a signed-head snapshot could still call `gh pr merge --auto`
+# after a newer unsigned push, and its enable could race the newer run's
+# revocation. With cancel-in-progress the superseded run stops; the newest run
+# owns the newest head and runs either the enable or the revocation path for it.
+# A run that is itself cancelled does NOT revoke (see `!cancelled()` below) --
+# that is correct, because the run that superseded it is responsible for the
+# newer head. The last run that is not cancelled always completes and sets the
+# authoritative auto-merge state for the final head.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    # Finding 2 (human-push bypass): gate on the PR OPENER, not the pusher.
+    #
+    # `github.actor` is the actor of the current event, so a job-level
+    # `if: github.actor == 'dependabot[bot]'` skips the whole job when a human
+    # pushes to a Dependabot PR -- which is exactly when a stale auto-merge
+    # needs revoking. `github.event.pull_request.user.login` is the PR opener
+    # and never changes across `synchronize`, so this condition still holds for
+    # a human push to a Dependabot PR and keeps the revocation step reachable.
+    # The per-step `github.actor` conditions below additionally restrict the
+    # metadata/enable path to pushes Dependabot itself made.
+    #
+    # Dropping the job-level gate entirely would make this job run on EVERY PR
+    # in the repo, which breaks two ways:
+    #   - On a human-authored PR the revocation condition below is satisfied
+    #     (the actor is not Dependabot), so a maintainer's own `--auto` would be
+    #     silently revoked on their next push.
+    #   - This repository is public and has forks. A `pull_request` event from a
+    #     fork receives a read-only GITHUB_TOKEN regardless of `permissions:`,
+    #     so `gh pr merge --disable-auto` would 403 and fail the step (it is
+    #     deliberately not tolerated with `|| true`), reporting a red
+    #     "Dependabot auto-merge" check on every fork PR.
+    # The opener gate avoids both: the job only ever runs on same-repo
+    # Dependabot PRs. Mirrors the job-level gate in dependabot-auto-approve.yml.
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository == 'GSA/sam-layouts' &&
+      github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
+      # Finding 1 (missing all-commit authorship): mirror the reference gate in
+      # dependabot-auto-approve.yml ("Require every commit to be authored by
+      # Dependabot"). fetch-metadata (v3.1.0) author-checks only commits[0]
+      # (src/dependabot/verified_commits.ts getMessage()), and the enable path
+      # below keyed only on signatures + update-type, so without this gate a
+      # signed non-Dependabot commit later in the PR could still enable
+      # auto-merge. Pinning the commit-list tip to the head SHA this run fired
+      # for also closes the 250-commit pagination tail and catches a racing push.
+      # FAILS CLOSED: set -euo pipefail, and the empty-list / non-Dependabot /
+      # moved-tip checks each `exit 1`, aborting the job. The revocation step
+      # still runs on that failure (see `!cancelled()`), so a failed gate is
+      # never mistaken for "authored" and never leaves a stale auto-merge.
+      - name: Require every commit to be authored by Dependabot
+        id: authorship
+        if: github.actor == 'dependabot[bot]'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, author: (.author.login // "")}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to auto-merge."
+            exit 1
+          fi
+
+          # A commit with no linked GitHub author maps to "" and so also fails.
+          unauthorized="$(jq -r '[.[] | select(.author != "dependabot[bot]") | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unauthorized" ]; then
+            echo "::error::PR #${PR_NUMBER} has commits not authored by dependabot[bot]: ${unauthorized}"
+            exit 1
+          fi
+
+          # This endpoint returns at most 250 commits, so requiring the listed tip
+          # to equal the head SHA this run fired for closes that tail and catches
+          # a push that raced the run.
+          tip="$(jq -r '.[-1].sha' <<<"$commits")"
+          if [ "$tip" != "$HEAD_SHA" ]; then
+            echo "::error::PR #${PR_NUMBER} commit-list tip ${tip} is not the head SHA this run fired for (${HEAD_SHA}); refusing to auto-merge."
+            exit 1
+          fi
+
+          echo "Verified ${count} commit(s), all authored by dependabot[bot], tip ${tip}."
+          echo "verified-sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+
+      # Enforce the 100%-signed-commits policy before enabling auto-merge, and
+      # convert GitHub's intermittently-unsigned Dependabot commits (PR #99
+      # commit efefa12d: authored by dependabot[bot], verification.verified ==
+      # false, reason "unsigned") from a noisy fetch-metadata failure into a
+      # clean skip. Without this gate, fetch-metadata below calls core.setFailed
+      # on an unsigned commit (verified_commits.ts getMessage() returns false ->
+      # main.ts setFailed), turning the job red. all-signed=false instead skips
+      # the enable path and lets the revocation step revoke any auto-merge an
+      # earlier signed run enabled, so an unsigned head cannot reach main here.
+      # FAILS CLOSED: set -euo pipefail and an empty-commit-list `exit 1`, so an
+      # API failure is never mistaken for "signed".
+      - name: Require every commit to carry a verified signature
+        id: signatures
+        if: success() && github.actor == 'dependabot[bot]'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          commits="$(
+            gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+              --jq '.[] | {sha: .sha, verified: (.commit.verification.verified // false)}' | jq -s '.'
+          )"
+
+          count="$(jq 'length' <<<"$commits")"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No commits returned for PR #${PR_NUMBER}; refusing to auto-merge."
+            exit 1
+          fi
+
+          # A commit whose verification object is absent maps to false and so
+          # also counts as unsigned.
+          unsigned="$(jq -r '[.[] | select(.verified != true) | .sha] | join(" ")' <<<"$commits")"
+          if [ -n "$unsigned" ]; then
+            echo "::notice::PR #${PR_NUMBER} has unsigned commit(s): ${unsigned}. Skipping auto-merge; a human must review. (GitHub occasionally leaves Dependabot commits unsigned; this is GitHub-side.)"
+            echo "all-signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Verified ${count} commit(s); all carry a verified signature."
+          echo "all-signed=true" >> "$GITHUB_OUTPUT"
+
+      # Signature verification is NOT skipped here: the fetch-metadata
+      # verification-skipping input has been removed to comply with the
+      # 100%-signed-commits policy.
+      # This step only runs when both gates above proved every commit is
+      # authored by Dependabot and verified, so fetch-metadata's own commits[0]
+      # signature check passes instead of calling core.setFailed.
       - name: Fetch Dependabot metadata
         id: metadata
+        if: >-
+          success() &&
+          github.actor == 'dependabot[bot]' &&
+          steps.signatures.outputs.all-signed == 'true'
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # update-type is parsed from commits[0]'s message, so it is only
+      # trustworthy because the authorship step proved every commit is
+      # Dependabot's. Scoped to minor/patch to mirror the auto-approve policy;
+      # majors stay human-gated.
       - name: Auto-merge minor and patch updates
         if: >-
-          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+          success() &&
+          github.actor == 'dependabot[bot]' &&
+          steps.signatures.outputs.all-signed == 'true' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch')
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Revocation path (defence in depth, findings 2 and 4). GitHub persists the
+      # auto-merge setting across pushes, so skipping the enable path is not
+      # enough: a signed run could have enabled auto-merge, and a later
+      # ineligible head would otherwise still merge once the remaining branch
+      # conditions were met. This step runs for every head this workflow does NOT
+      # enable auto-merge for -- human pushes, unsigned or non-Dependabot heads,
+      # majors, and gate failures -- and revokes any persisted auto-merge.
+      #   - Finding 2: reachable on human pushes to a Dependabot PR, because the
+      #     job-level gate keys on the PR opener (which never changes) rather
+      #     than on `github.actor`, and this step is not actor-restricted. The
+      #     job-level gate still keeps this off human-authored and fork PRs.
+      #   - Finding 4: `!cancelled()` runs this step even after the authorship or
+      #     signature step fails (a transient gh/jq error or the empty-commit-list
+      #     `exit 1`). It is deliberately NOT `always()`: a run cancelled by a
+      #     newer push must not act on its stale head -- the superseding run owns
+      #     the newer head. A failed gate still fails the job, so revoking here
+      #     does not flip the job green; the workflow still fails closed.
+      # The condition is the exact negation of the enable condition above, so the
+      # two are mutually exclusive and never both run on the same head.
+      #
+      # This is defence in depth rather than the only guard. The branch ruleset
+      # also stops an unsigned head, because dismiss_stale_reviews_on_push drops
+      # the approval on the new push and the only automated approver,
+      # dependabot-auto-approve.yml, re-grants it solely for an all-signed,
+      # all-Dependabot head. That protection is a ruleset setting this workflow
+      # does not own, so it is not relied on here.
+      #
+      # FAILS CLOSED: `gh pr merge --disable-auto` is a no-op (exit 0) when
+      # auto-merge is not enabled, but a genuine API failure must not pass
+      # silently, so the step is not tolerated with `|| true`.
+      - name: Cancel auto-merge for an ineligible head
+        if: >-
+          !cancelled() &&
+          !(github.actor == 'dependabot[bot]' &&
+            steps.signatures.outputs.all-signed == 'true' &&
+            (steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+             steps.metadata.outputs.update-type == 'version-update:semver-patch'))
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "::notice::Revoking any auto-merge enabled by an earlier eligible run."
+          gh pr merge --disable-auto "$PR_URL"

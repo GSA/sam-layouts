@@ -19,6 +19,18 @@ updates:
     # loosened, these packages still cannot cross their next major on their
     # own. Angular 20/21 is intentionally left to Wave 3 (see GSA/sam-layouts#52),
     # not to Dependabot.
+    # Note: The TypeScript ceiling (>= 5.9.0) is derived from @angular/compiler-cli's
+    # peerDependencies.typescript range (>=5.5 <5.9 for Angular 19.x), not chosen
+    # arbitrarily. When Angular moves, this ceiling must be re-derived against the
+    # new compiler-cli peer range.
+    # Note: The zone.js ceiling (>= 0.16.0) is likewise derived, from
+    # @angular/core's peerDependencies.zone.js range. Angular 19.x AND 20.x both
+    # declare `~0.15.0`; only Angular 21 widens it to `~0.15.0 || ~0.16.0`. The
+    # two ceilings therefore do NOT move together: TypeScript must be re-derived
+    # at Angular 20, zone.js not until Angular 21. Measured 2026-10-07 against
+    # @angular/core@19.2.25, @angular/core@20.0.0 and @angular/core@21.2.24.
+    # Without this entry the `minor` group proposes zone.js ~0.16.3 (see PR #98),
+    # which breaks the Angular 19 build the same way TypeScript 5.9.3 did.
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -33,7 +45,9 @@ updates:
       - dependency-name: "@gsa-sam/*"
         versions: [">= 19.0.0"]
       - dependency-name: "typescript"
-        versions: [">= 6.0.0"]
+        versions: [">= 5.9.0"]
+      - dependency-name: "zone.js"
+        versions: [">= 0.16.0"]
     # Group minor/patch updates by update-type to match the fleet convention
     # (ngx-uswds-icons, sam-styles, sam-ui-elements, sam-design-system). Majors
     # stay ungrouped and human-gated via the ignore block above.
