@@ -50,7 +50,7 @@ Closes #<!-- issue number, e.g. 123 -->
 - [ ] Branch name follows convention (e.g. `gh-<number>-<slug>`)
 - [ ] PR title starts with a verb in the imperative mood
 - [ ] I have self-reviewed my own code
-- [ ] `lint` introduces no *new* errors (`npx nx run-many -t lint`) — there is a pre-existing 121-error baseline (see #66 / PR #68); a clean run is not required to merge
+- [ ] `lint` is clean (`npm run lint:baseline`) — zero ESLint errors, and warnings at or below the per-project ceiling in `eslint-baseline.json`; if you paid debt down, run `npm run lint:baseline:bump` and commit the lowered ceiling on its own
 - [ ] `build` passes for the library (`npx nx build layouts`)
 - [ ] `build` passes for the demo app (`npx nx build sam-layouts`)
 - [ ] Tests pass for the library (`npx nx test layouts`)

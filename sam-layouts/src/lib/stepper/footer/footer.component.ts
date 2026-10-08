@@ -3,7 +3,6 @@ import { SdsStepper } from '@gsa-sam/sam-formly';
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'sam-layouts-stepper-footer',
   templateUrl: './footer.component.html',
 })
@@ -67,7 +66,6 @@ export class SLStepperFooterComponent {
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'sam-layouts-stepper-footer-custom-action',
   template: `
     <div class="margin-right-1">

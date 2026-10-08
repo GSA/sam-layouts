@@ -30,6 +30,17 @@ import { Location } from '@angular/common';
 
 	@Component({
 	standalone: false,
+  // `search-list-layout` is a legacy, unprefixed selector that does not match
+  // the `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
+  // (`sds` / `sam-layouts` / `demo`). This component IS exported from
+  // `src/lib/public-api.ts`, so the selector is PUBLIC API: consumers render
+  // `<search-list-layout>` directly (see the @Optional() regression note in
+  // `search-list-layout.component.spec.ts`), and renaming it is a breaking,
+  // consumer-visible change. Disabled here rather than widening the allowlist
+  // with a `search` prefix (which would admit arbitrary future `search-*`
+  // selectors). Rename to a prefixed selector alongside the Wave 3
+  // Angular 20 -> 21 breaking slice of GSA/sam-layouts#52.
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'search-list-layout',
   templateUrl: './search-list-layout.component.html',
   styleUrls: ['./search-list-layout.component.scss'],
@@ -66,7 +77,7 @@ export class SearchListLayoutComponent implements OnInit {
    */
   @Input() configuration: SearchListConfiguration;
 
-  @Input() enableApiCall: boolean = true;
+  @Input() enableApiCall = true;
 
   /**
    * Allow to insert a customized template for default model search message
@@ -78,7 +89,7 @@ export class SearchListLayoutComponent implements OnInit {
   /**
    * Set to true when either filter is empty or filter is equal to default model
    */
-  isDefaultModel: boolean = true;
+  isDefaultModel = true;
 
   /**
    * Filter information
@@ -141,7 +152,7 @@ export class SearchListLayoutComponent implements OnInit {
    * Used to track whether update resulting in navigation is as the result of a
    * popstate. in order to apply correct navigation logic
    */
-  private triggeredByPopState: boolean = false;
+  private triggeredByPopState = false;
 
   private skipUpdate = false;
 
@@ -266,8 +277,8 @@ export class SearchListLayoutComponent implements OnInit {
 
   flatten(input, reference?, output?) {
     output = output || {};
-    for (var key in input) {
-      var value = input[key];
+    for (let key in input) {
+      const value = input[key];
       if (value) {
         key = reference ? reference + '.' + key : key;
         if (typeof value === 'object' && value !== null) {
@@ -287,11 +298,11 @@ export class SearchListLayoutComponent implements OnInit {
 
   updateNavigation(triggeredByFilter = false) {
     const queryString = window.location.search.substring(1);
-    let queryObj = qs.parse(queryString, { allowPrototypes: true });
+    const queryObj = qs.parse(queryString, { allowPrototypes: true });
 
     let skipHistoryOnNav = false;
 
-    if (queryObj.hasOwnProperty('sfm')) {
+    if (Object.prototype.hasOwnProperty.call(queryObj, 'sfm')) {
       queryObj['sfm'] = {};
     }
 

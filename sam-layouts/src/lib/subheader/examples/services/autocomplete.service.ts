@@ -17,7 +17,7 @@ export class AutocompleteService implements SDSAutocompleteServiceInterface {
   ): Observable<SDSHiercarchicalServiceResult> {
     const itemIncrease = 25;
     const data = of(this._data);
-    let items$: Observable<Object[]>;
+    let items$: Observable<object[]>;
 
     if (searchValue) {
       items$ = data.pipe(

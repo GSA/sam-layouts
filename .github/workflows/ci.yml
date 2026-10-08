@@ -31,12 +31,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # TODO: promote this to a blocking step once the lint-debt baseline
-      # (121 errors) is cleared by the Wave 2 "ESLint template a11y gate +
-      # lint-debt baseline" issue tracked under GSA/sam-layouts#52.
-      - name: Lint (non-blocking)
-        run: npx nx run-many -t lint
-        continue-on-error: true
+      # The lint-debt baseline (`eslint-baseline.json`) records a per-project
+      # warning *ceiling*. Any ESLint error fails, and warnings above the
+      # ceiling fail; warnings below it pass, and `npm run lint:baseline:bump`
+      # locks the improvement in. `--bump` only ever lowers the ceiling, so a
+      # regression can't be laundered by re-bumping.
+      - name: Lint (baseline gate)
+        run: npm run lint:baseline
+
+      - name: Verify lint baseline gate script
+        run: npm run test:scripts
 
       - name: Build layouts (library)
         run: npx nx build layouts

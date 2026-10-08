@@ -46,7 +46,7 @@ describe('SdsFooterComponent', () => {
   });
 
   it('event click', () => {
-    let navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
+    const navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
     jest.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);

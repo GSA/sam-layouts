@@ -1,6 +1,6 @@
 import { SideNavigationModel, NavigationMode } from '@gsa-sam/components';
 
-export let navigationConfig: SideNavigationModel = {
+export const navigationConfig: SideNavigationModel = {
     navigationLinks: [
         { id: 'all', text: 'All Domains', mode: NavigationMode.INTERNAL, route: '/documentation/layout' },
         { id: 'opportunites', text: 'Contract Opportunities', mode: NavigationMode.INTERNAL, route: '/documentation/layout', queryParams: { 'index' : 'opportunities'}},

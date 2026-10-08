@@ -10,7 +10,6 @@ import { SdsStepper } from '@gsa-sam/sam-formly';
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'sam-layouts-stepper',
   providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
   templateUrl: './stepper.component.html',

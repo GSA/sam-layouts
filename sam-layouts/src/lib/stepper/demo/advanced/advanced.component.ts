@@ -6,7 +6,6 @@ import { StepperAdvancedService } from './advanced.service';
 
 	@Component({
 	standalone: false,
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: `demo-stepper-advanced`,
   templateUrl: `./advanced.component.html`,
   providers: [StepperAdvancedService, SdsStepper],

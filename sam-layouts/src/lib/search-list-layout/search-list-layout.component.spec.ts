@@ -12,6 +12,7 @@ import {
   ResultsModel,
 } from './model/search-list-layout.model';
 import { of, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   SDSFormlyUpdateComunicationService,
@@ -86,7 +87,7 @@ describe('SearchListLayoutComponent', () => {
   }));
 
   it('should call updateFilterModel', () => {
-    let service = fixture.debugElement.injector.get(
+    const service = fixture.debugElement.injector.get(
       SDSFormlyUpdateModelService
     );
     const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)
@@ -97,6 +98,47 @@ describe('SearchListLayoutComponent', () => {
     fixture.detectChanges();
     expect(serviceSpy).toHaveBeenCalled();
     expect(service.updateModel).toHaveBeenCalled();
+  });
+
+  // Regression coverage for GSA/sam-layouts#76 (prototype-shadowing crash).
+  // `updateNavigation` parses the live query string with
+  // `qs.parse(..., { allowPrototypes: true })`, so a crafted URL such as
+  // `?hasOwnProperty=x&sfm=1` produces an OWN `hasOwnProperty` key on
+  // `queryObj`, shadowing `Object.prototype.hasOwnProperty`. Calling
+  // `queryObj.hasOwnProperty('sfm')` then throws
+  // `TypeError: queryObj.hasOwnProperty is not a function` — a user-triggerable
+  // crash via the URL. The production code therefore MUST use
+  // `Object.prototype.hasOwnProperty.call(queryObj, 'sfm')`; do NOT "simplify"
+  // it back to `queryObj.hasOwnProperty(...)`.
+  it('does not crash and clears sfm when the URL shadows hasOwnProperty (GSA/sam-layouts#76)', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest
+      .spyOn(router, 'navigate')
+      .mockResolvedValue(true);
+
+    // jsdom updates window.location from history.replaceState, so this stands
+    // up the malicious query string without a real navigation or new deps.
+    const originalSearch = window.location.search;
+    window.history.replaceState({}, '', '?hasOwnProperty=x&sfm=1');
+
+    try {
+      // Call the uncovered path directly; the default arg takes the
+      // router.navigate branch.
+      expect(() => component.updateNavigation()).not.toThrow();
+
+      expect(navigateSpy).toHaveBeenCalled();
+      const queryParams = navigateSpy.mock.calls[0][1].queryParams;
+      // The attacker-supplied `sfm=1` must be gone: production clears the sfm
+      // slot (`queryObj['sfm'] = {}`) before rebuilding it, so the crafted
+      // value never survives into the navigation params. Use the safe
+      // prototype method because `queryParams` itself carries an own
+      // `hasOwnProperty` key here too.
+      expect(Object.prototype.hasOwnProperty.call(queryParams, 'sfm')).toBe(
+        false
+      );
+    } finally {
+      window.history.replaceState({}, '', originalSearch || '/');
+    }
   });
 
   it('should update sortvalue through updateSearchResultsModel', () => {

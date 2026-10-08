@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 //{ 'id': '1', 'parentId': null, 'name': 'Level 1', 'subtext': 'id 1', 'type': 'Level 1' },
-export let SampleAutocompleteData = [
+export const SampleAutocompleteData = [
   {
     name: 'Alabama',
     id: 'AL'

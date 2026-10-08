@@ -19,6 +19,11 @@ import { StepperAdvancedService } from './advanced.service';
 
 	@Component({
 	standalone: false,
+  // `-demo` is a suffix, not a prefix, so this selector can't be covered by
+  // the `component-selector` prefix allowlist in
+  // `sam-layouts/eslint.config.mjs` without adding a meaningless `subawardee`
+  // prefix. Demo-only (not exported from `src/lib/public-api.ts`); rename to
+  // `demo-subawardee` alongside the next intentional selector change.
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: `subawardee-demo`,
   templateUrl: './subawardee.component.html',
@@ -50,6 +55,8 @@ export class SubawardeeDemoComponent {
 
 	@Component({
 	standalone: false,
+  // Same `-demo`-as-suffix case as `subawardee-demo` above; also only ever
+  // opened imperatively via `SdsDialog.open(...)`, never as an element.
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: `add-subawardee-dialog-demo`,
   template: `

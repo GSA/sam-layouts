@@ -33,10 +33,10 @@ name: Publish to npm
 #        Workflow filename = publish.yml
 #        Environment name = release)
 #   - Quality gates run before publish. The library build and the library
-#     tests (with coverage) are blocking and must pass. Lint is currently
-#     NON-blocking (`continue-on-error: true`), so a lint failure does not
-#     stop a publish — it mirrors the posture already in ci.yml while the
-#     lint-debt baseline is being cleared (GSA/sam-layouts#52).
+#     tests (with coverage) are blocking and must pass. Lint is also
+#     blocking: it runs the same ratcheting baseline gate as ci.yml
+#     (`npm run lint:baseline`), so a release cannot publish with ESLint
+#     errors or above-baseline warnings (GSA/sam-layouts#76).
 #   - Values that come from outside the workflow file (`vars.DRY_RUN`,
 #     `inputs.dry-run`, the ref name) are passed into `run` steps through
 #     `env:` and read as quoted shell variables. `${{ }}` interpolation is
@@ -118,16 +118,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # TODO: promote this to a blocking step once the lint-debt baseline
-      # (121 errors) is cleared by the Wave 2 "ESLint template a11y gate +
-      # lint-debt baseline" issue tracked under GSA/sam-layouts#52. Matches
-      # the non-blocking posture already in ci.yml. GSA/sam-layouts#76 (PR
-      # #88) replaces ci.yml's non-blocking lint with a blocking ratcheting
-      # baseline gate; once that lands, revisit this step so the publish
-      # pipeline's lint posture matches CI again.
-      - name: Lint (non-blocking)
-        run: npx nx lint layouts
-        continue-on-error: true
+      # The lint-debt baseline (`eslint-baseline.json`) records a per-project
+      # warning *ceiling*. Any ESLint error fails, and warnings above the
+      # ceiling fail; warnings below it pass, and `npm run lint:baseline:bump`
+      # locks the improvement in. `--bump` only ever lowers the ceiling, so a
+      # regression can't be laundered by re-bumping. Mirrors ci.yml so the
+      # publish pipeline's lint posture matches CI.
+      - name: Lint (baseline gate)
+        run: npm run lint:baseline
 
       - name: Build layouts (library)
         run: npx nx build layouts

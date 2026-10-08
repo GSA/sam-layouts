@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SdsStepperModule } from '@gsa-sam/sam-formly';
 import { DemoStepperSimpleComponent } from './simple.component';
-import { SLStepperModule } from '@gsa-sam/layouts';
+import { SLStepperModule } from '../../stepper.module';
 
 @NgModule({
   declarations: [DemoStepperSimpleComponent],

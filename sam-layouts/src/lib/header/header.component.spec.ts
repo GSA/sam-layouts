@@ -38,8 +38,8 @@ describe('SdsHeaderComponent', () => {
   });
 
   it('should remove white space', () => {
-    let before = 'T E S T';
-    let after = 'TEST';
+    const before = 'T E S T';
+    const after = 'TEST';
     expect(component.removeWhiteSpace(before)).toBe(after);
   });
 
@@ -93,7 +93,7 @@ describe('SdsHeaderComponent', () => {
 
 
   it('event click', () => {
-    let navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
+    const navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
     jest.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);

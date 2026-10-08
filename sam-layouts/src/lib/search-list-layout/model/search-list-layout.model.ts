@@ -96,7 +96,7 @@ export class SearchListConfiguration {
     /**
      * Starting page size
      */
-    pageSize: number = 25;
+    pageSize = 25;
 
     /**
      * Default values to use during initialization when there is none in url.
