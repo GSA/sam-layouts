@@ -1,7 +1,12 @@
 <div class="display-flex flex-justify-center">
-  <sam-layouts-stepper [stepperButtonsNew]="true" [isFormValid]="false" [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
-
-    <sam-layouts-stepper-header [template]="customHeader" >
+  <sam-layouts-stepper
+    [stepperButtonsNew]="true"
+    [isFormValid]="false"
+    [model]="model"
+    [stepValidityMap]="stepValidityMap"
+    (saveData)="onSaveData($event)"
+  >
+    <sam-layouts-stepper-header [template]="customHeader">
       <ng-template #customHeader></ng-template>
     </sam-layouts-stepper-header>
 
@@ -17,6 +22,5 @@
         Help
       </sam-layouts-stepper-footer-custom-action>
     </ng-container> -->
-
   </sam-layouts-stepper>
 </div>

@@ -1,25 +1,18 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  Input,
-  TemplateRef,
-} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, TemplateRef } from '@angular/core';
 import { SdsDrawerCommunicationService } from './drawer-communication.service';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-subheader',
   templateUrl: 'subheader.component.html',
   styleUrls: ['subheader.component.scss'],
 })
 export class SdsSubheaderComponent {
-  constructor() { }
+  constructor() {}
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-subheader-actions',
   templateUrl: 'subheader-actions.component.html',
 })
@@ -28,10 +21,8 @@ export class SdsSubheaderActionsComponent {
   @Input() model;
   @Output() clicks = new EventEmitter<string>();
   getButtonStyle() {
-
     let addedCSS = '';
     switch (this.mobileTabletStyle) {
-
       case SUBHEADERACTIONSTYLE.DEFAULT:
         addedCSS = 'usa-button sds-button--circle sds-button--white';
         break;
@@ -66,15 +57,23 @@ export class SdsSubheaderActionsComponent {
     return addedCSS;
   }
 
-  constructor() { }
+  constructor() {}
 }
 
 export enum SUBHEADERACTIONSTYLE {
-  DEFAULT, PRIMARY, SECONDARY, SECONDARY_DARK, OUTLINE, OUTLINE_SECONDARY, WHITE, ACCENT_COOL, DANGER
+  DEFAULT,
+  PRIMARY,
+  SECONDARY,
+  SECONDARY_DARK,
+  OUTLINE,
+  OUTLINE_SECONDARY,
+  WHITE,
+  ACCENT_COOL,
+  DANGER,
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-subheader-drawer',
   templateUrl: 'subheader-drawer.component.html',
 })
@@ -83,16 +82,16 @@ export class SdsSubheaderDrawerComponent implements OnInit {
   @Output() isDrawerOpen = new EventEmitter<boolean>();
   isOpen = false;
 
-  constructor(public data: SdsDrawerCommunicationService) { }
+  constructor(public data: SdsDrawerCommunicationService) {}
   onDrawerOpenClose(ev) {
     this.isOpen = !this.isOpen;
     this.data.onDrawerOpen(this.isOpen, this.drawerContentTemplate);
   }
-  ngOnInit() { }
+  ngOnInit() {}
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-drawer-content',
   templateUrl: 'drawer.content.component.html',
 })
@@ -100,11 +99,9 @@ export class SdsDrawerContentComponent implements OnInit {
   drawerContentTemplate: TemplateRef<any>;
   isDrawerOpen = false;
 
-  constructor(public data: SdsDrawerCommunicationService) { }
+  constructor(public data: SdsDrawerCommunicationService) {}
   ngOnInit() {
-    this.data.contentTemplate.subscribe(
-      (template) => (this.drawerContentTemplate = template)
-    );
+    this.data.contentTemplate.subscribe((template) => (this.drawerContentTemplate = template));
     this.data.isDrawerOpen.subscribe((open) => (this.isDrawerOpen = open));
   }
 }

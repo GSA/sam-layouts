@@ -11,10 +11,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [],
-      imports: [
-        SdsLandingLinkModule,
-        RouterTestingModule,
-      ]
+      imports: [SdsLandingLinkModule, RouterTestingModule],
     }),
   ],
 } as Meta<SdsLandingLinkComponent>;

@@ -1,10 +1,10 @@
 version: 2
 updates:
   # Keep npm dependencies up to date
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     # Limit the number of open pull requests to avoid noise
     open-pull-requests-limit: 10
     # Cooldown before Dependabot opens a PR for a new release. Majors get a
@@ -57,50 +57,50 @@ updates:
     # reach via the blanket semver-major ignore below; these entries close the
     # 20.6-20.8 minor/patch window that rule leaves open.
     ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@angular/*"
-        versions: [">= 20.0.0"]
-      - dependency-name: "@angular-devkit/*"
-        versions: [">= 20.0.0"]
-      - dependency-name: "angular-eslint"
-        versions: [">= 20.0.0"]
-      - dependency-name: "ng-packagr"
-        versions: [">= 20.0.0"]
-      - dependency-name: "@gsa-sam/*"
-        versions: [">= 19.0.0"]
-      - dependency-name: "typescript"
-        versions: [">= 5.9.0"]
-      - dependency-name: "zone.js"
-        versions: [">= 0.16.0"]
-      - dependency-name: "@nx/*"
-        versions: [">= 20.6.0"]
-      - dependency-name: "nx"
-        versions: [">= 20.6.0"]
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular/*'
+        versions: ['>= 20.0.0']
+      - dependency-name: '@angular-devkit/*'
+        versions: ['>= 20.0.0']
+      - dependency-name: 'angular-eslint'
+        versions: ['>= 20.0.0']
+      - dependency-name: 'ng-packagr'
+        versions: ['>= 20.0.0']
+      - dependency-name: '@gsa-sam/*'
+        versions: ['>= 19.0.0']
+      - dependency-name: 'typescript'
+        versions: ['>= 5.9.0']
+      - dependency-name: 'zone.js'
+        versions: ['>= 0.16.0']
+      - dependency-name: '@nx/*'
+        versions: ['>= 20.6.0']
+      - dependency-name: 'nx'
+        versions: ['>= 20.6.0']
     # Group minor/patch updates by update-type to match the fleet convention
     # (ngx-uswds-icons, sam-styles, sam-ui-elements, sam-design-system). Majors
     # stay ungrouped and human-gated via the ignore block above.
     groups:
       minor:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
+          - 'minor'
       patch:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "patch"
+          - 'patch'
     # Labels to apply to npm PRs
     labels:
-      - "dependencies"
-      - "npm"
+      - 'dependencies'
+      - 'npm'
 
   # Keep GitHub Actions up to date
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     cooldown:
       default-days: 5
     # Group minor/patch action bumps into a single PR to match the fleet
@@ -108,11 +108,11 @@ updates:
     groups:
       github-actions:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
     # Labels to apply to GitHub Actions PRs
     labels:
-      - "dependencies"
-      - "github-actions"
+      - 'dependencies'
+      - 'github-actions'

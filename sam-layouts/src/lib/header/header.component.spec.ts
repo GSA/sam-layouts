@@ -7,8 +7,7 @@ import { SdsTopBannerComponent } from '@gsa-sam/components';
 import { NavigationMode } from '@gsa-sam/components';
 import { A11yModule } from '@angular/cdk/a11y';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
-import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons'
-
+import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 
 describe('SdsHeaderComponent', () => {
   let component: SdsHeaderComponent;
@@ -17,19 +16,43 @@ describe('SdsHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SdsHeaderComponent, SdsTopBannerComponent],
-      imports: [RouterTestingModule, IconModule, A11yModule, NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))]
-    })
-      .compileComponents();
+      imports: [
+        RouterTestingModule,
+        IconModule,
+        A11yModule,
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsHeaderComponent);
     component = fixture.componentInstance;
     component.model = {
-      home: { text: "", logo: "", id: "home", route: '', selected: false, mode: NavigationMode.INTERNAL },
-      navigationLinks:
-        [{ text: "", selected: false, route: "", children: [{ text: "", selected: false, route: "", children: [], id: "childLink", mode: NavigationMode.INTERNAL }], id: "navLink", mode: NavigationMode.INTERNAL }],
-      secondaryLinks: [{ text: "", selected: false, route: "", id: "secNavLink", hasCounter: false, imageClass: '', mode: NavigationMode.INTERNAL }]
+      home: { text: '', logo: '', id: 'home', route: '', selected: false, mode: NavigationMode.INTERNAL },
+      navigationLinks: [
+        {
+          text: '',
+          selected: false,
+          route: '',
+          children: [
+            { text: '', selected: false, route: '', children: [], id: 'childLink', mode: NavigationMode.INTERNAL },
+          ],
+          id: 'navLink',
+          mode: NavigationMode.INTERNAL,
+        },
+      ],
+      secondaryLinks: [
+        {
+          text: '',
+          selected: false,
+          route: '',
+          id: 'secNavLink',
+          hasCounter: false,
+          imageClass: '',
+          mode: NavigationMode.INTERNAL,
+        },
+      ],
     };
   });
 
@@ -47,9 +70,7 @@ describe('SdsHeaderComponent', () => {
     expect(component.find('')).toBe(null);
   });
 
-
   it('home find / select /deselect', () => {
-
     expect(component.find(component.model.home.id)).toBe(component.model.home);
 
     expect(component.model.home.selected).toBe(false);
@@ -58,7 +79,6 @@ describe('SdsHeaderComponent', () => {
     component.deselect();
     expect(component.model.home.selected).toBe(false);
   });
-
 
   it('navigation link find / select /deselect', () => {
     expect(component.find(component.model.navigationLinks[0].id)).toBe(component.model.navigationLinks[0]);
@@ -78,7 +98,9 @@ describe('SdsHeaderComponent', () => {
   });
 
   it('navigation link child find / select /deselect', () => {
-    expect(component.find(component.model.navigationLinks[0].children[0].id)).toBe(component.model.navigationLinks[0].children[0]);
+    expect(component.find(component.model.navigationLinks[0].children[0].id)).toBe(
+      component.model.navigationLinks[0].children[0],
+    );
     component.select(component.model.navigationLinks[0].children[0].id);
     expect(component.model.navigationLinks[0].children[0].selected).toBe(true);
     component.deselect();
@@ -91,12 +113,10 @@ describe('SdsHeaderComponent', () => {
     expect(component.hasCounter()).toBe(true);
   });
 
-
   it('event click', () => {
     const navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
     jest.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);
   });
-
 });

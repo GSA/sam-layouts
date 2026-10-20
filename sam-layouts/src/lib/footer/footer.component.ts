@@ -3,11 +3,11 @@ import { FooterModel } from './model/FooterModel';
 import { INavigationLink } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
 export class SdsFooterComponent {
   public innerWidth: any;
@@ -23,7 +23,7 @@ export class SdsFooterComponent {
    */
   @Input() model: FooterModel;
   @Input() feedbackTemplate: TemplateRef<any>;
-  
+
   /**
    * event for event based
    */

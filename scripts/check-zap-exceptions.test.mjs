@@ -115,9 +115,7 @@ test('accepts an explicit rule-wide * scope', () => {
 });
 
 test('rejects an issue URL from another repository', () => {
-  const result = withLedger(
-    row({ issue: 'https://github.com/GSA/ngx-uswds/issues/272' })
-  );
+  const result = withLedger(row({ issue: 'https://github.com/GSA/ngx-uswds/issues/272' }));
   assert.equal(result.status, 1);
   assert.match(result.stderr, /must be a GSA\/sam-layouts issue URL/);
 });
@@ -159,21 +157,13 @@ test('rejects duplicate (rule-id, scope) pairs', () => {
 });
 
 test('allows the same rule id at two different scopes', () => {
-  const result = withLedger(
-    [row({ scope: '/a' }), row({ scope: '/b' })].join('\n')
-  );
+  const result = withLedger([row({ scope: '/a' }), row({ scope: '/b' })].join('\n'));
   assert.equal(result.status, 0);
   assert.match(result.stdout, /2 reviewed exceptions/);
 });
 
 test('reports the offending line number', () => {
-  const result = withLedger(
-    [
-      '# comment',
-      row({ scope: '/a' }),
-      row({ scope: '/b', expiry: PAST }),
-    ].join('\n')
-  );
+  const result = withLedger(['# comment', row({ scope: '/a' }), row({ scope: '/b', expiry: PAST })].join('\n'));
   assert.equal(result.status, 1);
   assert.match(result.stderr, /:3: expiry 2020-01-01 is in the past/);
 });

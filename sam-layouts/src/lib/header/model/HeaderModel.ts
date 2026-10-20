@@ -1,134 +1,127 @@
 import { INavigationLink, NavigationMode, Selectable } from '@gsa-sam/components';
 
-
 export interface HeaderModel {
+  /**
+   * Header logo and header logo home link
+   */
+  home: HeaderHome;
 
-    /**
-     * Header logo and header logo home link
-     */
-    home: HeaderHome;
+  /**
+   * List of secondary links
+   */
+  secondaryLinks: HeaderSecondaryLink[];
 
-    /**
-     * List of secondary links
-     */
-    secondaryLinks: HeaderSecondaryLink[];
-
-    /**
-     * List of main navigaation links/drop downs
-     */
-    navigationLinks: HeaderNavigationLink[];
+  /**
+   * List of main navigaation links/drop downs
+   */
+  navigationLinks: HeaderNavigationLink[];
 }
 
-
 export class HeaderHome implements Selectable, INavigationLink {
+  /**
+   * Internal Angualr Routes, External HREF, EVENT: event on parent component
+   */
+  mode: NavigationMode;
 
-    /**
-     * Internal Angualr Routes, External HREF, EVENT: event on parent component
-    */
-    mode: NavigationMode;
+  /**
+   * Text for the Header
+   */
+  text: string;
 
-    /**
-     * Text for the Header
-     */
-    text: string;
+  /**
+   * Agency Logo for the Header
+   */
+  logo: string;
 
-    /**
-     * Agency Logo for the Header
-     */
-    logo: string;
+  /**
+   * Navigation Route for Home image button
+   */
+  route: string;
 
-    /**
-     * Navigation Route for Home image button
-     */
-    route: string;
+  /**
+   * Identifier for the item when search for selected
+   */
+  id: string;
 
-    /**
-    * Identifier for the item when search for selected
-    */
-    id: string;
-
-    /**
-     * Status of if the item is selected
-     */
-    selected?: boolean;
+  /**
+   * Status of if the item is selected
+   */
+  selected?: boolean;
 }
 
 /**
  *
  */
 export class HeaderNavigationLink implements Selectable, INavigationLink {
+  /**
+   * Internal Angualr Routes, External HREF, EVENT: event on parent component
+   */
+  mode: NavigationMode;
 
-    /**
-     * Internal Angualr Routes, External HREF, EVENT: event on parent component
-     */
-    mode: NavigationMode;
+  /**
+   * Text to be displayed in the link or button
+   */
+  text: string;
 
-    /**
-     * Text to be displayed in the link or button
-     */
-    text: string;
+  /**
+   * Navigation Route
+   */
+  route: string;
 
-    /**
-     * Navigation Route
-     */
-    route: string;
+  /**
+   * List of child navigation items that will show when no route is provieded
+   */
+  children?: HeaderNavigationLink[];
 
-    /**
-     * List of child navigation items that will show when no route is provieded
-     */
-    children?: HeaderNavigationLink[];
+  /**
+   * Identifier for the item when search for selected
+   */
+  id: string;
 
-    /**
-     * Identifier for the item when search for selected
-     */
-    id: string;
-
-    /**
-     * Status of if the item is selected
-     */
-    selected?: boolean;
+  /**
+   * Status of if the item is selected
+   */
+  selected?: boolean;
 }
 
-
 export class HeaderSecondaryLink implements Selectable, INavigationLink {
+  /**
+   * Internal Angualr Routes, External HREF, EVENT: event on parent component
+   */
+  mode: NavigationMode;
 
-    /**
-     * Internal Angualr Routes, External HREF, EVENT: event on parent component
-     */
-    mode: NavigationMode;
+  /**
+   * Text to be displayed in the link
+   */
+  text: string;
 
-    /**
-     * Text to be displayed in the link
-     */
-    text: string;
+  /**
+   * Navigation Route
+   */
+  route: string;
 
-    /**
-     * Navigation Route
-     */
-    route: string;
+  /**
+   * image class
+   */
+  imageClass: string;
 
-    /**
-     * image class
-     */
-    imageClass: string;
+  /**
+   * displays counter with image
+   */
+  hasCounter?: boolean;
 
-    /**
-     * displays counter with image
-     */
-    hasCounter?: boolean;
+  /**
+   * Identifier for the item when search for selected
+   */
+  id: string;
 
-    /**
-     * Identifier for the item when search for selected
-     */
-    id: string;
+  /**
+   * Status of if the item is selected
+   */
+  selected?: boolean;
 
-    /**
-     * Status of if the item is selected
-     */
-    selected?: boolean;
-
-    /**
-     * Sign in button styling
-     */
-    signInButtonStyle?: string;
+  /**
+   * Sign in button styling
+   */
+  signInButtonStyle?: string;
 }

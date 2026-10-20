@@ -25,17 +25,16 @@ describe('SdsFooterComponent', () => {
         SdsAccordionModule,
         UsaAccordionModule,
         SdsFeedbackModule,
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
-      ]
-    })
-      .compileComponents();
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsFooterComponent);
     component = fixture.componentInstance;
     component.model = {
-      linkSections: [{ text: 'test link', links: [{mode: NavigationMode.EVENT, text: 'test', route: '/'}] }],
+      linkSections: [{ text: 'test link', links: [{ mode: NavigationMode.EVENT, text: 'test', route: '/' }] }],
       footerLogo: {} as FooterLogo,
     };
     fixture.detectChanges();

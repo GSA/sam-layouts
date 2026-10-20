@@ -8,9 +8,7 @@ import { spawnSync } from 'node:child_process';
 
 import { checkStorybookStories } from './check-storybook-stories.mjs';
 
-const scriptPath = fileURLToPath(
-  new URL('./check-storybook-stories.mjs', import.meta.url)
-);
+const scriptPath = fileURLToPath(new URL('./check-storybook-stories.mjs', import.meta.url));
 
 /** Run the script the way CI runs it. */
 function runCli(args) {
@@ -23,10 +21,7 @@ function runCli(args) {
 function fixture(contents) {
   const dir = mkdtempSync(join(tmpdir(), 'storybook-index-'));
   const file = join(dir, 'index.json');
-  writeFileSync(
-    file,
-    typeof contents === 'string' ? contents : JSON.stringify(contents)
-  );
+  writeFileSync(file, typeof contents === 'string' ? contents : JSON.stringify(contents));
   return file;
 }
 
@@ -48,12 +43,9 @@ test('rejects the empty index that a mismatched stories glob produces', () => {
   // This is the exact artifact `main` shipped before GSA/sam-layouts#75.
   const indexPath = fixture({ v: 5, entries: {} });
 
-  assert.throws(
-    () => checkStorybookStories({ indexPath, minimumEntries: 34 }),
-    {
-      message: /registered 0 entries/,
-    }
-  );
+  assert.throws(() => checkStorybookStories({ indexPath, minimumEntries: 34 }), {
+    message: /registered 0 entries/,
+  });
 });
 
 test('accepts an index at the floor', () => {
@@ -75,12 +67,9 @@ test('accepts an index above the floor, so adding a story cannot break CI', () =
 test('rejects an index that is non-empty but below the floor', () => {
   const indexPath = fixture(indexWithStories(12));
 
-  assert.throws(
-    () => checkStorybookStories({ indexPath, minimumEntries: 34 }),
-    {
-      message: /registered 12 entries.*at least 34/s,
-    }
-  );
+  assert.throws(() => checkStorybookStories({ indexPath, minimumEntries: 34 }), {
+    message: /registered 12 entries.*at least 34/s,
+  });
 });
 
 test('reports stories and docs separately', () => {
@@ -97,7 +86,7 @@ test('reports stories and docs separately', () => {
 
   assert.deepEqual(
     { total: report.total, stories: report.stories, docs: report.docs },
-    { total: 3, stories: 2, docs: 1 }
+    { total: 3, stories: 2, docs: 1 },
   );
 });
 
@@ -117,39 +106,27 @@ test('reports the registered titles, so a lost story file is visible', () => {
 });
 
 test('rejects a missing index, rather than reading it as zero stories', () => {
-  const indexPath = join(
-    mkdtempSync(join(tmpdir(), 'storybook-index-')),
-    'index.json'
-  );
+  const indexPath = join(mkdtempSync(join(tmpdir(), 'storybook-index-')), 'index.json');
 
-  assert.throws(
-    () => checkStorybookStories({ indexPath, minimumEntries: 34 }),
-    {
-      message: /not found/,
-    }
-  );
+  assert.throws(() => checkStorybookStories({ indexPath, minimumEntries: 34 }), {
+    message: /not found/,
+  });
 });
 
 test('rejects an unparseable index', () => {
   const indexPath = fixture('{ not json');
 
-  assert.throws(
-    () => checkStorybookStories({ indexPath, minimumEntries: 34 }),
-    {
-      message: /could not be parsed/,
-    }
-  );
+  assert.throws(() => checkStorybookStories({ indexPath, minimumEntries: 34 }), {
+    message: /could not be parsed/,
+  });
 });
 
 test('rejects an index with no entries map at all', () => {
   const indexPath = fixture({ v: 5 });
 
-  assert.throws(
-    () => checkStorybookStories({ indexPath, minimumEntries: 34 }),
-    {
-      message: /no "entries" map/,
-    }
-  );
+  assert.throws(() => checkStorybookStories({ indexPath, minimumEntries: 34 }), {
+    message: /no "entries" map/,
+  });
 });
 
 test('rejects a floor of zero, which would make the guard vacuous', () => {
@@ -173,7 +150,7 @@ test('rejects an index missing a required title, even when the count clears the 
         minimumEntries: 34,
         requiredTitles: ['Subheader', 'Subheader/Modes'],
       }),
-    { message: /missing required titles: Subheader, Subheader\/Modes/ }
+    { message: /missing required titles: Subheader, Subheader\/Modes/ },
   );
 });
 
@@ -223,13 +200,7 @@ test('run as a CLI, exits zero and reports the count on a healthy index', () => 
 test('run as a CLI, exits non-zero when a required title is absent', () => {
   const indexPath = fixture(indexWithStories(34));
 
-  const result = runCli([
-    indexPath,
-    '--min',
-    '34',
-    '--require-title',
-    'Subheader',
-  ]);
+  const result = runCli([indexPath, '--min', '34', '--require-title', 'Subheader']);
 
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing required titles: Subheader/);

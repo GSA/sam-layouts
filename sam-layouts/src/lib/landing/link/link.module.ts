@@ -7,11 +7,7 @@ import { SdsExternalLinkDirectivesModule } from '@gsa-sam/components';
 
 @NgModule({
   declarations: [SdsLandingLinkComponent],
-  imports: [
-    CommonModule,
-    RouterModule,
-    SdsExternalLinkDirectivesModule
-  ],
-  exports: [SdsLandingLinkComponent]
+  imports: [CommonModule, RouterModule, SdsExternalLinkDirectivesModule],
+  exports: [SdsLandingLinkComponent],
 })
-export class SdsLandingLinkModule { }
+export class SdsLandingLinkModule {}

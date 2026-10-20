@@ -3,8 +3,8 @@ import { UsaStepIndicatorConfig } from '@gsa-sam/ngx-uswds';
 import { SdsFormlyTypes } from '@gsa-sam/sam-formly';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'demo-stepper-simple',
   templateUrl: './simple.component.html',
   providers: [
@@ -14,7 +14,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
       useValue: {
         displayCounters: true,
         hideLabels: false,
-        headerPosition: 'top'
+        headerPosition: 'top',
       },
     },
   ],
@@ -88,8 +88,7 @@ export class DemoStepperSimpleComponent {
         type: SdsFormlyTypes.RADIO,
         templateOptions: {
           hideOptions: true,
-          label:
-            'Why are you registering this entity to do business with the U.S. government?',
+          label: 'Why are you registering this entity to do business with the U.S. government?',
           options: [
             {
               label: `Bid on federal contracts or other procurement opportunities.`,

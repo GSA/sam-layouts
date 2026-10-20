@@ -73,9 +73,7 @@ const securityHeaders = {
 createServer((request, response) => {
   let pathname;
   try {
-    pathname = decodeURIComponent(
-      new URL(request.url ?? '/', 'http://localhost').pathname
-    );
+    pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname);
   } catch {
     // Malformed percent-encoding (e.g. `%zz`) must not crash the server.
     response.writeHead(400, securityHeaders).end('Bad request');
@@ -91,9 +89,7 @@ createServer((request, response) => {
     return;
   }
   if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
-    const candidate = existsSync(filePath)
-      ? join(filePath, 'index.html')
-      : filePath;
+    const candidate = existsSync(filePath) ? join(filePath, 'index.html') : filePath;
     filePath = existsSync(candidate) ? candidate : join(root, 'index.html');
   }
   if (!existsSync(filePath)) {
@@ -103,12 +99,9 @@ createServer((request, response) => {
 
   response.writeHead(200, {
     ...securityHeaders,
-    'Content-Type':
-      contentTypes[extname(filePath)] ?? 'application/octet-stream',
+    'Content-Type': contentTypes[extname(filePath)] ?? 'application/octet-stream',
   });
   createReadStream(filePath).pipe(response);
 }).listen(port, '127.0.0.1', () =>
-  console.log(
-    `Security scan server listening on http://127.0.0.1:${port} (root: ${root})`
-  )
+  console.log(`Security scan server listening on http://127.0.0.1:${port} (root: ${root})`),
 );

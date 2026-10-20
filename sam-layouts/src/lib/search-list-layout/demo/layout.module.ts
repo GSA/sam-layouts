@@ -8,10 +8,7 @@ import {
   SdsSideToolbarModule,
   SdsDialogModule,
 } from '@gsa-sam/components';
-import {
-  SdsFiltersModule,
-  SDSFormlyUpdateModelService,
-} from '@gsa-sam/sam-formly';
+import { SdsFiltersModule, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
 
 import { ResultModule } from './result/result.module';
 import { SearchListServiceModule } from '../search-list-layout.module';
@@ -33,15 +30,11 @@ import { FilterTabModalComponent } from './filter-tab-modal.component';
     ResultModule,
     SdsSideToolbarModule,
     SdsSelectionPanelModule,
-    SdsDialogModule
+    SdsDialogModule,
   ],
 
   exports: [LayoutResponsiveComponent],
   declarations: [LayoutResponsiveComponent, FilterTabModalComponent],
-  providers: [
-    FilterService,
-    AutocompleteSampleDataService,
-    SDSFormlyUpdateModelService,
-  ],
+  providers: [FilterService, AutocompleteSampleDataService, SDSFormlyUpdateModelService],
 })
 export class ResultsLayoutModule {}

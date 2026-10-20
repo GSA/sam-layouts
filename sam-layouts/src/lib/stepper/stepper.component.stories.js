@@ -14,12 +14,7 @@ export default {
     moduleMetadata({
       declarations: [],
 
-      imports: [
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        DemoStepperSimpleModule,
-        DemoStepperAdvancedModule,
-      ],
+      imports: [BrowserAnimationsModule, RouterTestingModule, DemoStepperSimpleModule, DemoStepperAdvancedModule],
     }),
   ],
 };

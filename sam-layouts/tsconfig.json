@@ -6,7 +6,7 @@
     "strict": false,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
-    "strictPropertyInitialization": false, //TODO: enable 
+    "strictPropertyInitialization": false, //TODO: enable
     "noImplicitReturns": false,
     "noImplicitAny": false, //TODO: enable
     "noFallthroughCasesInSwitch": true,

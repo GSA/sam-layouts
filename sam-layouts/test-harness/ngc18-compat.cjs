@@ -70,11 +70,7 @@ const jestPresetAngularPath = 'jest-preset-angular';
 /** Bump when the rewriting rules change, so Jest's transform cache is invalidated. */
 const TRANSFORMER_VERSION = '1';
 
-const DEFINITION_CALLS = new Set([
-  'ɵɵdefineComponent',
-  'ɵɵdefineDirective',
-  'ɵɵdefinePipe',
-]);
+const DEFINITION_CALLS = new Set(['ɵɵdefineComponent', 'ɵɵdefineDirective', 'ɵɵdefinePipe']);
 const DECLARABLE_DECORATORS = new Set(['Component', 'Directive', 'Pipe']);
 
 /** Only `@gsa-sam/*` ships the affected bundles; never touch anything else. */
@@ -134,7 +130,7 @@ function propertyNamed(objectLiteral, name) {
     (property) =>
       property.name &&
       (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) &&
-      property.name.text === name
+      property.name.text === name,
   );
 }
 
@@ -190,7 +186,7 @@ function restoreImplicitStandaloneFalse(source, filename) {
     source,
     ts.ScriptTarget.ESNext,
     /* setParentNodes */ true,
-    ts.ScriptKind.JS
+    ts.ScriptKind.JS,
   );
 
   const offsets = collectInsertionPoints(sourceFile);
@@ -293,9 +289,7 @@ module.exports = {
         return `${key}:ngc18-standalone@${TRANSFORMER_VERSION}:${shouldRewrite(filename) ? 'on' : 'off'}`;
       },
       process(source, filename, options) {
-        const patched = shouldRewrite(filename)
-          ? restoreImplicitStandaloneFalse(source, filename)
-          : source;
+        const patched = shouldRewrite(filename) ? restoreImplicitStandaloneFalse(source, filename) : source;
         return inner.process(patched, filename, options);
       },
     };

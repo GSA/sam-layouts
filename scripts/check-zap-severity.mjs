@@ -112,9 +112,7 @@ function observationsOf(alert) {
         : { uri: 'instance with no url', known: false };
     });
   }
-  return alert.url === undefined || alert.url === null
-    ? []
-    : [{ uri: String(alert.url), known: true }];
+  return alert.url === undefined || alert.url === null ? [] : [{ uri: String(alert.url), known: true }];
 }
 
 /**
@@ -126,9 +124,7 @@ function observationsOf(alert) {
  */
 function unexceptedUrls(alert, exceptions) {
   const pluginId = String(alert.pluginid);
-  const forThisRule = exceptions.filter(
-    (exception) => exception.pluginId === pluginId
-  );
+  const forThisRule = exceptions.filter((exception) => exception.pluginId === pluginId);
   if (forThisRule.some((exception) => exception.scope === '*')) return [];
 
   const observations = observationsOf(alert);
@@ -136,11 +132,7 @@ function unexceptedUrls(alert, exceptions) {
   return observations
     .filter(
       ({ uri, known }) =>
-        !known ||
-        !forThisRule.some(
-          (exception) =>
-            exception.scope.length > 0 && uri.includes(exception.scope)
-        )
+        !known || !forThisRule.some((exception) => exception.scope.length > 0 && uri.includes(exception.scope)),
     )
     .map(({ uri }) => uri);
 }
@@ -161,9 +153,7 @@ function riskcodeOf(alert) {
   if (typeof raw !== 'string' && typeof raw !== 'number') return Number.NaN;
   if (typeof raw === 'string' && raw.trim().length === 0) return Number.NaN;
   const value = Number(raw);
-  return Number.isInteger(value) && SUPPORTED_RISK_CODES.has(value)
-    ? value
-    : Number.NaN;
+  return Number.isInteger(value) && SUPPORTED_RISK_CODES.has(value) ? value : Number.NaN;
 }
 
 const report = readJson(reportPath, 'ZAP JSON report');
@@ -177,29 +167,15 @@ const exceptions = readExceptions(rulesPath);
 // server dying before the scan) — nothing else in the job proves ZAP visited
 // the runtime, so that must block too. A site reported *with* `alerts: []` is a
 // legitimate clean scan and still passes.
-if (
-  report === null ||
-  typeof report !== 'object' ||
-  !Array.isArray(report.site)
-) {
-  fail(
-    'ZAP report is missing the expected "site" array — refusing to pass a malformed report.'
-  );
+if (report === null || typeof report !== 'object' || !Array.isArray(report.site)) {
+  fail('ZAP report is missing the expected "site" array — refusing to pass a malformed report.');
 }
 if (report.site.length === 0) {
-  fail(
-    'ZAP report contains no scanned site — refusing to pass a scan that never reached the target.'
-  );
+  fail('ZAP report contains no scanned site — refusing to pass a scan that never reached the target.');
 }
 for (const site of report.site) {
-  if (
-    site === null ||
-    typeof site !== 'object' ||
-    !Array.isArray(site.alerts)
-  ) {
-    fail(
-      'ZAP report has a site with no "alerts" array — refusing to pass a malformed report.'
-    );
+  if (site === null || typeof site !== 'object' || !Array.isArray(site.alerts)) {
+    fail('ZAP report has a site with no "alerts" array — refusing to pass a malformed report.');
   }
 }
 
@@ -209,15 +185,9 @@ const alerts = report.site.flatMap((site) => site.alerts);
 // cannot silently downgrade a finding below the gate.
 const suspicious = alerts.filter((alert) => Number.isNaN(riskcodeOf(alert)));
 if (suspicious.length > 0) {
-  console.error(
-    'ZAP report has alerts with a missing or non-numeric riskcode:'
-  );
+  console.error('ZAP report has alerts with a missing or non-numeric riskcode:');
   for (const alert of suspicious) {
-    console.error(
-      `- [${alert.pluginid ?? '?'}] ${alert.alert ?? 'unknown'}: riskcode=${
-        alert.riskcode
-      }`
-    );
+    console.error(`- [${alert.pluginid ?? '?'}] ${alert.alert ?? 'unknown'}: riskcode=${alert.riskcode}`);
   }
   process.exit(1);
 }
@@ -230,11 +200,7 @@ const blockingAlerts = alerts
 if (blockingAlerts.length > 0) {
   console.error('ZAP found medium- or high-risk alerts:');
   for (const { alert, urls } of blockingAlerts) {
-    console.error(
-      `- [${alert.pluginid}] ${alert.alert}: ${alert.riskdesc} (${urls.join(
-        ', '
-      )})`
-    );
+    console.error(`- [${alert.pluginid}] ${alert.alert}: ${alert.riskdesc} (${urls.join(', ')})`);
   }
   process.exit(1);
 }

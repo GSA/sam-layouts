@@ -42,9 +42,7 @@ const positional = args.filter((arg) => !arg.startsWith('--'));
 const [project, reportArg] = positional;
 
 if (!project || !reportArg) {
-  console.error(
-    'Usage: node scripts/check-lint-baseline.mjs [--bump] <project> <path/to/eslint-report.json>'
-  );
+  console.error('Usage: node scripts/check-lint-baseline.mjs [--bump] <project> <path/to/eslint-report.json>');
   process.exit(1);
 }
 
@@ -56,9 +54,7 @@ try {
 } catch (error) {
   console.error(`✖ Could not read ESLint report at ${reportPath}`);
   console.error(`  ${error.message}`);
-  console.error(
-    '  Run `npm run lint:report` first to generate the per-project reports.'
-  );
+  console.error('  Run `npm run lint:report` first to generate the per-project reports.');
   process.exit(1);
 }
 
@@ -74,32 +70,26 @@ if (!Array.isArray(report)) {
 // there is strictly worse than a hard failure, and `--bump` would compound it
 // by ratcheting the baseline down to 0.
 if (report.length === 0) {
-  console.error(
-    `✖ ${project}: ESLint report at ${reportPath} is empty — no files were linted.`
-  );
+  console.error(`✖ ${project}: ESLint report at ${reportPath} is empty — no files were linted.`);
   console.error(
     '  An empty report cannot prove the project is clean; it means the lint\n' +
       '  target, its file globs, or the project name is wrong. Check that\n' +
       `  \`npx nx run ${project}:lint\` actually matches source files, then re-run\n` +
-      '  `npm run lint:report`.'
+      '  `npm run lint:report`.',
   );
   process.exit(1);
 }
 
 for (const result of report) {
   if (!result || typeof result !== 'object') {
-    console.error(
-      `✖ Invalid ESLint report format: report contains non-object results.`
-    );
+    console.error(`✖ Invalid ESLint report format: report contains non-object results.`);
     process.exit(1);
   }
   // Same reasoning as the empty-array guard, one level down: a result with no
   // filePath is not a linted file, so it must not be allowed to contribute a
   // reassuring 0/0 to the totals.
   if (typeof result.filePath !== 'string' || result.filePath.length === 0) {
-    console.error(
-      `✖ Invalid ESLint report format: result has a missing or empty filePath.`
-    );
+    console.error(`✖ Invalid ESLint report format: result has a missing or empty filePath.`);
     process.exit(1);
   }
   const { errorCount, warningCount } = result;
@@ -111,9 +101,7 @@ for (const result of report) {
     !Number.isFinite(warningCount) ||
     warningCount < 0
   ) {
-    console.error(
-      `✖ Invalid ESLint report format: missing or invalid errorCount/warningCount values.`
-    );
+    console.error(`✖ Invalid ESLint report format: missing or invalid errorCount/warningCount values.`);
     process.exit(1);
   }
 }
@@ -133,7 +121,7 @@ const totals = report.reduce(
     acc.warnings += result.warningCount;
     return acc;
   },
-  { errors: 0, warnings: 0 }
+  { errors: 0, warnings: 0 },
 );
 
 if (bump) {
@@ -147,23 +135,19 @@ if (bump) {
   const next = Math.min(current, totals.warnings);
 
   if (totals.errors > 0) {
-    console.error(
-      `✖ ${project}: ${totals.errors} ESLint error(s) found; fix errors before bumping the baseline.`
-    );
+    console.error(`✖ ${project}: ${totals.errors} ESLint error(s) found; fix errors before bumping the baseline.`);
     process.exit(1);
   }
 
   if (next === current) {
-    console.log(
-      `= ${project}: baseline already at or below current warnings (${current}); nothing to bump.`
-    );
+    console.log(`= ${project}: baseline already at or below current warnings (${current}); nothing to bump.`);
     process.exit(0);
   }
 
   baselines[project] = next;
   writeFileSync(baselinePath, `${JSON.stringify(baselines, null, 2)}\n`);
   console.log(
-    `↓ ${project}: baseline lowered ${current} → ${next} (measured ${totals.warnings}). Commit this change on its own.`
+    `↓ ${project}: baseline lowered ${current} → ${next} (measured ${totals.warnings}). Commit this change on its own.`,
   );
   process.exit(0);
 }
@@ -176,7 +160,7 @@ if (!Number.isFinite(baseline)) {
 
 if (totals.errors > 0) {
   console.error(
-    `✖ ${project}: ${totals.errors} ESLint error(s) found. Errors are never allowed, regardless of the warning baseline.`
+    `✖ ${project}: ${totals.errors} ESLint error(s) found. Errors are never allowed, regardless of the warning baseline.`,
   );
   process.exit(1);
 }
@@ -189,11 +173,11 @@ if (totals.warnings > baseline) {
     '\n  This change introduced new ESLint warnings beyond the accepted baseline.\n' +
       '  Fix the new findings, or if you intentionally reduced warnings elsewhere,\n' +
       `  run \`node scripts/check-lint-baseline.mjs --bump ${project} ${reportArg}\` and commit\n` +
-      '  the lowered baseline as its own change.'
+      '  the lowered baseline as its own change.',
   );
   process.exit(1);
 }
 
 console.log(
-  `✓ ${project}: ${totals.warnings} warnings (baseline ${baseline}), ${totals.errors} errors. Lint baseline gate passed.`
+  `✓ ${project}: ${totals.warnings} warnings (baseline ${baseline}), ${totals.errors} errors. Lint baseline gate passed.`,
 );

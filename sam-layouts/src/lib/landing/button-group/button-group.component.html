@@ -1,9 +1,7 @@
 <ng-container *ngFor="let button of buttons">
   <ng-container *ngIf="button.icons; then icon; else noIcon"></ng-container>
   <ng-template #icon>
-    <ng-container
-      *ngIf="button.clickHandler; then iconWithClickHandler; else iconWithLink"
-    ></ng-container>
+    <ng-container *ngIf="button.clickHandler; then iconWithClickHandler; else iconWithLink"></ng-container>
 
     <ng-template #iconWithClickHandler>
       <button
@@ -11,10 +9,7 @@
         id="{{ button.id || button.text }}"
         (click)="button.clickHandler()"
       >
-        <usa-icon
-          class="margin-right-1 padding-top-1px"
-          [icon]="[button.icons.icon.icon]"
-        ></usa-icon>
+        <usa-icon class="margin-right-1 padding-top-1px" [icon]="[button.icons.icon.icon]"></usa-icon>
         <div class="flex-align-self-center">{{ button.text }}</div>
       </button>
     </ng-template>
@@ -25,10 +20,7 @@
         id="{{ button.id || button.text }}"
         routerLink="{{ button.url }}"
       >
-        <usa-icon
-          class="margin-right-1 padding-top-1px"
-          [icon]="[button.icons.icon.icon]"
-        ></usa-icon>
+        <usa-icon class="margin-right-1 padding-top-1px" [icon]="[button.icons.icon.icon]"></usa-icon>
         <div class="flex-align-self-center">{{ button.text }}</div>
       </button>
     </ng-template>
@@ -52,12 +44,9 @@
         >{{ button.text }}</a
       >
       <ng-template #routerLink>
-        <a
-          class="usa-button width-full margin-bottom-1"
-          [ngClass]="button.classes"
-          routerLink="{{ button.url }}"
-          >{{ button.text }}</a
-        >
+        <a class="usa-button width-full margin-bottom-1" [ngClass]="button.classes" routerLink="{{ button.url }}">{{
+          button.text
+        }}</a>
       </ng-template>
     </ng-template>
   </ng-template>

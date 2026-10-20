@@ -1,25 +1,15 @@
 import { CdkPortalOutletAttachedRef } from '@angular/cdk/portal';
-import {
-  Component,
-  ComponentRef,
-  Inject,
-  Input,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, ComponentRef, Inject, Input, ViewEncapsulation } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import {
-  SdsDialogRef,
-  SdsDialogService,
-  SDS_DIALOG_DATA,
-} from '@gsa-sam/components';
+import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/components';
 import { filter } from 'rxjs/operators';
 
 interface Data {
   help: [];
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-header-help',
   styleUrls: ['./help.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -31,11 +21,7 @@ interface Data {
       matTooltip="Find help articles for features on this page"
       title="Find help articles for features on this page"
     >
-      <usa-icon
-        class="text-info"
-        [icon]="'question-circle'"
-        [size]="'2x'"
-      ></usa-icon>
+      <usa-icon class="text-info" [icon]="'question-circle'" [size]="'2x'"></usa-icon>
     </button>
   `,
 })
@@ -62,17 +48,13 @@ export class SdsHeaderHelpComponent {
   }
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   template: `
-    <div
-      class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2"
-    >
+    <div class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2">
       <h2 class="font-heading-lg text-semibold">Help</h2>
       <div *ngFor="let item of data.help">
-        <h3
-          class="font-heading-md text-semibold margin-top-205 margin-bottom-1"
-        >
+        <h3 class="font-heading-md text-semibold margin-top-205 margin-bottom-1">
           {{ item.head.title }}
         </h3>
         <ng-template
@@ -91,13 +73,11 @@ export class HelpContentComponent {
   constructor(
     private router: Router,
     public dialogRef: SdsDialogRef<HelpContentComponent>,
-    @Inject(SDS_DIALOG_DATA) public data: Data
+    @Inject(SDS_DIALOG_DATA) public data: Data,
   ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationStart))
-      .subscribe(() => {
-        this.dialogRef.close();
-      });
+    this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe(() => {
+      this.dialogRef.close();
+    });
   }
 
   inputs(ref: CdkPortalOutletAttachedRef, componentInputs = {}) {

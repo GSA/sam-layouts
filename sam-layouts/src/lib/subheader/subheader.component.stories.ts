@@ -13,11 +13,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [],
-      imports: [
-        BrowserAnimationsModule,
-        SdsSubheaderModule,
-        RouterTestingModule,
-      ],
+      imports: [BrowserAnimationsModule, SdsSubheaderModule, RouterTestingModule],
       providers: [],
     }),
   ],

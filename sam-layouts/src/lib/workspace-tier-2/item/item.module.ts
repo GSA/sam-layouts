@@ -7,11 +7,7 @@ import {
 
 @NgModule({
   imports: [],
-  exports: [
-    SdsWorkspaceTier2ItemComponent,
-    SdsWorkspaceTier2ItemHeadComponent,
-    SdsWorkspaceTier2ItemBodyComponent,
-  ],
+  exports: [SdsWorkspaceTier2ItemComponent, SdsWorkspaceTier2ItemHeadComponent, SdsWorkspaceTier2ItemBodyComponent],
   declarations: [
     SdsWorkspaceTier2ItemComponent,
     SdsWorkspaceTier2ItemHeadComponent,

@@ -1,79 +1,69 @@
 import { QueryParamsHandling } from '@angular/router';
 import { Observable } from 'rxjs';
 export class SearchParameters {
+  /**
+   * page  
+   */
+  page: Page;
 
-    /**
-     * page  
-     */
-    page: Page;
+  /**
+   * Sort value
+   */
+  sortField: string;
 
-    /**
-     * Sort value
-     */
-    sortField: string
-
-    /**
-     * filter data
-     */
-    filter: any;
-
+  /**
+   * filter data
+   */
+  filter: any;
 }
 
 export interface Page {
+  /**
+   * Page number
+   */
+  pageNumber: number;
 
-    /**
-     * Page number
-     */
-    pageNumber: number;
+  /**
+   * Page size
+   */
+  pageSize: number;
 
-    /**
-     * Page size
-     */
-    pageSize: number;
-
-    /**
-     * Total number of pages
-     */
-    totalPages: number;
-
+  /**
+   * Total number of pages
+   */
+  totalPages: number;
 }
 
 export class SearchResult {
+  /**
+   * Total number of items (beyond the page)
+   */
+  totalItems: number;
 
-    /**
-     * Total number of items (beyond the page)
-     */
-    totalItems: number;
-
-    /**
-     * Items to be displayed
-     */
-    items: any[];
+  /**
+   * Items to be displayed
+   */
+  items: any[];
 }
 
-
-
 export interface SearchListInterface {
-
-    /**
-     * Method to get the takes it takes in the SearchParameters and returns SearchResult object
-     * @param search 
-     */
-    getData(search: SearchParameters): Observable<SearchResult>;
+  /**
+   * Method to get the takes it takes in the SearchParameters and returns SearchResult object
+   * @param search
+   */
+  getData(search: SearchParameters): Observable<SearchResult>;
 }
 
 export class sortItem {
-    /**
-     * Text to be displayed
-     */
-    text: string;
+  /**
+   * Text to be displayed
+   */
+  text: string;
 
-    /**
-     * Value of Item
-     */
-    value: string;
-
-
+  /**
+   * Value of Item
+   */
+  value: string;
 }
 
 export interface SearchExcludeField {
@@ -82,36 +72,35 @@ export interface SearchExcludeField {
 }
 
 export class SearchListConfiguration {
+  /**
+   * List of sort by items
+   */
+  sortList: sortItem[];
 
-    /**
-     * List of sort by items
-     */
-    sortList: sortItem[];
+  /**
+   * default sort value
+   */
+  defaultSortValue: string;
 
-    /**
-     * default sort value
-     */
-    defaultSortValue: string;
+  /**
+   * Starting page size
+   */
+  pageSize = 25;
 
-    /**
-     * Starting page size
-     */
-    pageSize = 25;
+  /**
+   * Default values to use during initialization when there is none in url.
+   */
+  defaultFilterValue?: any = {};
 
-    /**
-     * Default values to use during initialization when there is none in url.
-     */
-    defaultFilterValue?: any = {};
+  queryParamsHandling?: QueryParamsHandling;
 
-    queryParamsHandling?: QueryParamsHandling;
+  excludeFilterFields?: SearchExcludeField[];
 
-    excludeFilterFields?: SearchExcludeField[];
-
-    isDefaultFilter?: (filter: {[key: string] : any}) => boolean;
+  isDefaultFilter?: (filter: { [key: string]: any }) => boolean;
 }
 
 export interface ResultsModel {
-    sort?: string;
-    page?: number;
-    filterModel: any;
+  sort?: string;
+  page?: number;
+  filterModel: any;
 }

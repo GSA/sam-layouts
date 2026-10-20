@@ -6,10 +6,10 @@ import {
   SelectionMode,
 } from '@gsa-sam/components';
 import { AutocompleteService } from './examples/services/autocomplete.service';
-import { SUBHEADERACTIONSTYLE } from './subheader.component'
+import { SUBHEADERACTIONSTYLE } from './subheader.component';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'demo-subheader',
   template: `
     <sds-subheader>
@@ -23,9 +23,7 @@ import { SUBHEADERACTIONSTYLE } from './subheader.component'
       <ng-content></ng-content>
 
       <ng-container *ngIf="showButtons" subheader-buttons-container>
-        <button class="usa-button bg-primary-lighter grid-col-6">
-          Button
-        </button>
+        <button class="usa-button bg-primary-lighter grid-col-6">Button</button>
         <button class="usa-button grid-col-6">Button</button>
       </ng-container>
 
@@ -46,27 +44,16 @@ import { SUBHEADERACTIONSTYLE } from './subheader.component'
       </sds-autocomplete>
 
       <ng-container *ngIf="showButtonGroup" subheader-buttongroup-container>
-        <sds-button-group
-          [mode]="'radio'"
-          class="sds-button-group sds-button-group--secondary"
-        >
-          <sds-button-group-option
-            [checked]="true"
-            value="selected"
-            [aria-label]="'selected'"
-          >
+        <sds-button-group [mode]="'radio'" class="sds-button-group sds-button-group--secondary">
+          <sds-button-group-option [checked]="true" value="selected" [aria-label]="'selected'">
             Selected
           </sds-button-group-option>
-          <sds-button-group-option value="button1" [aria-label]="'button1'">
-            Button 1
-          </sds-button-group-option>
-          <sds-button-group-option value="button2" [aria-label]="'button2'">
-            Button 2
-          </sds-button-group-option>
+          <sds-button-group-option value="button1" [aria-label]="'button1'"> Button 1 </sds-button-group-option>
+          <sds-button-group-option value="button2" [aria-label]="'button2'"> Button 2 </sds-button-group-option>
         </sds-button-group>
       </ng-container>
       <sds-subheader-actions
-      [mobileTabletStyle]="buttonStyle"
+        [mobileTabletStyle]="buttonStyle"
         [model]="actionsModel"
         (clicks)="actionsClicks.emit($event)"
       >
@@ -86,14 +73,13 @@ export class DemoSubheaderComponent {
   //DEFAULT, PRIMARY, SECONDARY, SECONDARY_DARK, OUTLINE, OUTLINE_SECONDARY, WHITE, ACCENT_COOL, DANGER
 
   constructor(public autocompleteService: AutocompleteService) {
-
     this.autocompleteSetup();
   }
 
   autocompleteSettings = new SDSAutocompletelConfiguration();
 
   autocompleteModel = new SDSSelectedItemModel();
-  SUBHEADERACTIONSTYLE
+  SUBHEADERACTIONSTYLE;
   actionsModel = {
     actions: [
       { id: 'Download', text: 'Download' },
@@ -106,8 +92,7 @@ export class DemoSubheaderComponent {
   searchSettings: SearchSettings = {
     placeholder: 'Enter an entity ID, name, or keyword',
     parentSelector: '.sds-subheader__content',
-    inputClass:
-      'width-card-lg widescreen:width-mobile display-none desktop-lg:display-inline-block',
+    inputClass: 'width-card-lg widescreen:width-mobile display-none desktop-lg:display-inline-block',
     size: 'small',
     ariaLabel: 'Search Entity',
     dropdown: {},

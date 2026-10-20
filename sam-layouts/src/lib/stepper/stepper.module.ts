@@ -17,10 +17,7 @@ import {
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsStepperModule } from '@gsa-sam/sam-formly';
 import { UsaStepIndicatorModule } from '@gsa-sam/ngx-uswds';
-import {
-  SLStepperHeaderComponent,
-  SLStepperHeaderWithStatusComponent,
-} from './header/header.component';
+import { SLStepperHeaderComponent, SLStepperHeaderWithStatusComponent } from './header/header.component';
 import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from './footer/footer.component';
 
 @NgModule({
@@ -29,7 +26,7 @@ import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from '
     SLStepperHeaderComponent,
     SLStepperHeaderWithStatusComponent,
     SLStepperFooterComponent,
-    SLStepperFooterCustomActionComponent
+    SLStepperFooterCustomActionComponent,
   ],
   imports: [
     CommonModule,
@@ -54,7 +51,7 @@ import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from '
     SLStepperHeaderComponent,
     SLStepperHeaderWithStatusComponent,
     SLStepperFooterComponent,
-    SLStepperFooterCustomActionComponent
+    SLStepperFooterCustomActionComponent,
   ],
 })
 export class SLStepperModule {}

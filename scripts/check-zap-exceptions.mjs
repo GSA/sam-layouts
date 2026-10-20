@@ -41,10 +41,7 @@ const rulesPath = process.argv[2] ?? '.zap/rules.tsv';
 function isRealIsoDate(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00Z`);
-  return (
-    !Number.isNaN(parsed.getTime()) &&
-    parsed.toISOString().slice(0, 10) === value
-  );
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }
 
 let contents;
@@ -53,9 +50,7 @@ try {
 } catch {
   // A missing ledger is not an error: it means no waivers, and the severity
   // gate is strictest in that state.
-  console.log(
-    `No ZAP exception ledger at ${rulesPath}; the gate has no waivers.`
-  );
+  console.log(`No ZAP exception ledger at ${rulesPath}; the gate has no waivers.`);
   process.exit(0);
 }
 
@@ -77,9 +72,7 @@ for (const { line, lineNumber } of rows) {
     problems.push(`expected 7 tab-separated columns, found ${columns.length}`);
   }
   if (!/^\d+$/.test(ruleId ?? '')) {
-    problems.push(
-      `rule-id is not a numeric ZAP plugin id: ${JSON.stringify(ruleId)}`
-    );
+    problems.push(`rule-id is not a numeric ZAP plugin id: ${JSON.stringify(ruleId)}`);
   }
   if (action !== 'IGNORE') {
     problems.push(`action must be IGNORE, found ${JSON.stringify(action)}`);
@@ -87,40 +80,24 @@ for (const { line, lineNumber } of rows) {
   if (!scope?.trim()) {
     problems.push('scope is empty (use * for a deliberate rule-wide waiver)');
   }
-  if (
-    !/^https:\/\/github\.com\/GSA\/sam-layouts\/issues\/\d+$/.test(issue ?? '')
-  ) {
-    problems.push(
-      `issue must be a GSA/sam-layouts issue URL, found ${JSON.stringify(
-        issue
-      )}`
-    );
+  if (!/^https:\/\/github\.com\/GSA\/sam-layouts\/issues\/\d+$/.test(issue ?? '')) {
+    problems.push(`issue must be a GSA/sam-layouts issue URL, found ${JSON.stringify(issue)}`);
   }
   if (!owner?.trim()) {
     problems.push('owner is empty');
   }
   if (!isRealIsoDate(expiry ?? '')) {
-    problems.push(
-      `expiry is not a real YYYY-MM-DD date: ${JSON.stringify(expiry)}`
-    );
+    problems.push(`expiry is not a real YYYY-MM-DD date: ${JSON.stringify(expiry)}`);
   } else if (expiry < today) {
-    problems.push(
-      `expiry ${expiry} is in the past (today is ${today}) — re-review or remove this waiver`
-    );
+    problems.push(`expiry ${expiry} is in the past (today is ${today}) — re-review or remove this waiver`);
   }
   if (!rationale?.trim() || rationale.trim().split(/\s+/).length < 5) {
-    problems.push(
-      'rationale is missing or too short to be a real justification'
-    );
+    problems.push('rationale is missing or too short to be a real justification');
   }
 
   const key = `${ruleId}\u0000${scope}`;
   if (seen.has(key)) {
-    problems.push(
-      `duplicate (rule-id, scope) pair, already defined on line ${seen.get(
-        key
-      )}`
-    );
+    problems.push(`duplicate (rule-id, scope) pair, already defined on line ${seen.get(key)}`);
   } else {
     seen.set(key, lineNumber);
   }
@@ -137,7 +114,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `${rulesPath} passes validation: ${rows.length} reviewed exception${
-    rows.length === 1 ? '' : 's'
-  }, all unexpired.`
+  `${rulesPath} passes validation: ${rows.length} reviewed exception${rows.length === 1 ? '' : 's'}, all unexpired.`,
 );

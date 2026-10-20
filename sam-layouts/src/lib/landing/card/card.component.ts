@@ -1,7 +1,7 @@
 import { Component, Directive } from '@angular/core';
 
-	@Directive({
-	standalone: false,
+@Directive({
+  standalone: false,
   selector: `[sdsLandingCardTitle]`,
   host: {
     class: 'sds-card__title',
@@ -9,8 +9,8 @@ import { Component, Directive } from '@angular/core';
 })
 export class SdsLandingCardTitleDirective {}
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-landing-card',
   templateUrl: './card.component.html',
 })

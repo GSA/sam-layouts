@@ -40,21 +40,11 @@ const configDir = dirname(fileURLToPath(import.meta.url));
 // GSA/sam-layouts#64 and GSA/sam-layouts#72 — and the first with a build
 // failure attached. Delete these aliases once `@gsa-sam/components` declares
 // its own dependencies.
-const testStubs = join(
-  configDir,
-  '..',
-  '..',
-  '..',
-  'sam-layouts',
-  'test-stubs'
-);
+const testStubs = join(configDir, '..', '..', '..', 'sam-layouts', 'test-stubs');
 
 const undeclaredDependencyAliases = {
   'ngx-toastr': join(testStubs, 'ngx-toastr.ts'),
-  '@ckeditor/ckeditor5-build-classic': join(
-    testStubs,
-    'ckeditor5-build-classic.ts'
-  ),
+  '@ckeditor/ckeditor5-build-classic': join(testStubs, 'ckeditor5-build-classic.ts'),
 };
 
 const config: StorybookConfig = {
@@ -62,9 +52,7 @@ const config: StorybookConfig = {
   // (`sam-layouts/src/lib`), not in the demo app's `src/app`. See
   // GSA/sam-layouts#75 — the old `../src/app/**` glob matched nothing, so
   // `build-storybook` shipped `{"v":5,"entries":{}}` and exited 0.
-  stories: [
-    '../../../sam-layouts/src/lib/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
-  ],
+  stories: ['../../../sam-layouts/src/lib/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
   // Storybook 10 dissolved `@storybook/addon-essentials` and eight of the
   // nine addons it bundled into `storybook` core (actions, backgrounds,
   // controls, highlight, measure, outline, toolbars, viewport). None of them

@@ -1,20 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  HostListener,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  NavigationLink,
-  SdsDialogConfig,
-  SdsDialogRef,
-  SelectionPanelModel,
-} from '@gsa-sam/components';
-import {
-  ResultsModel,
-  SearchListConfiguration,
-} from '../../model/search-list-layout.model';
+import { NavigationLink, SdsDialogConfig, SdsDialogRef, SelectionPanelModel } from '@gsa-sam/components';
+import { ResultsModel, SearchListConfiguration } from '../../model/search-list-layout.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BehaviorSubject, timer } from 'rxjs';
 import { DataService } from '../data.service';
@@ -22,8 +9,8 @@ import { FilterService } from '../filter.service';
 import { navigationConfig } from '../navigate.config';
 import { debounce, filter, pairwise, tap } from 'rxjs/operators';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'demo-search-list-layout',
   templateUrl: './layout-responsive.component.html',
 })
@@ -61,9 +48,9 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       { text: 'Entity Name', value: 'legalBusinessName' },
       { text: 'Status', value: 'registrationStatus' },
     ],
-    // consider the filter config to be default if there is a keyword tag with 
+    // consider the filter config to be default if there is a keyword tag with
     // text 'ignore'. This is for demo purpose.
-    isDefaultFilter: (filter) =>  filter?.keyword?.keywordTags?.some((keywordTag) => keywordTag?.text === 'ignore')
+    isDefaultFilter: (filter) => filter?.keyword?.keywordTags?.some((keywordTag) => keywordTag?.text === 'ignore'),
   };
 
   /* Sort config change demo */
@@ -90,7 +77,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     public service: DataService,
     public filterService: FilterService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -116,12 +103,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     const filters$ = this.filterChange$.pipe(
       pairwise(),
       filter(([prev, curr]: any) => {
-        if (
-          curr.keyword &&
-          curr.keyword.keywordTags &&
-          curr.keyword.keywordTags.length > 0
-        )
-          return true;
+        if (curr.keyword && curr.keyword.keywordTags && curr.keyword.keywordTags.length > 0) return true;
         if (Array.isArray(prev)) return false;
         return (
           prev.keyword.keywordRadio === curr.keyword.keywordRadio &&
@@ -129,12 +111,10 @@ export class LayoutResponsiveComponent implements AfterViewInit {
         );
       }),
       debounce(([prev, curr]) =>
-        curr.keyword &&
-        curr.keyword.keywordTextarea &&
-        curr.keyword.keywordTextarea.length > 0
+        curr.keyword && curr.keyword.keywordTextarea && curr.keyword.keywordTextarea.length > 0
           ? timer(debounceTime)
-          : timer(0)
-      )
+          : timer(0),
+      ),
     );
 
     filters$.subscribe((model) => {
@@ -142,8 +122,8 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     });
 
     // Listen for radio change and refresh autocomplete
-    const keywordGroup = (<any>this.fields.find((field) => field.key === 'keyword'))
-      .fieldArray.fieldGroup[0].fieldGroup;
+    const keywordGroup = (<any>this.fields.find((field) => field.key === 'keyword')).fieldArray.fieldGroup[0]
+      .fieldGroup;
 
     keywordGroup
       .find((keyword) => keyword.key === 'keywordRadio')
@@ -202,9 +182,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       },
     };
 
-    (<any>this.fields[0]).fieldArray.fieldGroup[0].form.setValue(
-      model.filterModel.keyword
-    );
+    (<any>this.fields[0]).fieldArray.fieldGroup[0].form.setValue(model.filterModel.keyword);
     this.resultList.updateSearchResultsModel(model);
   }
 

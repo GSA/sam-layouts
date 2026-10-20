@@ -18,11 +18,10 @@ describe('SdsFeedbackComponent', () => {
         ReactiveFormsModule,
         SdsCollapseModule,
         IconModule,
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
       ],
-      declarations: [ SdsFeedbackComponent ]
-    })
-    .compileComponents();
+      declarations: [SdsFeedbackComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

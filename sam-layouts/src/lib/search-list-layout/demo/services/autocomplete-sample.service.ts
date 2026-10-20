@@ -6,48 +6,44 @@ import { map } from 'rxjs/operators';
 
 import { SampleAutocompleteData } from './autocomplete-sample.data';
 
-
 @Injectable()
 export class AutocompleteSampleDataService implements SDSAutocompleteServiceInterface {
+  private loadedData;
+  constructor() {
+    this.loadedData = SampleAutocompleteData;
+  }
 
-    private loadedData;
-    constructor() {
-        this.loadedData = SampleAutocompleteData;
+  getDataByText(currentItems: number, searchValue?: string): Observable<SDSHiercarchicalServiceResult> {
+    const itemIncrease = 25;
+    const data = of(this.loadedData);
+    let itemsOb: Observable<object[]>;
+
+    if (searchValue) {
+      itemsOb = data.pipe(
+        map((items) =>
+          items.filter((itm) => itm.name.indexOf(searchValue) !== -1 || itm.subtext.indexOf(searchValue) !== -1),
+        ),
+      );
+    } else {
+      itemsOb = data;
     }
 
-    getDataByText(currentItems: number, searchValue?: string): Observable<SDSHiercarchicalServiceResult> {
-        const itemIncrease = 25;
-        const data = of(this.loadedData);
-        let itemsOb: Observable<object[]>;
+    let items: object[];
+    itemsOb.subscribe((result) => {
+      items = result;
+    });
+    const totalItemCount = items.length;
 
-        if (searchValue) {
-            itemsOb = data.pipe(map(items => items.filter(itm =>
-                (itm.name.indexOf(searchValue) !== -1 ||
-                    itm.subtext.indexOf(searchValue) !== -1
-                ))));
-        } else {
-            itemsOb = data;
-        }
-
-        let items: object[];
-        itemsOb.subscribe(
-            (result) => {
-                items = result;
-            }
-        );
-        const totalItemCount = items.length;
-
-        let maxSectionPosition = currentItems + itemIncrease;
-        if (maxSectionPosition > totalItemCount) {
-            maxSectionPosition = totalItemCount;
-        }
-        const selectedtems = items.slice(currentItems, maxSectionPosition);
-
-        const returnItem = {
-            items: selectedtems,
-            totalItems: totalItemCount
-        };
-        return of(returnItem);
-
+    let maxSectionPosition = currentItems + itemIncrease;
+    if (maxSectionPosition > totalItemCount) {
+      maxSectionPosition = totalItemCount;
     }
+    const selectedtems = items.slice(currentItems, maxSectionPosition);
+
+    const returnItem = {
+      items: selectedtems,
+      totalItems: totalItemCount,
+    };
+    return of(returnItem);
+  }
 }

@@ -7,22 +7,17 @@ import {
   ElementRef,
   HostListener,
   TemplateRef,
-  ContentChild
+  ContentChild,
 } from '@angular/core';
-import {
-  HeaderModel,
-  HeaderNavigationLink,
-  HeaderSecondaryLink
-} from './model/HeaderModel';
+import { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
 import { INavigationLink, Selectable } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
 
-
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class SdsHeaderComponent {
   @ViewChild('usaNavOpen') openNavBtn: ElementRef;
@@ -46,13 +41,12 @@ export class SdsHeaderComponent {
   @Input() hidePrimaryLinks = false;
   @Input() hideAlerts = false;
 
-
   /**
    * Model used for the different display portions of the header
    */
   @Input() model: HeaderModel;
 
-  @Input() flagPath: string;  
+  @Input() flagPath: string;
 
   @Input() topBannerDescription = '';
 
@@ -73,9 +67,7 @@ export class SdsHeaderComponent {
   removeWhiteSpace(text: string) {
     return text.replace(/ /g, '');
   }
-  constructor() {
-
-  }
+  constructor() {}
   /**
    * seeif any secondary link has a counter
    */
@@ -83,7 +75,7 @@ export class SdsHeaderComponent {
     let hasCounter = false;
     if (this.model) {
       if (this.model.secondaryLinks) {
-        this.model.secondaryLinks.forEach(function(item: HeaderSecondaryLink) {
+        this.model.secondaryLinks.forEach(function (item: HeaderSecondaryLink) {
           if (item.hasCounter) {
             hasCounter = true;
           }
@@ -114,19 +106,17 @@ export class SdsHeaderComponent {
         this.model.home.selected = false;
       }
       if (this.model.navigationLinks) {
-        this.model.navigationLinks.forEach(function(
-          item: HeaderNavigationLink
-        ) {
+        this.model.navigationLinks.forEach(function (item: HeaderNavigationLink) {
           item.selected = false;
           if (item.children) {
-            item.children.forEach(function(child: HeaderNavigationLink) {
+            item.children.forEach(function (child: HeaderNavigationLink) {
               child.selected = false;
             });
           }
         });
       }
       if (this.model.secondaryLinks) {
-        this.model.secondaryLinks.forEach(function(item: HeaderSecondaryLink) {
+        this.model.secondaryLinks.forEach(function (item: HeaderSecondaryLink) {
           item.selected = false;
         });
       }
@@ -147,7 +137,7 @@ export class SdsHeaderComponent {
       }
       toReturn = this.findNavigationLinks(id, toReturn);
       if (this.model.secondaryLinks) {
-        this.model.secondaryLinks.forEach(function(item: HeaderSecondaryLink) {
+        this.model.secondaryLinks.forEach(function (item: HeaderSecondaryLink) {
           if (item.id === id) {
             toReturn = item;
           }
@@ -163,12 +153,12 @@ export class SdsHeaderComponent {
    */
   private findNavigationLinks(id: string, toReturn: Selectable): Selectable {
     if (this.model.navigationLinks) {
-      this.model.navigationLinks.forEach(function(item: HeaderNavigationLink) {
+      this.model.navigationLinks.forEach(function (item: HeaderNavigationLink) {
         if (item.id === id) {
           toReturn = item;
         }
         if (item.children) {
-          item.children.forEach(function(child: HeaderNavigationLink) {
+          item.children.forEach(function (child: HeaderNavigationLink) {
             if (child.id === id) {
               toReturn = child;
             }
@@ -193,10 +183,7 @@ export class SdsHeaderComponent {
   // Let's make the page state consistent by deactivating the mobile nav.
   @HostListener('window:resize', ['$event'])
   onBrowserResize(event) {
-    if (
-      this.mobileNavActive &&
-      this.closeNavBtn.nativeElement.getBoundingClientRect().width === 0
-    ) {
+    if (this.mobileNavActive && this.closeNavBtn.nativeElement.getBoundingClientRect().width === 0) {
       this.mobileNavActive = false;
     }
   }
