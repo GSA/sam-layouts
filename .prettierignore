@@ -1,6 +1,25 @@
 # Add files here to ignore them from prettier formatting
+node_modules
 /dist
 /coverage
 /.nx/cache
 /.nx/workspace-data
 .angular
+
+# Generated Storybook output (this wave renamed the legacy /docs Pages output
+# to dist/storybook/sam-layouts — see GSA/sam-layouts#83 — but keep the
+# conventional name ignored too in case tooling ever emits it locally).
+storybook-static
+dist/storybook
+
+# Future Playwright/axe artifacts (GSA/sam-layouts#82)
+test-results
+playwright-report
+blob-report
+
+# ZAP DAST scan output
+report_*.html
+report_json.json
+
+# Lockfile is machine-generated; never reformatted
+package-lock.json
