@@ -127,12 +127,15 @@ git diff -w --stat FETCH_HEAD:layouts/src/lib origin/main:sam-layouts/src/lib
 
 **This is a git-hygiene problem, not a content-recovery problem.** No cherry-pick or port of any `angular-*`/`IAEMOD-*` commit is required.
 
+### GitHub Pages and historical branches
+
+Pushes to `main` build Storybook from source and publish `dist/storybook/sam-layouts` to the `gh-pages` branch through `.github/workflows/deploy-storybook-pages.yml`. The workflow blocks deployment unless its `index.json` has at least 34 entries and includes both `Subheader` and `Subheader/Modes`; it also writes `.nojekyll` into the published output. This uses the fleet-standard branch-push deployment action rather than the GitHub Actions Pages/OIDC route. `gh-pages` is a generated deployment-only branch (typically orphan), never the branch of record or a development branch; `main` remains the branch of record.
+
+The current legacy Pages source remains `master` `/docs` until an administrator changes it after `gh-pages` has been successfully populated. The safe order is: let the workflow populate `gh-pages`, verify its branch root and `.nojekyll`, have an administrator switch Pages to `gh-pages` `/`, then load https://gsa.github.io/sam-layouts/ and confirm the public Storybook. The workflow creates and updates only `gh-pages`; changing the Pages setting and checking the live site are deliberately manual and are not performed by this repository.
+
 ### `master` / `old-main` — retained, read-only
 
-`master` and `old-main` are kept but must not be modified or deleted:
-
-1. They are the pre-Nx historical tree.
-2. `master` is the **live GitHub Pages source** — `gh api repos/GSA/sam-layouts/pages` returns `{"branch":"master","path":"/docs"}`, serving https://gsa.github.io/sam-layouts/. **Deleting `master` takes the public docs site down.** It stays until the Wave 2 Storybook Pages deploy replaces that source.
+`master` and `old-main` are preserved as the pre-Nx historical tree and must not be modified or deleted. Their historical `/docs` content remains read-only history. The legacy Pages configuration currently serves `master` `/docs`; deleting `master` while that setting remains would take the public site down.
 
 ### Retired branches
 
