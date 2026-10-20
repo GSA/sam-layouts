@@ -31,6 +31,13 @@ updates:
     # @angular/core@19.2.25, @angular/core@20.0.0 and @angular/core@21.2.24.
     # Without this entry the `minor` group proposes zone.js ~0.16.3 (see PR #98),
     # which breaks the Angular 19 build the same way TypeScript 5.9.3 did.
+    # Note: The Nx ceiling (>= 20.6.0) is derived from @nx/angular@20.6.0 adding
+    # @nx/rspack as a direct dependency, which @nx/angular@20.5.0 does not have.
+    # That pulls in 3 new high-severity dependency paths (@rspack/dev-server,
+    # ts-checker-rspack-plugin, and a webpack path) with zero presence in the
+    # pre-bump lockfile; `npm audit` findings go 97 -> 101, high severity 61 -> 64
+    # (see PR #102). Nx 21 is intentionally left to Wave 3 (see
+    # GSA/sam-layouts#106), not to Dependabot.
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -48,6 +55,10 @@ updates:
         versions: [">= 5.9.0"]
       - dependency-name: "zone.js"
         versions: [">= 0.16.0"]
+      - dependency-name: "@nx/*"
+        versions: [">= 20.6.0"]
+      - dependency-name: "nx"
+        versions: [">= 20.6.0"]
     # Group minor/patch updates by update-type to match the fleet convention
     # (ngx-uswds-icons, sam-styles, sam-ui-elements, sam-design-system). Majors
     # stay ungrouped and human-gated via the ignore block above.
