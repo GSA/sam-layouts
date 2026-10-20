@@ -1,0 +1,102 @@
+name: Deploy Storybook to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storybook-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: CI=1 npx nx build-storybook sam-layouts
+
+      # A successful Storybook build can still contain no registered stories.
+      # Do not replace the live site unless the built index has the expected
+      # breadth and the two separately registered Subheader story groups.
+      - name: Assert Storybook registered its stories
+        run: |
+          node scripts/check-storybook-stories.mjs \
+            dist/storybook/sam-layouts/index.json \
+            --min 34 \
+            --require-title 'Subheader' \
+            --require-title 'Subheader/Modes'
+
+      - name: Assert Storybook entry point exists
+        run: test -f dist/storybook/sam-layouts/index.html
+
+      - name: Disable Jekyll processing
+        run: touch dist/storybook/sam-layouts/.nojekyll
+
+      - name: Assert deployable Storybook files exist
+        run: |
+          test -f dist/storybook/sam-layouts/index.html
+          test -f dist/storybook/sam-layouts/index.json
+          test -f dist/storybook/sam-layouts/.nojekyll
+
+      - name: Upload Storybook Pages artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: storybook-pages
+          path: dist/storybook/sam-layouts
+          if-no-files-found: error
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy Storybook
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # The deploy action configures git and creates a worktree, so this job
+      # needs a repository checkout. Do this before downloading the artifact:
+      # checkout cleanup can remove files in the workspace.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download Storybook Pages artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: storybook-pages
+          path: dist/storybook/sam-layouts
+
+      - name: Assert deployable Storybook files exist
+        run: |
+          test -f dist/storybook/sam-layouts/index.html
+          test -f dist/storybook/sam-layouts/index.json
+          test -f dist/storybook/sam-layouts/.nojekyll
+
+      # This branch-push action matches the established GSA Storybook Pages
+      # pattern. It needs only contents: write and keeps Pages configured for
+      # branch deployment, avoiding the additional Pages/OIDC permissions and
+      # source-mode change required by actions/deploy-pages.
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
+        with:
+          branch: gh-pages
+          folder: dist/storybook/sam-layouts
+          force: false
