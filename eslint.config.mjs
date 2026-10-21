@@ -27,7 +27,10 @@ export default [
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.cts', '**/*.mts', '**/*.js', '**/*.jsx', '**/*.cjs', '**/*.mjs'],
-    // Override or add rules here
-    rules: {},
+    // Retain the pre-migration lint baseline. Converting constructor injection
+    // is a separate standalone-modernization concern, not part of this upgrade.
+    rules: {
+      '@angular-eslint/prefer-inject': 'off',
+    },
   },
 ];

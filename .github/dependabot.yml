@@ -14,69 +14,31 @@ updates:
       default-days: 5
       semver-major-days: 60
     # Ignore major updates to avoid breaking changes unless reviewed manually.
-    # The explicit per-package ceilings below are an additional Angular-major
-    # safety valve: even if the blanket semver-major ignore above were ever
-    # loosened, these packages still cannot cross their next major on their
-    # own. Angular 20/21 is intentionally left to Wave 3 (see GSA/sam-layouts#52),
-    # not to Dependabot.
-    # Note: The TypeScript ceiling (>= 5.9.0) is derived from @angular/compiler-cli's
-    # peerDependencies.typescript range (>=5.5 <5.9 for Angular 19.x), not chosen
-    # arbitrarily. When Angular moves, this ceiling must be re-derived against the
-    # new compiler-cli peer range.
-    # Note: The zone.js ceiling (>= 0.16.0) is likewise derived, from
-    # @angular/core's peerDependencies.zone.js range. Angular 19.x AND 20.x both
-    # declare `~0.15.0`; only Angular 21 widens it to `~0.15.0 || ~0.16.0`. The
-    # two ceilings therefore do NOT move together: TypeScript must be re-derived
-    # at Angular 20, zone.js not until Angular 21. Measured 2026-10-07 against
-    # @angular/core@19.2.25, @angular/core@20.0.0 and @angular/core@21.2.24.
-    # Without this entry the `minor` group proposes zone.js ~0.16.3 (see PR #98),
-    # which breaks the Angular 19 build the same way TypeScript 5.9.3 did.
-    # Note: The Nx ceiling (>= 20.6.0) is derived from the dependency graph, not
-    # from an audit snapshot. @nx/angular@20.6.0 added @nx/rspack as a direct
-    # dependency; @nx/angular@20.5.0 and @nx/angular@20.5.1 do not have it, and
-    # every 20.6.x/20.7.x/20.8.x release does. @nx/rspack in turn declares
-    # @rspack/core, @rspack/dev-server and ts-checker-rspack-plugin, none of
-    # which appear anywhere in the Nx 20.5 lockfile, plus an additional webpack
-    # path (webpack itself is already present, so it is the new path through
-    # @nx/rspack that matters, not webpack's first appearance). Those new
-    # packages carried high-severity advisories when measured, which is why
-    # PR #102 was rejected rather than merged.
-    #
-    # Audit totals are deliberately NOT recorded here: advisory data changes
-    # under a fixed lockfile, so any number would go stale and make this
-    # ceiling look wrong when it is not. Re-derive instead by diffing the
-    # dependency graph:
-    #   npm view @nx/angular@20.5.1 dependencies   # no @nx/rspack
-    #   npm view @nx/angular@20.6.0 dependencies   # @nx/rspack present
-    # Verified 2026-10-20 against the public registry.
-    #
-    # The ceiling permits 20.5.1 (the newest safe 20.5 patch) and blocks 20.6.0
-    # forward. It constrains Dependabot only: it is not an npm override or
-    # resolution, so the human-authored atomic Nx 21 migration in Wave 3 (see
-    # GSA/sam-layouts#106) is unaffected. Nx 21 was already outside Dependabot's
-    # reach via the blanket semver-major ignore below; these entries close the
-    # 20.6-20.8 minor/patch window that rule leaves open.
+    # Explicit ceilings additionally keep the Angular 21 platform coherent if
+    # that blanket rule is loosened. Re-derived 2026-10-21 from the final graph:
+    # Angular tooling and SDS must remain below 22; Nx below 23; compiler-cli
+    # admits TypeScript >=5.9 <6.1; core admits zone.js ~0.15 || ~0.16.
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
       - dependency-name: '@angular/*'
-        versions: ['>= 20.0.0']
+        versions: ['>= 22.0.0']
       - dependency-name: '@angular-devkit/*'
-        versions: ['>= 20.0.0']
+        versions: ['>= 22.0.0']
       - dependency-name: 'angular-eslint'
-        versions: ['>= 20.0.0']
+        versions: ['>= 22.0.0']
       - dependency-name: 'ng-packagr'
-        versions: ['>= 20.0.0']
+        versions: ['>= 22.0.0']
       - dependency-name: '@gsa-sam/*'
-        versions: ['>= 19.0.0']
+        versions: ['>= 22.0.0']
       - dependency-name: 'typescript'
-        versions: ['>= 5.9.0']
+        versions: ['>= 6.1.0']
       - dependency-name: 'zone.js'
-        versions: ['>= 0.16.0']
+        versions: ['>= 0.17.0']
       - dependency-name: '@nx/*'
-        versions: ['>= 20.6.0']
+        versions: ['>= 23.0.0']
       - dependency-name: 'nx'
-        versions: ['>= 20.6.0']
+        versions: ['>= 23.0.0']
     # Group minor/patch updates by update-type to match the fleet convention
     # (ngx-uswds-icons, sam-styles, sam-ui-elements, sam-design-system). Majors
     # stay ungrouped and human-gated via the ignore block above.

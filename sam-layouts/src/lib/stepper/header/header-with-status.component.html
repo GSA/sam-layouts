@@ -1,10 +1,14 @@
-<div *ngIf="title || status" class="display-flex flex-row flex-align-center">
-  <h1 *ngIf="title">{{ title }}</h1>
-  <ng-container *ngIf="status">
-    <span class="sds-tag sds-tag--status padding-left-105 margin-top-1">
-      <i class="sds-status sds-status--sm sds-status--{{ status.color }}"></i>
-      {{ status.text }}
-    </span>
-  </ng-container>
-</div>
+@if (title || status) {
+  <div class="display-flex flex-row flex-align-center">
+    @if (title) {
+      <h1>{{ title }}</h1>
+    }
+    @if (status) {
+      <span class="sds-tag sds-tag--status padding-left-105 margin-top-1">
+        <i class="sds-status sds-status--sm sds-status--{{ status.color }}"></i>
+        {{ status.text }}
+      </span>
+    }
+  </div>
+}
 <ng-content></ng-content>

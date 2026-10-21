@@ -1,12 +1,6 @@
-<a
-  *ngIf="link.href; else internalLink"
-  class="usa-link"
-  [ngClass]="link.classes"
-  [href]="link.href"
-  [innerHtml]="link.innerHtml"
-></a>
-
-<ng-template #internalLink>
+@if (link.href) {
+  <a class="usa-link" [ngClass]="link.classes" [href]="link.href" [innerHtml]="link.innerHtml"></a>
+} @else {
   <a
     class="usa-link"
     [ngClass]="link.classes"
@@ -15,4 +9,4 @@
     [innerHtml]="link.innerHtml"
     [attr.aria-label]="link.ariaLabel"
   ></a>
-</ng-template>
+}

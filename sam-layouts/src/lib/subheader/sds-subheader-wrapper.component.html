@@ -11,7 +11,9 @@
   </span>
   <!--- Search and Autocomplete-->
 
-  <sds-search *ngIf="searchEnabled" [searchSettings]="searchSettings" (submit)="searchSubmit($event)"> </sds-search>
+  @if (searchEnabled) {
+    <sds-search [searchSettings]="searchSettings" (submit)="searchSubmit($event)"> </sds-search>
+  }
 
   <!-- =============== BUTTON GROUP =============== -->
   <ng-container subheader-buttons-container>
@@ -19,9 +21,15 @@
     <ng-content select="[subheader-buttons-container-pre]"></ng-content>
 
     <!-- Modes -->
-    <ng-container *ngIf="mode === HeaderMode.REQUEST" [ngTemplateOutlet]="request"></ng-container>
-    <ng-container *ngIf="mode === HeaderMode.SUBMIT" [ngTemplateOutlet]="submit"></ng-container>
-    <ng-container *ngIf="mode === HeaderMode.TAB" [ngTemplateOutlet]="tabOutlet"></ng-container>
+    @if (mode === HeaderMode.REQUEST) {
+      <ng-container [ngTemplateOutlet]="request"></ng-container>
+    }
+    @if (mode === HeaderMode.SUBMIT) {
+      <ng-container [ngTemplateOutlet]="submit"></ng-container>
+    }
+    @if (mode === HeaderMode.TAB) {
+      <ng-container [ngTemplateOutlet]="tabOutlet"></ng-container>
+    }
 
     <!-- Add extra buttons after mode buttons-->
     <ng-content select="[subheader-buttons-container-post]"></ng-content>
@@ -44,10 +52,10 @@
     (change)="action.emit($event)"
     class="sds-button-group sds-button-group--secondary"
   >
-    <ng-template ngFor let-tab [ngForOf]="tabs">
+    @for (tab of tabs; track tab) {
       <sds-button-group-option [value]="tab.id" [aria-label]="tab.text" [checked]="tab.selected">
         {{ tab.text }}
       </sds-button-group-option>
-    </ng-template>
+    }
   </sds-button-group>
 </ng-template>

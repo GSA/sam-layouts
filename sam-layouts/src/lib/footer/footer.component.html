@@ -1,11 +1,11 @@
 <footer class="usa-footer" role="contentinfo">
-  <div *ngIf="feedbackTemplate; else defaultFeedback">
-    <ng-container *ngTemplateOutlet="feedbackTemplate"></ng-container>
-  </div>
-
-  <ng-template #defaultFeedback>
+  @if (feedbackTemplate) {
+    <div>
+      <ng-container *ngTemplateOutlet="feedbackTemplate"></ng-container>
+    </div>
+  } @else {
     <sds-feedback (feedbackSubmit)="onFeedbackSubmitClicked($event)"></sds-feedback>
-  </ng-template>
+  }
 
   <div class="usa-footer__primary-section">
     <div
@@ -18,25 +18,29 @@
             aria-label="Footer Navigation Links"
           >
             <div class="grid-row grid-gap-0 mobile-lg:grid-gap-4">
-              <div class="mobile-lg:grid-col-6 desktop:grid-col-3" *ngFor="let section of model.linkSections">
-                <section class="usa-footer__primary-content usa-footer__primary-content--collapsible">
-                  <span class="h4 usa-footer__primary-link">{{ section.text }}</span>
-                  <ul class="usa-list usa-list--unstyled">
-                    <li class="usa-footer__secondary-link" *ngFor="let link of section.links">
-                      <ng-container
-                        [ngTemplateOutlet]="
-                          navigationHelper.isLinkInternal(link)
-                            ? footerRouteLinkTemplate
-                            : navigationHelper.isLinkExternal(link)
-                              ? footerHREFLinkTemplate
-                              : footerEVENTLinkTemplate
-                        "
-                        [ngTemplateOutletContext]="{ $implicit: link }"
-                      ></ng-container>
-                    </li>
-                  </ul>
-                </section>
-              </div>
+              @for (section of model.linkSections; track section) {
+                <div class="mobile-lg:grid-col-6 desktop:grid-col-3">
+                  <section class="usa-footer__primary-content usa-footer__primary-content--collapsible">
+                    <span class="h4 usa-footer__primary-link">{{ section.text }}</span>
+                    <ul class="usa-list usa-list--unstyled">
+                      @for (link of section.links; track link) {
+                        <li class="usa-footer__secondary-link">
+                          <ng-container
+                            [ngTemplateOutlet]="
+                              navigationHelper.isLinkInternal(link)
+                                ? footerRouteLinkTemplate
+                                : navigationHelper.isLinkExternal(link)
+                                  ? footerHREFLinkTemplate
+                                  : footerEVENTLinkTemplate
+                            "
+                            [ngTemplateOutletContext]="{ $implicit: link }"
+                          ></ng-container>
+                        </li>
+                      }
+                    </ul>
+                  </section>
+                </div>
+              }
             </div>
           </nav>
         </div>
@@ -44,24 +48,28 @@
     </div>
     <nav class="sds-footer__nav--accordion display-block tablet:display-none" aria-label="Footer Navigation Links">
       <usa-accordion [singleSelect]="false" [bordered]="true">
-        <usa-accordion-item *ngFor="let section of model.linkSections; let $index = index" [header]="section.text">
-          <ng-template UsaAccordionContent>
-            <ul class="usa-list usa-list--unstyled padding-y-1">
-              <li class="usa-footer__secondary-link" *ngFor="let link of section.links">
-                <ng-container
-                  [ngTemplateOutlet]="
-                    navigationHelper.isLinkInternal(link)
-                      ? footerRouteLinkTemplate
-                      : navigationHelper.isLinkExternal(link)
-                        ? footerHREFLinkTemplate
-                        : footerEVENTLinkTemplate
-                  "
-                  [ngTemplateOutletContext]="{ $implicit: link }"
-                ></ng-container>
-              </li>
-            </ul>
-          </ng-template>
-        </usa-accordion-item>
+        @for (section of model.linkSections; track section) {
+          <usa-accordion-item [header]="section.text">
+            <ng-template UsaAccordionContent>
+              <ul class="usa-list usa-list--unstyled padding-y-1">
+                @for (link of section.links; track link) {
+                  <li class="usa-footer__secondary-link">
+                    <ng-container
+                      [ngTemplateOutlet]="
+                        navigationHelper.isLinkInternal(link)
+                          ? footerRouteLinkTemplate
+                          : navigationHelper.isLinkExternal(link)
+                            ? footerHREFLinkTemplate
+                            : footerEVENTLinkTemplate
+                      "
+                      [ngTemplateOutletContext]="{ $implicit: link }"
+                    ></ng-container>
+                  </li>
+                }
+              </ul>
+            </ng-template>
+          </usa-accordion-item>
+        }
       </usa-accordion>
     </nav>
   </div>
@@ -71,12 +79,13 @@
         <div class="grid-col-12 mobile-lg:grid-col-6 tablet:grid-col-4 margin-bottom-4">
           <div class="sds-footer__logo">
             <a class="sds-footer__logo-link" [attr.href]="model.footerLogo.href">
-              <img
-                *ngIf="model.footerLogo"
-                class="usa-footer__logo-img"
-                [attr.src]="model.footerLogo.imageSourcePath"
-                [attr.alt]="model.footerLogo.imageAltText"
-              />
+              @if (model.footerLogo) {
+                <img
+                  class="usa-footer__logo-img"
+                  [attr.src]="model.footerLogo.imageSourcePath"
+                  [attr.alt]="model.footerLogo.imageAltText"
+                />
+              }
             </a>
           </div>
         </div>

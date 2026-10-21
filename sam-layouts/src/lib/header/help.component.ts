@@ -53,17 +53,17 @@ export class SdsHeaderHelpComponent {
   template: `
     <div class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2">
       <h2 class="font-heading-lg text-semibold">Help</h2>
-      <div *ngFor="let item of data.help">
-        <h3 class="font-heading-md text-semibold margin-top-205 margin-bottom-1">
-          {{ item.head.title }}
-        </h3>
-        <ng-template
-          *ngFor="let content of item.body.content"
-          [cdkPortalOutlet]="content.component"
-          (attached)="inputs($event, content.inputs)"
-        >
-        </ng-template>
-      </div>
+      @for (item of data.help; track item) {
+        <div>
+          <h3 class="font-heading-md text-semibold margin-top-205 margin-bottom-1">
+            {{ item.head.title }}
+          </h3>
+          @for (content of item.body.content; track content) {
+            <ng-template [cdkPortalOutlet]="content.component" (attached)="inputs($event, content.inputs)">
+            </ng-template>
+          }
+        </div>
+      }
     </div>
   `,
   styles: ['.help-slide-out .sds-list .usa-link:hover { color: #625028; }'], // 508: Contrast fix

@@ -29,7 +29,9 @@
   <!-- Menu header (optional) -->
   <sds-menu-header>Actions</sds-menu-header>
   <!-- Menu items -->
-  <button *ngFor="let button of model.actions" (click)="clicks.emit(button.id)" sds-menu-item>
-    {{ button.text }}
-  </button>
+  @for (button of model.actions; track button) {
+    <button (click)="clicks.emit(button.id)" sds-menu-item>
+      {{ button.text }}
+    </button>
+  }
 </sds-menu>
