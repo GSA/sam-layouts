@@ -16,8 +16,9 @@ updates:
     # Ignore major updates to avoid breaking changes unless reviewed manually.
     # Explicit ceilings additionally keep the Angular 21 platform coherent if
     # that blanket rule is loosened. Re-derived 2026-10-21 from the final graph:
-    # Angular tooling and SDS must remain below 22; Nx below 23; compiler-cli
-    # admits TypeScript >=5.9 <6.1; core admits zone.js ~0.15 || ~0.16.
+    # Angular tooling and SDS must remain below 22; Nx below 23; build-angular
+    # and ng-packagr require TypeScript >=5.9 <6.0; core admits zone.js ~0.15
+    # or ~0.16.
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
@@ -32,7 +33,7 @@ updates:
       - dependency-name: '@gsa-sam/*'
         versions: ['>= 22.0.0']
       - dependency-name: 'typescript'
-        versions: ['>= 6.1.0']
+        versions: ['>= 6.0.0']
       - dependency-name: 'zone.js'
         versions: ['>= 0.17.0']
       - dependency-name: '@nx/*'

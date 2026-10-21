@@ -1,14 +1,4 @@
 import type { StorybookConfig } from '@storybook/angular';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-// Storybook 10 loads this config as a real ES module, so the CommonJS
-// `__dirname` that worked under Storybook 8 is no longer defined:
-//
-//   ReferenceError: __dirname is not defined in ES module scope
-//
-// Derive it from `import.meta.url` instead. See GSA/sam-layouts#81.
-const configDir = dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   // Every story and docs page in this repo lives in the *library* source tree
