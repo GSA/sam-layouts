@@ -37,9 +37,7 @@ export class FilterService {
             (this.model.keyword &&
               this.model.keyword.keywordTextarea &&
               this.model.keyword.keywordTextarea.length > 0) ||
-            (this.model.keyword &&
-              this.model.keyword.keywordTags &&
-              this.model.keyword.keywordTags.length > 0)
+            (this.model.keyword && this.model.keyword.keywordTags && this.model.keyword.keywordTags.length > 0)
           ) {
             this.dialog.open(FilterTabModalComponent, {
               alert: 'warning',
@@ -126,8 +124,7 @@ export class FilterService {
                 type: SdsFormlyTypes.TEXTAREA,
                 className: 'display-block padding-left-2 padding-right-2',
                 templateOptions: {
-                  placeholder:
-                    'e.g. ((rental AND property) OR (lease and property) AND NOT ( "short term"))',
+                  placeholder: 'e.g. ((rental AND property) OR (lease and property) AND NOT ( "short term"))',
                 },
               },
             ],
@@ -342,7 +339,7 @@ export class FilterService {
 
   constructor(
     public service: AutocompleteSampleDataService,
-    private dialog: SdsDialogService
+    private dialog: SdsDialogService,
   ) {
     this.setup();
   }

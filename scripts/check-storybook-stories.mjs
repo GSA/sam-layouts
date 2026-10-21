@@ -29,28 +29,19 @@ import { fileURLToPath } from 'node:url';
 const DEFAULT_MINIMUM_ENTRIES = 34;
 const DEFAULT_INDEX_PATH = 'dist/storybook/sam-layouts/index.json';
 
-export function checkStorybookStories({
-  indexPath,
-  minimumEntries,
-  requiredTitles = [],
-}) {
+export function checkStorybookStories({ indexPath, minimumEntries, requiredTitles = [] }) {
   // A floor of zero is the exact failure mode this guard exists to prevent: it
   // would pass against the empty `{"v":5,"entries":{}}` artifact that shipped
   // on `main`. Refuse to be configured into uselessness.
   if (!Number.isInteger(minimumEntries) || minimumEntries < 1) {
-    throw new Error(
-      `minimumEntries must be a positive integer, got ${minimumEntries}`
-    );
+    throw new Error(`minimumEntries must be a positive integer, got ${minimumEntries}`);
   }
 
   let raw;
   try {
     raw = readFileSync(indexPath, 'utf8');
   } catch (cause) {
-    throw new Error(
-      `Storybook index not found at ${indexPath} — did build-storybook run?`,
-      { cause }
-    );
+    throw new Error(`Storybook index not found at ${indexPath} — did build-storybook run?`, { cause });
   }
 
   let index;
@@ -63,26 +54,18 @@ export function checkStorybookStories({
   }
 
   if (index.entries === null || typeof index.entries !== 'object') {
-    throw new Error(
-      `Storybook index at ${indexPath} has no "entries" map — the artifact is not a v5 index`
-    );
+    throw new Error(`Storybook index at ${indexPath} has no "entries" map — the artifact is not a v5 index`);
   }
 
   const entries = Object.values(index.entries);
   if (entries.length < minimumEntries) {
-    throw new Error(
-      `Storybook registered ${entries.length} entries, expected at least ${minimumEntries}`
-    );
+    throw new Error(`Storybook registered ${entries.length} entries, expected at least ${minimumEntries}`);
   }
 
   const titles = [...new Set(entries.map((entry) => entry.title))].sort();
-  const missingTitles = requiredTitles.filter(
-    (title) => !titles.includes(title)
-  );
+  const missingTitles = requiredTitles.filter((title) => !titles.includes(title));
   if (missingTitles.length > 0) {
-    throw new Error(
-      `Storybook index is missing required titles: ${missingTitles.join(', ')}`
-    );
+    throw new Error(`Storybook index is missing required titles: ${missingTitles.join(', ')}`);
   }
 
   return {
@@ -127,7 +110,7 @@ if (isCli) {
       `Storybook index OK: ${report.total} entries ` +
         `(${report.stories} stories + ${report.docs} docs) ` +
         `across ${report.titles.length} titles, floor ${options.minimumEntries}\n` +
-        report.titles.map((title) => `  - ${title}\n`).join('')
+        report.titles.map((title) => `  - ${title}\n`).join(''),
     );
   } catch (error) {
     stderr.write(`${error.message}\n`);

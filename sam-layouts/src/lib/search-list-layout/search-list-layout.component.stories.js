@@ -12,11 +12,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [],
-      imports: [
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        ResultsLayoutModule,
-      ],
+      imports: [BrowserAnimationsModule, RouterTestingModule, ResultsLayoutModule],
     }),
   ],
 };

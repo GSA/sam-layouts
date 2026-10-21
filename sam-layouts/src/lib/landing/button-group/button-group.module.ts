@@ -10,4 +10,4 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
   declarations: [SdsLandingButtonGroupComponent],
   providers: [],
 })
-export class SdsLandingButtonGroupModule { }
+export class SdsLandingButtonGroupModule {}

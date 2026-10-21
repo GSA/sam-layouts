@@ -87,6 +87,15 @@ jobs:
             --require-title 'Subheader' \
             --require-title 'Subheader/Modes'
 
+      # Stop-the-world formatting gate. Deliberately last: this is a whole-repo
+      # mechanical check with no logical dependency on the steps above it, and
+      # running it after the substantive build/test/Storybook gates means a
+      # real regression fails fast while a pure formatting drift only ever
+      # fails at the very end, never masking a functional failure above it.
+      # See GSA/sam-layouts#84.
+      - name: Format check (Prettier)
+        run: npm run format:check
+
       # Both projects write under `coverage/` but to different subdirectories
       # (`coverage/sam-layouts` for the library, `coverage/apps/sam-layouts`
       # for the demo app), so the whole tree is uploaded as one artifact.

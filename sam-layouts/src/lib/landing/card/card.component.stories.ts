@@ -1,9 +1,6 @@
 import { moduleMetadata } from '@storybook/angular';
 import { Meta, StoryObj } from '@storybook/angular';
-import {
-  SdsLandingCardComponent,
-  SdsLandingCardTitleDirective,
-} from './card.component';
+import { SdsLandingCardComponent, SdsLandingCardTitleDirective } from './card.component';
 
 export default {
   title: 'Landing/Card',

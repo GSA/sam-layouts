@@ -1,26 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Alert } from './model/alert.model';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-system-alert',
   templateUrl: './system-alert.component.html',
-  styleUrls: ['./system-alert.component.scss']
+  styleUrls: ['./system-alert.component.scss'],
 })
 export class SdsSystemAlertComponent {
-
   /** List of alerts to display. When the list contains only one item, the description of the alert will also
    * be displayed. Description text may contain html
    */
   @Input() alerts: Alert[];
-  
+
   @Output() seeAllAlerts = new EventEmitter();
 
   @Output() detailsClicked = new EventEmitter<Alert>();
 
   @Output() alertDismiss = new EventEmitter<Alert>();
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Removes the alert from input alerts array
@@ -43,7 +42,7 @@ export class SdsSystemAlertComponent {
    * Fired when 'Show Details' for an alert is clicked. Emits the detailsClicked event
    * with the alert whose 'Show Details' link was clicked and toggles description view for
    * the alert
-   * @param alert 
+   * @param alert
    */
   onShowDetailsClicked(alert: Alert) {
     alert.displayDescription = !alert.displayDescription;

@@ -1,24 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  SdsDialogRef,
-  SdsDialogService,
-  SDS_DIALOG_DATA,
-} from '@gsa-sam/components';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/components';
 import { SdsFormlyDialogData } from '@gsa-sam/sam-formly';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { StepperAdvancedService } from './advanced.service';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   // `-demo` is a suffix, not a prefix, so this selector can't be covered by
   // the `component-selector` prefix allowlist in
   // `sam-layouts/eslint.config.mjs` without adding a meaningless `subawardee`
@@ -53,8 +42,8 @@ export class SubawardeeDemoComponent {
   }
 }
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   // Same `-demo`-as-suffix case as `subawardee-demo` above; also only ever
   // opened imperatively via `SdsDialog.open(...)`, never as an element.
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -67,16 +56,8 @@ export class SubawardeeDemoComponent {
       <formly-form [fields]="subawardeeFields" [model]="model"> </formly-form>
     </div>
     <div sds-dialog-actions>
-      <button class="usa-button usa-button--base bg-base-lighter" (click)="cancel()">
-        Cancel
-      </button>
-      <button
-        type="submit"
-        (click)="onFormSubmit()"
-        class="usa-button margin-top-2"
-      >
-        Submit
-      </button>
+      <button class="usa-button usa-button--base bg-base-lighter" (click)="cancel()">Cancel</button>
+      <button type="submit" (click)="onFormSubmit()" class="usa-button margin-top-2">Submit</button>
     </div>
   `,
   providers: [StepperAdvancedService],
@@ -89,7 +70,7 @@ export class AddSubawardeeDialogDemo implements OnInit {
   constructor(
     public dialogRef: SdsDialogRef<AddSubawardeeDialogDemo>,
     @Inject(SDS_DIALOG_DATA) public data: SdsFormlyDialogData,
-    private stepperAdvancedService: StepperAdvancedService
+    private stepperAdvancedService: StepperAdvancedService,
   ) {}
 
   ngOnInit() {

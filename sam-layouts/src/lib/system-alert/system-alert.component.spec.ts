@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { SdsCollapseModule } from '@gsa-sam/components';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
-import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons'
+import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 
 import { SdsSystemAlertComponent } from './system-alert.component';
 
@@ -12,14 +12,9 @@ describe('SystemAlertComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        IconModule,
-        SdsCollapseModule,
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
-      ],
-      declarations: [ SdsSystemAlertComponent, ]
-    })
-    .compileComponents();
+      imports: [IconModule, SdsCollapseModule, NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))],
+      declarations: [SdsSystemAlertComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -29,13 +24,14 @@ describe('SystemAlertComponent', () => {
       {
         header: 'Test Alert',
         date: new Date(),
-        description: 'Test Alert description'
+        description: 'Test Alert description',
       },
       {
-        header: 'New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert ',
+        header:
+          'New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert New Alert ',
         date: new Date(),
-        description: 'New Alert Description'
-      }
+        description: 'New Alert Description',
+      },
     ];
     fixture.detectChanges();
   });
@@ -44,7 +40,7 @@ describe('SystemAlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('Should remove an alert after the alert\'s close button is clicked', () => {
+  it("Should remove an alert after the alert's close button is clicked", () => {
     const testAlertCloseButton = fixture.debugElement.query(By.css('#alert0CloseBtn'));
     testAlertCloseButton.triggerEventHandler('click', null);
     fixture.detectChanges();
@@ -62,7 +58,9 @@ describe('SystemAlertComponent', () => {
   });
 
   it('Should display/hide alert description when show details is clicked', () => {
-    const showDetailsButton = fixture.debugElement.query(By.css('.sds-alert--header__content .sds-alert--header__link'));
+    const showDetailsButton = fixture.debugElement.query(
+      By.css('.sds-alert--header__content .sds-alert--header__link'),
+    );
 
     const alertDescription = fixture.debugElement.query(By.css('#alertDescription0'));
 
@@ -78,7 +76,5 @@ describe('SystemAlertComponent', () => {
     showDetailsButton.triggerEventHandler('click', null);
     fixture.detectChanges();
     expect(alertDescription.classes['display-none']).toEqual(true);
-
-
   });
 });

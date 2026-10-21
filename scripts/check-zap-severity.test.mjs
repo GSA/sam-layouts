@@ -183,14 +183,10 @@ test('aggregates alerts across multiple sites', () => {
   const report = {
     site: [
       {
-        alerts: [
-          { pluginid: '1', alert: 'A', riskcode: '0', riskdesc: 'Info' },
-        ],
+        alerts: [{ pluginid: '1', alert: 'A', riskcode: '0', riskdesc: 'Info' }],
       },
       {
-        alerts: [
-          { pluginid: '2', alert: 'B', riskcode: '3', riskdesc: 'High' },
-        ],
+        alerts: [{ pluginid: '2', alert: 'B', riskcode: '3', riskdesc: 'High' }],
       },
     ],
   };
@@ -232,28 +228,17 @@ test('reports instance URLs, not "no url", for a real ZAP alert', () => {
 });
 
 test('a URL-scoped exception matches instances[].uri', () => {
-  const report = reportWith([
-    instanceAlert('10055', 'CSP', '2', ['http://127.0.0.1:4200/robots.txt']),
-  ]);
-  const result = withFixtures(
-    { report, rules: ruleRow('10055', '/robots.txt') },
-    run
-  );
+  const report = reportWith([instanceAlert('10055', 'CSP', '2', ['http://127.0.0.1:4200/robots.txt'])]);
+  const result = withFixtures({ report, rules: ruleRow('10055', '/robots.txt') }, run);
   assert.equal(result.status, 0);
   assert.match(result.stdout, /no unexcepted/);
 });
 
 test('a scoped exception covering only some instances still blocks on the rest', () => {
   const report = reportWith([
-    instanceAlert('10055', 'CSP', '2', [
-      'http://127.0.0.1:4200/robots.txt',
-      'http://127.0.0.1:4200/sitemap.xml',
-    ]),
+    instanceAlert('10055', 'CSP', '2', ['http://127.0.0.1:4200/robots.txt', 'http://127.0.0.1:4200/sitemap.xml']),
   ]);
-  const result = withFixtures(
-    { report, rules: ruleRow('10055', '/robots.txt') },
-    run
-  );
+  const result = withFixtures({ report, rules: ruleRow('10055', '/robots.txt') }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /sitemap\.xml/);
   assert.doesNotMatch(result.stderr, /robots\.txt/);
@@ -261,9 +246,7 @@ test('a scoped exception covering only some instances still blocks on the rest',
 
 test('a rule-wide exception covers an instance-shaped alert', () => {
   const report = reportWith([
-    instanceAlert('10003', 'Vulnerable JS Library', '3', [
-      'http://127.0.0.1:4200/main-OS7FNWK6.js',
-    ]),
+    instanceAlert('10003', 'Vulnerable JS Library', '3', ['http://127.0.0.1:4200/main-OS7FNWK6.js']),
   ]);
   const result = withFixtures({ report, rules: ruleRow('10003', '*') }, run);
   assert.equal(result.status, 0);
@@ -277,16 +260,10 @@ test('an instance with no URI is uncovered, so a scoped waiver still blocks', ()
       riskcode: '3',
       riskdesc: 'High (Medium)',
       count: '2',
-      instances: [
-        { uri: 'http://127.0.0.1:4200/main-ABC.js', method: 'GET' },
-        { method: 'GET' },
-      ],
+      instances: [{ uri: 'http://127.0.0.1:4200/main-ABC.js', method: 'GET' }, { method: 'GET' }],
     },
   ]);
-  const result = withFixtures(
-    { report, rules: ruleRow('10003', '/main-') },
-    run
-  );
+  const result = withFixtures({ report, rules: ruleRow('10003', '/main-') }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /\[10003\]/);
   assert.match(result.stderr, /instance with no url/);
@@ -309,13 +286,8 @@ test('a rule-wide waiver still covers an alert with incomplete instance data', (
 });
 
 test('an alert with no URL anywhere cannot be suppressed by a narrow scope', () => {
-  const report = reportWith([
-    { pluginid: '10055', alert: 'CSP', riskcode: '2', riskdesc: 'Medium' },
-  ]);
-  const result = withFixtures(
-    { report, rules: ruleRow('10055', '/robots.txt') },
-    run
-  );
+  const report = reportWith([{ pluginid: '10055', alert: 'CSP', riskcode: '2', riskdesc: 'Medium' }]);
+  const result = withFixtures({ report, rules: ruleRow('10055', '/robots.txt') }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /no url/);
 });
@@ -351,10 +323,7 @@ test('fails closed on a report with an empty site array (nothing was scanned)', 
 });
 
 test('a scanned site reporting zero alerts is a legitimate clean scan', () => {
-  const result = withFixtures(
-    { report: { site: [{ '@name': 'http://127.0.0.1:4200', alerts: [] }] } },
-    run
-  );
+  const result = withFixtures({ report: { site: [{ '@name': 'http://127.0.0.1:4200', alerts: [] }] } }, run);
   assert.equal(result.status, 0);
   assert.match(result.stdout, /no unexcepted medium- or high-risk alerts/);
 });
@@ -366,18 +335,14 @@ test('fails closed on invalid top-level JSON (array instead of object)', () => {
 });
 
 test('fails closed on a missing riskcode', () => {
-  const report = reportWith([
-    { pluginid: '10038', alert: 'No riskcode', riskdesc: 'Medium' },
-  ]);
+  const report = reportWith([{ pluginid: '10038', alert: 'No riskcode', riskdesc: 'Medium' }]);
   const result = withFixtures({ report }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing or non-numeric riskcode/);
 });
 
 test('fails closed on a non-numeric riskcode', () => {
-  const report = reportWith([
-    { pluginid: '10038', alert: 'Bad', riskcode: 'oops', riskdesc: 'Medium' },
-  ]);
+  const report = reportWith([{ pluginid: '10038', alert: 'Bad', riskcode: 'oops', riskdesc: 'Medium' }]);
   const result = withFixtures({ report }, run);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing or non-numeric riskcode/);

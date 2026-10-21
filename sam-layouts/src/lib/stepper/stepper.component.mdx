@@ -19,17 +19,17 @@ It provides the most common uses for `sds-stepper` component.
   <Story of={StepperComponentStories.Stepper} />
 </Canvas>
 
-## Stepper Wrapper (*sam-layouts-stepper*)
+## Stepper Wrapper (_sam-layouts-stepper_)
 
 `sam-layouts-stepper` extends `sds-stepper` so all inputs and outputs found in `sds-stepper` can be used. There is only one additional input added `hideSideNav`.
 For more information about this input look at the Stepper with navigation section
 
-For more information about the `sds-stepper` component, visit the [design system docs]([sds-stepper]\(https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system\).) -> Formly -> Stepper
+For more information about the `sds-stepper` component, visit the [design system docs](<[sds-stepper](https://cg-fa19003e-5296-4960-ac2e-caccfeb620ac.app.cloud.gov/site/gsa/sam-design-system).>) -> Formly -> Stepper
 
 ```html
-<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)" ... >
-    // Steps...
- </sam-layouts-stepper>
+<sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)" ...>
+  // Steps...
+</sam-layouts-stepper>
 ```
 
 ## How to use
@@ -87,14 +87,10 @@ export class MyStepperComponent {
 
 ```html
 <ng-template #stepTwo>
-  <h1 class="margin-top-0">
-    Gather Your Information
-  </h1>
+  <h1 class="margin-top-0">Gather Your Information</h1>
   <div class="sds-card">
     <div class="sds-card__header">
-      <h2>
-        U.S. REGISTRANTS:
-      </h2>
+      <h2>U.S. REGISTRANTS:</h2>
     </div>
     <div class="sds-card__body">
       <ul class="usa-list usa-list--unstyled">
@@ -113,8 +109,7 @@ export class MyStepperComponent {
             <li>Taxpayer Name</li>
           </ul>
           <span class="display-block text-small">
-            Review your tax documents from the IRS (such as a 1099 or w2 form)
-            to find your Taxpayer information.
+            Review your tax documents from the IRS (such as a 1099 or w2 form) to find your Taxpayer information.
           </span>
         </li>
         <li class="margin-bottom-4">
@@ -137,9 +132,9 @@ export class MyStepperComponent {
 
 ```html
 <sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
-    <sam-layouts-stepper-header></sam-layouts-stepper-header>
-    <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
-    <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
+  <sam-layouts-stepper-header></sam-layouts-stepper-header>
+  <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+  <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
 </sam-layouts-stepper>
 ```
 
@@ -193,7 +188,7 @@ Pass an angular template to the `template` input in `sam-layouts-stepper-header`
 
 ## How to add more options to the footer
 
-Add the `stepper-footer` to any container,  use the `sam-layouts-stepper-footer-custom-action` component and provide and icon and text.
+Add the `stepper-footer` to any container, use the `sam-layouts-stepper-footer-custom-action` component and provide and icon and text.
 
 ```html
 <sam-layouts-stepper [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
@@ -225,9 +220,14 @@ Set the `hideSideNav` attribute of the `sam-layouts-stepper` component to `false
 Visit the github repository to [View the code](https://github.com/GSA/sam-layouts/tree/master/libs/layouts/src/lib/stepper/demo/advanced)
 
 ```html
-<sam-layouts-stepper [hideSideNav]="false"  [model]="model" [stepValidityMap]="stepValidityMap" (saveData)="onSaveData($event)">
-    <sam-layouts-stepper-header></sam-layouts-stepper-header>
-    <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
-    <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
+<sam-layouts-stepper
+  [hideSideNav]="false"
+  [model]="model"
+  [stepValidityMap]="stepValidityMap"
+  (saveData)="onSaveData($event)"
+>
+  <sam-layouts-stepper-header></sam-layouts-stepper-header>
+  <sds-step id="stepOne" text="Entity Title" [fieldConfig]="stepOne"></sds-step>
+  <sds-step id="stepTwo" text="Purpose of Registration" [stepTemplate]="stepTwo"></sds-step>
 </sam-layouts-stepper>
 ```

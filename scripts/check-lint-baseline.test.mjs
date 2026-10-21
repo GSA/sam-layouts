@@ -108,7 +108,7 @@ test('sums counts across every result in the report', () => {
         JSON.stringify([
           { filePath: 'a.ts', messages: [], errorCount: 0, warningCount: 3 },
           { filePath: 'b.ts', messages: [], errorCount: 0, warningCount: 2 },
-        ])
+        ]),
       );
       const { status, stderr } = run(['layouts', path]);
       assert.equal(status, 1);
@@ -228,10 +228,7 @@ test('a malformed (non-numeric) baseline entry fails loudly', () => {
 
 test('exits non-zero when the ESLint report is missing', () => {
   withBaselines({ layouts: 10 }, () => {
-    const { status, stderr } = run([
-      'layouts',
-      join(tmpdir(), 'does-not-exist-lintgate.json'),
-    ]);
+    const { status, stderr } = run(['layouts', join(tmpdir(), 'does-not-exist-lintgate.json')]);
     assert.equal(status, 1);
     assert.match(stderr, /Could not read ESLint report/);
   });
@@ -285,12 +282,7 @@ test('fails closed if a result has no filePath (no real file was linted)', () =>
   withBaselines({ layouts: 10 }, () => {
     withTempDir((dir) => {
       const path = join(dir, 'eslint-report.json');
-      writeFileSync(
-        path,
-        JSON.stringify([
-          { filePath: '', messages: [], errorCount: 0, warningCount: 0 },
-        ])
-      );
+      writeFileSync(path, JSON.stringify([{ filePath: '', messages: [], errorCount: 0, warningCount: 0 }]));
       const { status, stderr } = run(['layouts', path]);
       assert.equal(status, 1);
       assert.match(stderr, /missing or empty filePath/);
@@ -314,10 +306,7 @@ test('fails closed if any result object does not have finite errorCount', () => 
   withBaselines({ layouts: 10 }, () => {
     withTempDir((dir) => {
       const path = join(dir, 'eslint-report.json');
-      writeFileSync(
-        path,
-        JSON.stringify([{ filePath: 'x.ts', messages: [], warningCount: 0 }])
-      );
+      writeFileSync(path, JSON.stringify([{ filePath: 'x.ts', messages: [], warningCount: 0 }]));
       const { status, stderr } = run(['layouts', path]);
       assert.equal(status, 1);
       assert.match(stderr, /missing or invalid errorCount\/warningCount values/);
@@ -329,12 +318,7 @@ test('fails closed if any result object has negative or non-finite counts', () =
   withBaselines({ layouts: 10 }, () => {
     withTempDir((dir) => {
       const path = join(dir, 'eslint-report.json');
-      writeFileSync(
-        path,
-        JSON.stringify([
-          { filePath: 'x.ts', messages: [], errorCount: -1, warningCount: 0 },
-        ])
-      );
+      writeFileSync(path, JSON.stringify([{ filePath: 'x.ts', messages: [], errorCount: -1, warningCount: 0 }]));
       const { status, stderr } = run(['layouts', path]);
       assert.equal(status, 1);
       assert.match(stderr, /missing or invalid errorCount\/warningCount/);

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   // `result-item` is a legacy, unprefixed selector that does not match the
   // `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
   // (`sds` / `sam-layouts` / `demo`). Demo-only (NOT exported from
@@ -10,7 +10,7 @@ import { Component, Input } from '@angular/core';
   // alongside the next intentional selector change.
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'result-item',
-  templateUrl: './result.component.html'
+  templateUrl: './result.component.html',
 })
 export class ResultComponent {
   @Input() model: any;

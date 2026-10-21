@@ -1,23 +1,14 @@
-import {
-  Component,
-  Output,
-  EventEmitter,
-  Input,
-  OnInit
-} from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
 import { INavigationLink, NavigationMode, SearchSettings, Selectable } from '@gsa-sam/components';
 import { Router } from '@angular/router';
 
-
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-subheader-wrapper',
-  templateUrl: 'sds-subheader-wrapper.component.html'
+  templateUrl: 'sds-subheader-wrapper.component.html',
 })
 export class SdsSubheaderWrapperComponent implements OnInit {
-
-
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   @Input() backbuttonBehavior: INavigationLink;
 
@@ -42,24 +33,19 @@ export class SdsSubheaderWrapperComponent implements OnInit {
   menu = {
     trigger: {
       type: 'plain', // plain | primary
-      shadow: true
+      shadow: true,
     },
-    actions: []
+    actions: [],
   };
 
   searchSettings: SearchSettings = {
     placeholder: '',
     parentSelector: '.sds-subheader__content',
-    inputClass:
-      'width-card-lg widescreen:width-mobile display-none desktop-lg:display-inline-block',
+    inputClass: 'width-card-lg widescreen:width-mobile display-none desktop-lg:display-inline-block',
     size: 'small',
     ariaLabel: 'Search',
-    dropdown: {}
-
-
+    dropdown: {},
   };
-
-
 
   searchSubmit(model) {
     this.action.emit(model);
@@ -82,37 +68,32 @@ export class SdsSubheaderWrapperComponent implements OnInit {
     }
   }
 
-
-   ngOnInit() {
-
+  ngOnInit() {
     if (this.searchPlaceholderText) {
       this.searchSettings.placeholder = this.searchPlaceholderText;
     }
 
     if (this.searchDropDownItems) {
-      this.searchSettings.dropdown =
-      {
+      this.searchSettings.dropdown = {
         id: 'searchOptions',
         placeholder: '-Select-',
         options: this.searchDropDownItems,
         inverse: false,
       };
     }
-
-
   }
 }
 
 export enum SubHeaderWrapperMode {
   CUSTOM,
   //Accept and Reject buttons
-  REQUEST,//(Accept/Reject),
+  REQUEST, //(Accept/Reject),
 
-  SUBMIT,//(Submit/EDIT)
+  SUBMIT, //(Submit/EDIT)
   //
   SEARCH,
   //
-  TAB
+  TAB,
 }
 
 export class TabModel implements Selectable {
@@ -125,4 +106,3 @@ export class SerachDropDownItem {
   label: string;
   value: string;
 }
-

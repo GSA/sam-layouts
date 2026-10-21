@@ -7,13 +7,11 @@
 
   <!-- =============== TITLE =============== -->
   <span class="sds-navbar__title">
-    {{title}}
+    {{ title }}
   </span>
   <!--- Search and Autocomplete-->
 
-  <sds-search *ngIf="searchEnabled" [searchSettings]="searchSettings" (submit)="searchSubmit($event)">
-  </sds-search>
-
+  <sds-search *ngIf="searchEnabled" [searchSettings]="searchSettings" (submit)="searchSubmit($event)"> </sds-search>
 
   <!-- =============== BUTTON GROUP =============== -->
   <ng-container subheader-buttons-container>
@@ -30,7 +28,6 @@
   </ng-container>
 </sds-subheader>
 
-
 <ng-template #request>
   <button class="usa-button bg-primary-lighter grid-col-6" (click)="action.emit('Reject')">Reject</button>
   <button class="usa-button grid-col-6" (click)="action.emit('Approve')">Approve</button>
@@ -42,11 +39,14 @@
 </ng-template>
 
 <ng-template #tabOutlet>
-  <sds-button-group [mode]="'radio'" (change)="action.emit($event)"
-    class="sds-button-group  sds-button-group--secondary">
+  <sds-button-group
+    [mode]="'radio'"
+    (change)="action.emit($event)"
+    class="sds-button-group sds-button-group--secondary"
+  >
     <ng-template ngFor let-tab [ngForOf]="tabs">
       <sds-button-group-option [value]="tab.id" [aria-label]="tab.text" [checked]="tab.selected">
-        {{ tab.text}}
+        {{ tab.text }}
       </sds-button-group-option>
     </ng-template>
   </sds-button-group>

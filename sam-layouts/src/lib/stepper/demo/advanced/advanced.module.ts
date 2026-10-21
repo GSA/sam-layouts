@@ -5,10 +5,7 @@ import { SdsStepperModule } from '@gsa-sam/sam-formly';
 
 import { SLStepperModule } from '../../stepper.module';
 import { DemoStepperAdvancedComponent } from './advanced.component';
-import {
-  AddSubawardeeDialogDemo,
-  SubawardeeDemoComponent,
-} from './subawardee.component';
+import { AddSubawardeeDialogDemo, SubawardeeDemoComponent } from './subawardee.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { NgxBootstrapIconsModule, chevronRight } from 'ngx-bootstrap-icons';
 
@@ -23,11 +20,7 @@ import { NgxBootstrapIconsModule, chevronRight } from 'ngx-bootstrap-icons';
     }),
     IconModule,
   ],
-  declarations: [
-    DemoStepperAdvancedComponent,
-    SubawardeeDemoComponent,
-    AddSubawardeeDialogDemo,
-  ],
+  declarations: [DemoStepperAdvancedComponent, SubawardeeDemoComponent, AddSubawardeeDialogDemo],
   exports: [DemoStepperAdvancedComponent],
 })
 export class DemoStepperAdvancedModule {}

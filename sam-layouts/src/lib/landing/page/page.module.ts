@@ -11,13 +11,11 @@ import {
   SdsLandingPageOverviewDirective,
   SdsLandingPageOverviewParagraphDirective,
   SdsLandingPageTileDirective,
-  SdsLandingPageCardDirective
+  SdsLandingPageCardDirective,
 } from './page.component';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [
     SdsLandingPageComponent,
     SdsLandingPageHeadComponent,
@@ -28,7 +26,7 @@ import {
     SdsLandingPageOverviewDirective,
     SdsLandingPageOverviewParagraphDirective,
     SdsLandingPageTileDirective,
-    SdsLandingPageCardDirective
+    SdsLandingPageCardDirective,
   ],
   declarations: [
     SdsLandingPageComponent,
@@ -40,7 +38,7 @@ import {
     SdsLandingPageOverviewDirective,
     SdsLandingPageOverviewParagraphDirective,
     SdsLandingPageTileDirective,
-    SdsLandingPageCardDirective
+    SdsLandingPageCardDirective,
   ],
   providers: [],
 })

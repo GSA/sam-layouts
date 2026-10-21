@@ -1,23 +1,12 @@
 import { ComponentFixture, TestBed, tick, fakeAsync, waitForAsync } from '@angular/core/testing';
 import { SearchListLayoutComponent } from './search-list-layout.component';
-import {
-  PaginationModule,
-  SdsSearchResultListModule,
-} from '@gsa-sam/components';
+import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
 import { FormsModule } from '@angular/forms';
-import {
-  SearchParameters,
-  SearchResult,
-  SearchListInterface,
-  ResultsModel,
-} from './model/search-list-layout.model';
+import { SearchParameters, SearchResult, SearchListInterface, ResultsModel } from './model/search-list-layout.model';
 import { of, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  SDSFormlyUpdateComunicationService,
-  SDSFormlyUpdateModelService,
-} from '@gsa-sam/sam-formly';
+import { SDSFormlyUpdateComunicationService, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
 import { SimpleChange } from '@angular/core';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
@@ -34,17 +23,14 @@ describe('SearchListLayoutComponent', () => {
         SdsSearchResultListModule,
         FormsModule,
         RouterTestingModule.withRoutes([]),
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
       ],
       // `SearchListLayoutComponent` injects `SDSFormlyUpdateComunicationService`
       // with `@Optional()` but dereferences `.filterUpdate` unguarded in
       // `ngOnInit`, so the test module has to provide it. `@gsa-sam/sam-formly`
       // declares it as a bare `@Injectable()` with no `providedIn`, so it is
       // never available by default.
-      providers: [
-        SDSFormlyUpdateModelService,
-        SDSFormlyUpdateComunicationService,
-      ],
+      providers: [SDSFormlyUpdateModelService, SDSFormlyUpdateComunicationService],
     }).compileComponents();
   }));
 
@@ -87,9 +73,7 @@ describe('SearchListLayoutComponent', () => {
   }));
 
   it('should call updateFilterModel', () => {
-    const service = fixture.debugElement.injector.get(
-      SDSFormlyUpdateModelService
-    );
+    const service = fixture.debugElement.injector.get(SDSFormlyUpdateModelService);
     const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)
     const filterData = {
       filterModel: { searchKeyword: 'test', entity: 'testEntity' },
@@ -112,9 +96,7 @@ describe('SearchListLayoutComponent', () => {
   // it back to `queryObj.hasOwnProperty(...)`.
   it('does not crash and clears sfm when the URL shadows hasOwnProperty (GSA/sam-layouts#76)', () => {
     const router = TestBed.inject(Router);
-    const navigateSpy = jest
-      .spyOn(router, 'navigate')
-      .mockResolvedValue(true);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
     // jsdom updates window.location from history.replaceState, so this stands
     // up the malicious query string without a real navigation or new deps.
@@ -133,16 +115,14 @@ describe('SearchListLayoutComponent', () => {
       // value never survives into the navigation params. Use the safe
       // prototype method because `queryParams` itself carries an own
       // `hasOwnProperty` key here too.
-      expect(Object.prototype.hasOwnProperty.call(queryParams, 'sfm')).toBe(
-        false
-      );
+      expect(Object.prototype.hasOwnProperty.call(queryParams, 'sfm')).toBe(false);
     } finally {
       window.history.replaceState({}, '', originalSearch || '/');
     }
   });
 
   it('should update sortvalue through updateSearchResultsModel', () => {
-    component.configuration =  {
+    component.configuration = {
       defaultSortValue: 'legalBusinessName',
       pageSize: 25,
       sortList: [
@@ -175,7 +155,7 @@ describe('SearchListLayoutComponent without SDSFormlyUpdateComunicationService',
         SdsSearchResultListModule,
         FormsModule,
         RouterTestingModule.withRoutes([]),
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))
+        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
       ],
       // Intentionally omit `SDSFormlyUpdateComunicationService` from providers
       // to reproduce the absent-service path permitted by `@Optional()`.

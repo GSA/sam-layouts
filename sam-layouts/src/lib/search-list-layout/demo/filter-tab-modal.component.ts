@@ -1,13 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import {
-  SdsDialogRef,
-  SDS_DIALOG_DATA,
-  TabPanelComponent,
-} from '@gsa-sam/components';
+import { SdsDialogRef, SDS_DIALOG_DATA, TabPanelComponent } from '@gsa-sam/components';
 import { SdsFormlyDialogComponent } from '@gsa-sam/sam-formly';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   // `filter-tab-modal.component` is a latent typo: the `.component` suffix
   // belongs to the *filename*, not the selector, and ESLint parses it as an
   // element `filter-tab-modal` plus a class `.component` — which is why it
@@ -26,16 +22,10 @@ import { SdsFormlyDialogComponent } from '@gsa-sam/sam-formly';
   selector: 'filter-tab-modal.component',
   template: `
     <div sds-dialog-title>Switch Tabs?</div>
-    <div sds-dialog-content>
-      Switching tabs will clear your current keywords.
-    </div>
+    <div sds-dialog-content>Switching tabs will clear your current keywords.</div>
     <div sds-dialog-actions>
-      <button (click)="cancel()" class="usa-button usa-button--base bg-base-lighter">
-        Cancel
-      </button>
-      <button (click)="changeTabs()" cdkFocusInitial class="usa-button">
-        Switch
-      </button>
+      <button (click)="cancel()" class="usa-button usa-button--base bg-base-lighter">Cancel</button>
+      <button (click)="changeTabs()" cdkFocusInitial class="usa-button">Switch</button>
     </div>
   `,
 })
@@ -44,7 +34,7 @@ export class FilterTabModalComponent {
 
   constructor(
     public dialogRef: SdsDialogRef<SdsFormlyDialogComponent>,
-    @Inject(SDS_DIALOG_DATA) public data: any
+    @Inject(SDS_DIALOG_DATA) public data: any,
   ) {
     this.selectedTab = this.data.options.selectedTab;
   }
@@ -52,8 +42,7 @@ export class FilterTabModalComponent {
   changeTabs() {
     this.data.fields[0].templateOptions.selectedTab = this.selectedTab;
 
-    const keywordFieldArray =
-      this.data.form.controls.keyword._fields[0].fieldArray;
+    const keywordFieldArray = this.data.form.controls.keyword._fields[0].fieldArray;
 
     if (this.selectedTab.tabHeader === 'Simple Search') {
       keywordFieldArray.fieldGroup[1].fieldGroup[0].formControl.setValue(null);

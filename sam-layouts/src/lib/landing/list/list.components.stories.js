@@ -2,12 +2,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { SdsLandingListComponent } from './list.component.ts';
 import { SdsLandingLinkModule } from '../link/link.module';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
-import {
-  NgxBootstrapIconsModule,
-  search,
-  playBtn,
-  fileEarmarkText,
-} from 'ngx-bootstrap-icons';
+import { NgxBootstrapIconsModule, search, playBtn, fileEarmarkText } from 'ngx-bootstrap-icons';
 
 const Template = (args) => ({ props: args });
 
@@ -78,8 +73,7 @@ export const ListWithLinks = {
         },
         {
           link: {
-            innerHtml:
-              'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
+            innerHtml: 'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
             href: 'http://sam.gov',
           },
         },
@@ -120,8 +114,7 @@ export const ListWithIcons = {
         },
         {
           link: {
-            innerHtml:
-              'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
+            innerHtml: 'Nunc vitae nisi pretium, blandit erat non, auctor lectus.',
             href: 'http://sam.gov',
           },
 

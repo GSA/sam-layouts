@@ -21,7 +21,7 @@ import {
   window,
   infoCircle,
   filterCircle,
-  arrowClockwise
+  arrowClockwise,
 } from 'ngx-bootstrap-icons';
 
 import { SdsLandingListComponent } from './list.component';
@@ -59,7 +59,7 @@ const arrowRightCircleGreen = `<svg xmlns="http://www.w3.org/2000/svg" width="16
       window,
       infoCircle,
       filterCircle,
-      arrowClockwise
+      arrowClockwise,
     }),
   ],
   exports: [SdsLandingListComponent],

@@ -43,8 +43,7 @@ export class StepperAdvancedService {
           type: SdsFormlyTypes.RADIO,
           templateOptions: {
             hideOptions: true,
-            label:
-              'Why are you registering this entity to do business with the U.S. government?',
+            label: 'Why are you registering this entity to do business with the U.S. government?',
             options: [
               {
                 label: `I want to be able to bid on federal contracts or other procurement opportunities.

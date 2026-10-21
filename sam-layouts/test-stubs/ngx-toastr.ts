@@ -43,7 +43,7 @@ export class ToastrService {
 export class Toast {
   constructor(
     protected toastrService: ToastrService,
-    public toastPackage: ToastPackage
+    public toastPackage: ToastPackage,
   ) {}
   remove(): void {
     /* no-op */

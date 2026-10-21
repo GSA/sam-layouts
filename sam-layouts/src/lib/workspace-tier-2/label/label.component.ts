@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sds-workspace-tier2-item-label',
   template: `
     <span
@@ -24,9 +24,7 @@ export class SdsWorkspaceTier2LabelComponent {
   gray = 'background-color: #f9f9f7; color: #454540;';
 
   colors = {
-    purple:
-      'background-color: #fbdcff; color: #53068c; border: 1px solid #a776cc',
-    gray:
-      'background-color: #f9f9f7; color: #454540; border: 1px solid #cac9c0',
+    purple: 'background-color: #fbdcff; color: #53068c; border: 1px solid #a776cc',
+    gray: 'background-color: #f9f9f7; color: #454540; border: 1px solid #cac9c0',
   };
 }

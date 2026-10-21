@@ -1,17 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import {
-  SdsMenuModule,
-  SdsSearchModule,
-  SdsObserversModule,
-  SdsTruncateModule
-} from '@gsa-sam/components';
+import { SdsMenuModule, SdsSearchModule, SdsObserversModule, SdsTruncateModule } from '@gsa-sam/components';
 import {
   SdsSubheaderComponent,
   SdsSubheaderActionsComponent,
   SdsSubheaderDrawerComponent,
-  SdsDrawerContentComponent
+  SdsDrawerContentComponent,
 } from './subheader.component';
 import { SdsSubheaderWrapperComponent } from './sds-subheader-wrapper.component';
 import { SdsActionsMenuModule } from '@gsa-sam/components';
@@ -31,23 +26,23 @@ import { FormsModule } from '@angular/forms';
     SdsActionsMenuModule,
     IconModule,
     SdsButtonGroupModule,
-    NgxBootstrapIconsModule.pick({threeDotsVertical, chevronLeft}),
-    FormsModule
+    NgxBootstrapIconsModule.pick({ threeDotsVertical, chevronLeft }),
+    FormsModule,
   ],
   exports: [
     SdsSubheaderComponent,
     SdsSubheaderActionsComponent,
     SdsSubheaderDrawerComponent,
     SdsDrawerContentComponent,
-    SdsSubheaderWrapperComponent
+    SdsSubheaderWrapperComponent,
   ],
   declarations: [
     SdsSubheaderComponent,
     SdsSubheaderActionsComponent,
     SdsSubheaderDrawerComponent,
     SdsDrawerContentComponent,
-    SdsSubheaderWrapperComponent
+    SdsSubheaderWrapperComponent,
   ],
-  providers: [SdsDrawerCommunicationService]
+  providers: [SdsDrawerCommunicationService],
 })
 export class SdsSubheaderModule {}

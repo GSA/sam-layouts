@@ -4,8 +4,8 @@ import { FormlyUtilsService, SdsStepper } from '@gsa-sam/sam-formly';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { StepperAdvancedService } from './advanced.service';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: `demo-stepper-advanced`,
   templateUrl: `./advanced.component.html`,
   providers: [StepperAdvancedService, SdsStepper],
@@ -55,8 +55,8 @@ export class DemoStepperAdvancedComponent {
   stepValidityMap = {};
 
   versions = [
-    { label: '2', value: '2'},
-    { label: '1', value: '1'},
+    { label: '2', value: '2' },
+    { label: '1', value: '1' },
   ];
 
   linear = false;
@@ -67,10 +67,7 @@ export class DemoStepperAdvancedComponent {
     this.currentStepId = $event.id;
 
     if (this.currentStepId === 'review') {
-      FormlyUtilsService.setReadonlyMode(
-        true,
-        this.stepMap.review.fieldConfig.fieldGroup as any
-      );
+      FormlyUtilsService.setReadonlyMode(true, this.stepMap.review.fieldConfig.fieldGroup as any);
     }
   }
 
@@ -86,7 +83,7 @@ export class DemoStepperAdvancedComponent {
     this.linear = !this.linear;
   }
 
-  customBtnClick(evt: MouseEvent){
-    console.log(evt)
+  customBtnClick(evt: MouseEvent) {
+    console.log(evt);
   }
 }

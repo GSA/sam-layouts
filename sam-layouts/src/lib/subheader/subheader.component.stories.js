@@ -2,11 +2,7 @@ import { action } from 'storybook/actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoSubheaderComponent } from './subheader.demo';
 import { moduleMetadata } from '@storybook/angular';
-import {
-  SdsMenuModule,
-  SdsSearchModule,
-  SdsAutocompleteModule,
-} from '@gsa-sam/components';
+import { SdsMenuModule, SdsSearchModule, SdsAutocompleteModule } from '@gsa-sam/components';
 import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 import { AutocompleteService } from './examples/services/autocomplete.service';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';

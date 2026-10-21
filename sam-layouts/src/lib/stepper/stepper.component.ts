@@ -1,15 +1,9 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SdsStepper } from '@gsa-sam/sam-formly';
 
-	@Component({
-	standalone: false,
+@Component({
+  standalone: false,
   selector: 'sam-layouts-stepper',
   providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
   templateUrl: './stepper.component.html',
@@ -23,8 +17,8 @@ export class SLStepperComponent extends SdsStepper {
   @Input() hideFooter = false;
   @Input() customSave = false;
   @Input() hideValidationIconForIDs = [];
-  @Input() stepperButtonsNew :boolean;
-  @Input() isFormValid :boolean;
+  @Input() stepperButtonsNew: boolean;
+  @Input() isFormValid: boolean;
 
   @Output() versionChange = new EventEmitter<any>();
   @Output() previousClick = new EventEmitter<any>();
@@ -36,15 +30,11 @@ export class SLStepperComponent extends SdsStepper {
     this.versionChange.emit(event.target.value);
   }
 
-  constructor(
-    router: Router,
-    activatedRoute: ActivatedRoute,
-    cdr: ChangeDetectorRef
-  ) {
+  constructor(router: Router, activatedRoute: ActivatedRoute, cdr: ChangeDetectorRef) {
     super(router, activatedRoute, cdr);
   }
 
-  showValidationIcon(stepID: string){
+  showValidationIcon(stepID: string) {
     return !this.hideValidationIconForIDs.includes(stepID);
   }
 }

@@ -1,11 +1,6 @@
 import { moduleMetadata } from '@storybook/angular';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
-import {
-  NgxBootstrapIconsModule,
-  x,
-  exclamationTriangle,
-  caretDownFill,
-} from 'ngx-bootstrap-icons';
+import { NgxBootstrapIconsModule, x, exclamationTriangle, caretDownFill } from 'ngx-bootstrap-icons';
 import { SdsSystemAlertComponent } from './system-alert.component';
 import { SdsSystemAlertModule } from './system-alert.module';
 

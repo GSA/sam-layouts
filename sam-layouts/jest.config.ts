@@ -19,8 +19,7 @@ export default {
     // instead, which is likewise undeclared and not installed. Inert on the
     // current `^19` tree, where nothing imports this module — the mapping is
     // simply never consulted. See the stub header.
-    '^@ckeditor/ckeditor5-build-classic$':
-      '<rootDir>/test-stubs/ckeditor5-build-classic.ts',
+    '^@ckeditor/ckeditor5-build-classic$': '<rootDir>/test-stubs/ckeditor5-build-classic.ts',
     // `lodash-es` ships ESM-only `.js` files, which Jest's default
     // `transformIgnorePatterns` (node_modules, except `.mjs`) will not
     // transform. The CommonJS `lodash` build is installed alongside it and is

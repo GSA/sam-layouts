@@ -4,20 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SdsHeaderComponent } from './header.component';
 import { SdsHeaderModule } from './header.module';
 import { NavigationMode } from '@gsa-sam/components';
-import {
-  NgxBootstrapIconsModule,
-  squareFill,
-  xCircle,
-  filePdf,
-  files,
-} from 'ngx-bootstrap-icons';
-import {
-  request,
-  messages,
-  workspace,
-  logOut,
-  bars,
-} from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, squareFill, xCircle, filePdf, files } from 'ngx-bootstrap-icons';
+import { request, messages, workspace, logOut, bars } from '@gsa-sam/ngx-uswds-icons';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -33,13 +21,7 @@ export default {
     moduleMetadata({
       declarations: [],
 
-      imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule,
-        SdsHeaderModule,
-        RouterTestingModule,
-      ],
+      imports: [BrowserModule, BrowserAnimationsModule, RouterModule, SdsHeaderModule, RouterTestingModule],
     }),
   ],
 
@@ -187,8 +169,7 @@ export const Header = {
                       },
                       {
                         link: {
-                          innerHtml:
-                            'Filter by product and services (NAICS and PSC)',
+                          innerHtml: 'Filter by product and services (NAICS and PSC)',
                           href: 'https://www.fsd.gov/gsafsd_sp?id=kb_article_view&sysparm_article=KB0020214',
                           target: '_blank',
                         },
@@ -212,8 +193,7 @@ export const Header = {
                       },
                       {
                         link: {
-                          innerHtml:
-                            'Search vendor collaboration opportunities',
+                          innerHtml: 'Search vendor collaboration opportunities',
                           routerLink:
                             '/search/?index=opp&page=1&sort=-relevance&sfm%5Bstatus%5D%5Bis_active%5D=true&sfm%5Bkeywords%5D%5B0%5D%5Bkey%5D=Vendor%20Collaboration&sfm%5Bkeywords%5D%5B0%5D%5Bvalue%5D=Vendor%20Collaboration',
                         },
