@@ -61,7 +61,7 @@
         }
       </div>
     } @else {
-      @for (a of loadingArray; track a) {
+      @for (a of loadingArray; track $index) {
         <div>
           <hr />
           <div class="grid-container padding-left-0">
