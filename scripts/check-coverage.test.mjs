@@ -78,9 +78,7 @@ async function run(setup = () => {}) {
       summaryHash: hash(
         await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/coverage-summary.json`)),
       ),
-      lcovHash: hash(
-        await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/lcov.info`)),
-      ),
+      lcovHash: hash(await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/lcov.info`))),
     });
   }
   await writeFile(

@@ -10,7 +10,8 @@ test('excludes ambient declarations while retaining runtime declarations', () =>
     'export declare namespace Value { export const nested: string; }',
     'export type Value = string;',
     'export interface Value {}',
-  ]) assert.equal(hasRuntimeSyntax(source), false, source);
+  ])
+    assert.equal(hasRuntimeSyntax(source), false, source);
   for (const source of ['export const value = 1;', 'export enum Value { One }', 'export class Value {}'])
     assert.equal(hasRuntimeSyntax(source), true, source);
 });
