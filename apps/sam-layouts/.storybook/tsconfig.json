@@ -32,13 +32,5 @@
     "moduleResolution": "bundler"
   },
   "exclude": ["../../../sam-layouts/src/**/*.spec.ts", "../**/*.spec.ts"],
-  "include": [
-    "../../../sam-layouts/src/**/*.ts",
-    // The `webpackFinal` aliases in `main.ts` resolve two undeclared
-    // `@gsa-sam/components` imports into these stubs, so they are part of the
-    // compilation too.
-    "../../../sam-layouts/test-stubs/**/*.ts",
-    "*.js",
-    "*.ts"
-  ]
+  "include": ["../../../sam-layouts/src/**/*.ts", "*.js", "*.ts"]
 }

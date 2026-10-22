@@ -23,3 +23,5 @@ report_json.json
 
 # Lockfile is machine-generated; never reformatted
 package-lock.json
+
+.nx/self-healing

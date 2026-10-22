@@ -78,8 +78,8 @@
   >
   </sds-step>
   <!-- <ng-container stepper-footer-save-and-continue>
-    <button 
-      sdsStepperNext
+  <button
+    sdsStepperNext
       class="usa-button 
         sds-button--circle 
         usa-button--base
@@ -87,15 +87,15 @@
         usa-button--big 
         usa-button--active 
         padding-2"
-      id="btn-save-and-continue" 
-      aria-labelledby="btn-save-and-continue-label">
-      <usa-icon [icon]="'chevron-right'"></usa-icon>
-    </button>
-    <label id="btn-save-and-continue-label" for="btn-save-and-continue" 
-      class="text-left usa-link cursor-pointer display-block margin-top-2">
-      Save and Continue
-    </label> 
-  </ng-container>  -->
+    id="btn-save-and-continue"
+    aria-labelledby="btn-save-and-continue-label">
+    <usa-icon [icon]="'chevron-right'"></usa-icon>
+  </button>
+  <label id="btn-save-and-continue-label" for="btn-save-and-continue"
+    class="text-left usa-link cursor-pointer display-block margin-top-2">
+    Save and Continue
+  </label>
+</ng-container>  -->
 </sam-layouts-stepper>
 
 <!-- Custom Templates -->
@@ -141,14 +141,13 @@
 </ng-template>
 
 <ng-template #subawardeeStep>
-  <ng-container *ngIf="!showLoading; else loading">
+  @if (!showLoading) {
     <h1 class="margin-top-0">
       Subawardee Data
       <hr />
     </h1>
     <subawardee-demo (subawardeeUpdate)="updateSubawardee($event)" [subawardees]="model.subawardee"></subawardee-demo>
-  </ng-container>
-  <ng-template #loading>
+  } @else {
     <div class="grid-container padding-left-0">
       <div class="sds-load grid-row">
         <div class="grid-col-5 sds-load__title"></div>
@@ -160,7 +159,7 @@
         <div class="grid-col-8 height-4 sds-load__content"></div>
       </div>
     </div>
-  </ng-template>
+  }
 </ng-template>
 
 <ng-template #reviewTemplate>

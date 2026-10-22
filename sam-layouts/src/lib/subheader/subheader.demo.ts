@@ -22,36 +22,38 @@ import { SUBHEADERACTIONSTYLE } from './subheader.component';
 
       <ng-content></ng-content>
 
-      <ng-container *ngIf="showButtons" subheader-buttons-container>
-        <button class="usa-button bg-primary-lighter grid-col-6">Button</button>
-        <button class="usa-button grid-col-6">Button</button>
-      </ng-container>
+      @if (showButtons) {
+        <ng-container subheader-buttons-container>
+          <button class="usa-button bg-primary-lighter grid-col-6">Button</button>
+          <button class="usa-button grid-col-6">Button</button>
+        </ng-container>
+      }
 
-      <sds-search
-        *ngIf="showSearch"
-        [(ngModel)]="searchModel"
-        [searchSettings]="searchSettings"
-        (submit)="searchSubmit($event)"
-      >
-      </sds-search>
+      @if (showSearch) {
+        <sds-search [(ngModel)]="searchModel" [searchSettings]="searchSettings" (submit)="searchSubmit($event)">
+        </sds-search>
+      }
 
-      <sds-autocomplete
-        *ngIf="showAutocomplete"
-        [service]="autocompleteService"
-        [(ngModel)]="autocompleteModel"
-        [configuration]="autocompleteSettings"
-      >
-      </sds-autocomplete>
+      @if (showAutocomplete) {
+        <sds-autocomplete
+          [service]="autocompleteService"
+          [(ngModel)]="autocompleteModel"
+          [configuration]="autocompleteSettings"
+        >
+        </sds-autocomplete>
+      }
 
-      <ng-container *ngIf="showButtonGroup" subheader-buttongroup-container>
-        <sds-button-group [mode]="'radio'" class="sds-button-group sds-button-group--secondary">
-          <sds-button-group-option [checked]="true" value="selected" [aria-label]="'selected'">
-            Selected
-          </sds-button-group-option>
-          <sds-button-group-option value="button1" [aria-label]="'button1'"> Button 1 </sds-button-group-option>
-          <sds-button-group-option value="button2" [aria-label]="'button2'"> Button 2 </sds-button-group-option>
-        </sds-button-group>
-      </ng-container>
+      @if (showButtonGroup) {
+        <ng-container subheader-buttongroup-container>
+          <sds-button-group [mode]="'radio'" class="sds-button-group sds-button-group--secondary">
+            <sds-button-group-option [checked]="true" value="selected" [aria-label]="'selected'">
+              Selected
+            </sds-button-group-option>
+            <sds-button-group-option value="button1" [aria-label]="'button1'"> Button 1 </sds-button-group-option>
+            <sds-button-group-option value="button2" [aria-label]="'button2'"> Button 2 </sds-button-group-option>
+          </sds-button-group>
+        </ng-container>
+      }
       <sds-subheader-actions
         [mobileTabletStyle]="buttonStyle"
         [model]="actionsModel"

@@ -1,1 +1,3 @@
-<ng-container *ngIf="drawerContentTemplate && isDrawerOpen" [ngTemplateOutlet]="drawerContentTemplate"> </ng-container>
+@if (drawerContentTemplate && isDrawerOpen) {
+  <ng-container [ngTemplateOutlet]="drawerContentTemplate"> </ng-container>
+}

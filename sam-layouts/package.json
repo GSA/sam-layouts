@@ -6,8 +6,8 @@
     "url": "git+https://github.com/GSA/sam-layouts.git"
   },
   "peerDependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0"
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0"
   },
   "sideEffects": false
 }

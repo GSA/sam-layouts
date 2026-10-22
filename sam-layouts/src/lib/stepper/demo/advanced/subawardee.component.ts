@@ -62,7 +62,6 @@ export class SubawardeeDemoComponent {
   `,
   providers: [StepperAdvancedService],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class AddSubawardeeDialogDemo implements OnInit {
   subawardeeFields!: FormlyFieldConfig[];
   model = {};

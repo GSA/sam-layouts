@@ -78,6 +78,8 @@ export default [
       // note)"). Parked in the warning baseline so it blocks *new* debt
       // without blocking CI today. Delete this override in Wave 3.
       '@angular-eslint/prefer-standalone': 'warn',
+      // Constructor-injection conversion remains outside this platform slice.
+      '@angular-eslint/prefer-inject': 'off',
       // Warn, not error: pre-existing empty constructors / lifecycle hooks
       // inherited from the 2022 codebase. Tracked by the ratcheting warning
       // baseline (`eslint-baseline.json`) rather than blocking CI.

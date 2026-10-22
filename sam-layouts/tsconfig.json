@@ -6,12 +6,15 @@
     "strict": false,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
-    "strictPropertyInitialization": false, //TODO: enable
+    "strictPropertyInitialization": false,
     "noImplicitReturns": false,
-    "noImplicitAny": false, //TODO: enable
+    "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
-    "strictNullChecks": false, //TODO: enable,
-    "suppressExcessPropertyErrors": false
+    "strictNullChecks": false,
+    "suppressExcessPropertyErrors": false,
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "lib": ["dom", "es2022"]
   },
   "files": [],
   "include": [],
@@ -28,6 +31,6 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": false,
     "strictInputAccessModifiers": false,
-    "strictTemplates": false //TODO: enable
+    "strictTemplates": false
   }
 }

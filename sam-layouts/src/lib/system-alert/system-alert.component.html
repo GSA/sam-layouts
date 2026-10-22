@@ -69,44 +69,46 @@
 </div>
 
 <ng-template #multipleAlerts let-alerts>
-  <div *ngFor="let alert of alerts; let i = index" class="grid-col-12" [attr.id]="'alert' + i">
-    <div class="sds-alert--header__content grid-row">
-      <div class="grid-col-fill">
-        <div class="sds-alert--header__label margin-right-1" [innerHTML]="alert.header"></div>
-        <a
-          (click)="onShowDetailsClicked(alert)"
-          role="button"
-          href="javascript:void(0)"
-          class="sds-alert--header__link"
-          [attr.aria-expanded]="alert.displayDescription"
-          [attr.aria-controls]="'alertDescription' + i"
-        >
-          {{ alert.displayDescription ? 'Hide Details' : 'Show Details' }}
-        </a>
-        <span class="sds-alert--header__date">
-          {{ alert.date | date: 'mediumDate' }}
-        </span>
-        <span
-          aria-live="polite"
-          [attr.id]="'alertDescription' + i"
-          [sdsCollapse]="!alert.displayDescription"
-          [innerHTML]="alert.description"
-        >
-        </span>
-      </div>
-      <div class="grid-offset-1 grid-col-auto">
-        <button
-          (click)="onAlertClose(i)"
-          [attr.id]="'alert' + i + 'CloseBtn'"
-          class="usa-button sds-button--circle bg-primary-lighter sds-alert--header__close simple-toggle"
-          aria-label="Close Alert"
-          [attr.aria-controls]="'alert' + i"
-        >
-          <usa-icon [icon]="'x'"></usa-icon>
-        </button>
+  @for (alert of alerts; track alert; let i = $index) {
+    <div class="grid-col-12" [attr.id]="'alert' + i">
+      <div class="sds-alert--header__content grid-row">
+        <div class="grid-col-fill">
+          <div class="sds-alert--header__label margin-right-1" [innerHTML]="alert.header"></div>
+          <a
+            (click)="onShowDetailsClicked(alert)"
+            role="button"
+            href="javascript:void(0)"
+            class="sds-alert--header__link"
+            [attr.aria-expanded]="alert.displayDescription"
+            [attr.aria-controls]="'alertDescription' + i"
+          >
+            {{ alert.displayDescription ? 'Hide Details' : 'Show Details' }}
+          </a>
+          <span class="sds-alert--header__date">
+            {{ alert.date | date: 'mediumDate' }}
+          </span>
+          <span
+            aria-live="polite"
+            [attr.id]="'alertDescription' + i"
+            [sdsCollapse]="!alert.displayDescription"
+            [innerHTML]="alert.description"
+          >
+          </span>
+        </div>
+        <div class="grid-offset-1 grid-col-auto">
+          <button
+            (click)="onAlertClose(i)"
+            [attr.id]="'alert' + i + 'CloseBtn'"
+            class="usa-button sds-button--circle bg-primary-lighter sds-alert--header__close simple-toggle"
+            aria-label="Close Alert"
+            [attr.aria-controls]="'alert' + i"
+          >
+            <usa-icon [icon]="'x'"></usa-icon>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </ng-template>
 
 <ng-template #singleAlert let-alerts>
