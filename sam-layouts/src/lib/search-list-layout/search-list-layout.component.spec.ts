@@ -152,6 +152,33 @@ describe('SearchListLayoutComponent', () => {
     await fixture.whenStable();
   });
 
+  it('applies an earlier Formly filter after restoring a different results page (#104)', async () => {
+    fixture.detectChanges();
+    const requests: SearchParameters[] = [];
+    component.service = {
+      getData: (search) => {
+        requests.push(search);
+        return of({ totalItems: 0, items: [] });
+      },
+    };
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    const filterA = { keyword: 'a' };
+    const filterB = { keyword: 'b' };
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      service.updateFilter(filterA);
+      service.updateFilter(filterA);
+      component.updateSearchResultsModel({ page: 3, filterModel: filterB });
+      service.updateFilter(filterA);
+      await vi.advanceTimersByTimeAsync(100);
+
+      expect(component.page.pageNumber).toBe(1);
+      expect(requests.at(-1)?.filter).toEqual(filterA);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('applies the first restored Formly filter after an earlier request settles (#104)', async () => {
     fixture.detectChanges();
     const requests: SearchParameters[] = [];

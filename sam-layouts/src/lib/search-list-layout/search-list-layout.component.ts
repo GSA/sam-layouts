@@ -199,6 +199,10 @@ export class SearchListLayoutComponent implements OnInit {
           }),
         )
         .subscribe((filter) => {
+          // RxJS does not call the comparator for the stream's first emission.
+          // Snapshot every accepted emission so restoration is consumed there too.
+          this.restorationEmissionPending = false;
+          this.lastKnownFilter = this.normalizeFilterForComparison(filter);
           this.updateFilter(filter);
         });
     }
