@@ -145,18 +145,17 @@ test('passes valid independent floors', async () => {
 });
 for (const project of ['layouts', 'sam-layouts'])
   for (const metric of metrics)
-    test(`rejects ${project} ${metric} regression`, async () =>
-      assert.equal(
-        (
-          await run(async (dir) => {
-            const value = summary();
-            value.total[metric] = { total: 10, covered: 6, skipped: 0, pct: 60 };
-            await writeFile(join(dir, `coverage/${project}/coverage-summary.json`), JSON.stringify(value));
-            await refreshEvidence(dir, [project]);
-          })
-        ).code,
-        1,
-      ));
+    test(`rejects ${project} ${metric} regression`, async () => {
+      const result = await run(async (dir) => {
+        const value = summary();
+        value.total[metric] = { total: 10, covered: 6, skipped: 0, pct: 60 };
+        await writeFile(join(dir, `coverage/${project}/coverage-summary.json`), JSON.stringify(value));
+        await refreshEvidence(dir, [project]);
+      });
+      assert.equal(result.code, 1);
+      assert.match(result.output, new RegExp(`${project} ${metric} 60% is below`));
+      assert.doesNotMatch(result.output, /report changed/);
+    });
 test('rejects mismatched and unsorted source manifests', async () => {
   for (const manifest of [
     ['apps/sam-layouts/src/input.ts'],
@@ -264,7 +263,7 @@ test('bump raises only relevant floors and never lowers them', async () => {
   const result = await run(
     async (dir) => {
       const value = summary();
-      for (const metric of metrics) value.total[metric] = { total: 10, covered: 7, skipped: 0, pct: 70 };
+      for (const metric of metrics) value.total[metric] = { total: 10, covered: 6, skipped: 0, pct: 60 };
       value.total.branches = { total: 10, covered: 9, skipped: 0, pct: 90 };
       await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(value));
       await refreshEvidence(dir, ['layouts']);
@@ -274,21 +273,32 @@ test('bump raises only relevant floors and never lowers them', async () => {
     async (dir) => {
       const config = JSON.parse(await readFile(join(dir, 'coverage-thresholds.json'), 'utf8'));
       assert.equal(config.layouts.branches, 90);
-      assert.equal(config.layouts.statements, 70);
-      assert.equal(config['sam-layouts'].statements, 100);
+      for (const metric of ['statements', 'functions', 'lines']) assert.equal(config.layouts[metric], 70);
+      assert.deepEqual(config['sam-layouts'], floors['sam-layouts']);
     },
   );
   assert.equal(result.code, 0, result.output);
 });
-test('rejects floor bumps that are stale or lower', async () =>
-  assert.equal(
-    (
-      await run(async (dir) => {
-        await writeFile(
-          join(dir, 'coverage-thresholds.json'),
-          JSON.stringify({ ...floors, layouts: { ...floors.layouts, statements: 101 } }),
-        );
-      })
-    ).code,
-    1,
-  ));
+for (const invalidEvidence of ['stale', 'changed']) {
+  test(`bump rejects ${invalidEvidence} evidence without changing floors`, async () => {
+    const result = await run(
+      async (dir) => {
+        if (invalidEvidence === 'stale') {
+          const markerPath = join(dir, 'coverage/.coverage-run.json');
+          const marker = JSON.parse(await readFile(markerPath, 'utf8'));
+          marker.startedAt = new Date(0).toISOString();
+          marker.completedAt = new Date(1000).toISOString();
+          await writeFile(markerPath, JSON.stringify(marker));
+        } else {
+          await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(summary(60)));
+        }
+      },
+      'bump',
+      async (dir) => {
+        assert.deepEqual(JSON.parse(await readFile(join(dir, 'coverage-thresholds.json'), 'utf8')), floors);
+      },
+    );
+    assert.equal(result.code, 1);
+    assert.match(result.output, invalidEvidence === 'stale' ? /outside the run window/ : /coverage report changed/);
+  });
+}
