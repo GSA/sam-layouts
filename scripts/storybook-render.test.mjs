@@ -1,13 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { execFile } from 'node:child_process';
+import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, cpSync } from 'node:fs';
+import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { DOM_CONTRACTS, readStoryEntries, serveDirectory } from './storybook-render.mjs';
+
+const run = promisify(execFile);
 
 function index(root, entries) {
   writeFileSync(join(root, 'index.json'), JSON.stringify({ entries }));
 }
+
+test('CLI runs from a checkout path containing spaces and rejects a missing artifact', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'storybook checkout with spaces-'));
+  const script = resolve('scripts/storybook-render.mjs');
+  await assert.rejects(
+    run(process.execPath, [script, join(root, 'missing-dist')], { cwd: root }),
+    /index\.json|ENOENT/,
+  );
+});
 
 test('contracts cover stories and exclude docs', () => {
   const root = mkdtempSync(join(tmpdir(), 'storybook-render-'));

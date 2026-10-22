@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, mkdir, symlink, writeFile, cp } from 'node:fs/promises';
+import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
@@ -10,6 +12,8 @@ import {
   validateContract,
   REQUIRED_PEERS,
 } from './check-package-contract.mjs';
+
+const run = promisify(execFile);
 
 const allPeers = Object.fromEntries(
   REQUIRED_PEERS.map((name) => [
@@ -86,6 +90,17 @@ test('empty artifact directory fails', async () => {
   await writeFile(manifestPath, '{}');
   await assert.rejects(checkPackageContract({ dist: root, manifestPath }), /no emitted JavaScript/);
 });
+test('CLI runs from a checkout path containing spaces and rejects a missing artifact', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'contract checkout with spaces-'));
+  const script = path.join(root, 'check-package-contract.mjs');
+  await cp(new URL('./check-package-contract.mjs', import.meta.url), script);
+  await symlink(path.resolve('node_modules'), path.join(root, 'node_modules'));
+  await assert.rejects(
+    run(process.execPath, [script, path.join(root, 'missing-dist'), path.join(root, 'missing-package.json')]),
+    /no emitted JavaScript/,
+  );
+});
+
 test('checks emitted artifact', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'contract-'));
   const dist = path.join(root, 'fesm');

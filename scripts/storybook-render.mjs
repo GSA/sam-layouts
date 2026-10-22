@@ -3,6 +3,7 @@
 import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { argv, exit, stderr, stdout } from 'node:process';
 
 export const DEFAULT_STORYBOOK_DIR = 'dist/storybook/sam-layouts';
@@ -144,7 +145,7 @@ export async function runStorybookRender({ root = resolve(argv[2] ?? DEFAULT_STO
   return entries.length;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`)
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url))
   runStorybookRender()
     .then((count) => stdout.write(`Rendered ${count} Storybook stories with component DOM assertions\n`))
     .catch((error) => {

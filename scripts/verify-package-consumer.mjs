@@ -8,13 +8,14 @@ import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { createRequire } from 'node:module';
 import semver from 'semver';
 
 const run = promisify(execFile);
 const require = createRequire(import.meta.url);
-const repo = path.resolve(new URL('..', import.meta.url).pathname);
+const repo = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const dist = path.join(repo, 'dist/sam-layouts');
 const packageManifest = path.join(dist, 'package.json');
 
@@ -141,7 +142,7 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`)
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
   main().catch((error) => {
     console.error(`consumer proof failed: ${error.message}`);
     process.exitCode = 1;

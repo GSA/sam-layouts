@@ -1,9 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { cp, mkdtemp, mkdir, symlink, writeFile } from 'node:fs/promises';
+import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { consumerPlan, consumerSources, assertPeerIdentity } from './verify-package-consumer.mjs';
+
+const run = promisify(execFile);
+
+test('CLI runs from a checkout path containing spaces and rejects a missing artifact', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'consumer checkout with spaces-'));
+  const script = path.join(root, 'verify-package-consumer.mjs');
+  await cp(new URL('./verify-package-consumer.mjs', import.meta.url), script);
+  await symlink(path.resolve('node_modules'), path.join(root, 'node_modules'));
+  await assert.rejects(run(process.execPath, [script]), /ENOENT|package\.json/);
+});
 
 test('consumer plan pins the packed tarball and derives peers from the root manifest', () => {
   const plan = consumerPlan({

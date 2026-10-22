@@ -3,6 +3,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { builtinModules, createRequire } from 'node:module';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
 const require = createRequire(import.meta.url);
@@ -141,7 +142,7 @@ export async function checkPackageContract({ dist, manifestPath }) {
   const dependencies = await extractEmittedDependencies(dist);
   return { dependencies, errors: validateContract({ manifest, dependencies, file: manifestPath }) };
 }
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [dist = 'dist/sam-layouts', manifestPath = path.join(dist, 'package.json')] = process.argv.slice(2);
   try {
     const result = await checkPackageContract({ dist, manifestPath });
