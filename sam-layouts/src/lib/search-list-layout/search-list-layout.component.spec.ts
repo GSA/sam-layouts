@@ -152,7 +152,7 @@ describe('SearchListLayoutComponent', () => {
     await fixture.whenStable();
   });
 
-  it('applies an earlier Formly filter after restoring a different results page (#104)', async () => {
+  it('applies the first restored Formly filter after an earlier request settles (#104)', async () => {
     fixture.detectChanges();
     const requests: SearchParameters[] = [];
     component.service = {
@@ -167,16 +167,30 @@ describe('SearchListLayoutComponent', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     try {
       service.updateFilter(filterA);
-      service.updateFilter(filterA);
+      await vi.advanceTimersByTimeAsync(100);
       component.updateSearchResultsModel({ page: 3, filterModel: filterB });
-      service.updateFilter(filterA);
+      service.updateFilter(filterB);
       await vi.advanceTimersByTimeAsync(100);
 
-      expect(component.page.pageNumber).toBe(1);
-      expect(requests.at(-1)?.filter).toEqual(filterA);
+      expect(requests.at(-1)?.filter).toEqual(filterB);
+      expect(requests.at(-1)?.page.pageNumber).toBe(3);
+      expect(component.page.pageNumber).toBe(3);
+      service.updateFilter(filterB);
+      await vi.advanceTimersByTimeAsync(100);
+      expect(requests).toHaveLength(2);
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('preserves restored pagination for an equivalent nested empty Formly group (#104)', async () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: 'test' } });
+    service.updateFilter({ keyword: 'test', location: { city: null } });
+    expect(component.page.pageNumber).toBe(3);
+    await fixture.whenStable();
   });
 
   it('preserves the restored URL page immediately for an equivalent Formly emission (#104)', () => {

@@ -153,6 +153,7 @@ export class SearchListLayoutComponent implements OnInit {
 
   // Introduce a variable to store the last distinct filter state
   private lastKnownFilter = null;
+  private restorationEmissionPending = false;
 
   // The filter associated with the current page must not share consumer-owned references.
   private pageFilter: unknown;
@@ -179,6 +180,11 @@ export class SearchListLayoutComponent implements OnInit {
         .pipe(
           distinctUntilChanged((prev, curr) => {
             const normalized = this.normalizeFilterForComparison(curr);
+            if (this.restorationEmissionPending) {
+              this.restorationEmissionPending = false;
+              this.lastKnownFilter = normalized;
+              return false;
+            }
             if (this.triggeredByPopState) {
               this.lastKnownFilter = normalized; // Sync with the restored filter snapshot
               return false; // Allow this event through
@@ -285,7 +291,10 @@ export class SearchListLayoutComponent implements OnInit {
         (result, key) => {
           const value = (filter as Record<string, unknown>)[key];
           if (value != null) {
-            result[key] = this.normalizeFilterForComparison(value);
+            const normalized = this.normalizeFilterForComparison(value);
+            if (!(this.isPlainObject(normalized) && Object.keys(normalized).length === 0)) {
+              result[key] = normalized;
+            }
           }
           return result;
         },
@@ -293,6 +302,14 @@ export class SearchListLayoutComponent implements OnInit {
       );
     }
     return filter;
+  }
+
+  private isPlainObject(value: unknown): value is Record<string, unknown> {
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+      return false;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
   }
 
   isDefaultFilter(filter) {
@@ -463,6 +480,7 @@ export class SearchListLayoutComponent implements OnInit {
     // an in-flight old value must remain observable if it differs from this
     // restoration, rather than being suppressed by stale deduplication state.
     this.lastKnownFilter = this.normalizeFilterForComparison(historyModel.filterModel);
+    this.restorationEmissionPending = true;
     this.hasPageFilter = true;
     this.page.default = historyModel.page || historyModel.sort ? true : false;
     this.page.pageNumber = historyModel.page ? historyModel.page : 1;
