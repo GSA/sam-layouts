@@ -95,9 +95,11 @@ const validateEvidence = async (marker, config) => {
     throw new Error('missing, stale, or changed run evidence');
   const started = Date.parse(marker.startedAt);
   const completed = Date.parse(marker.completedAt);
+  const expectedManifest = (await productionSource(inputFiles())).slice().sort();
   if (
     !Array.isArray(marker.sourceManifest) ||
     marker.sourceManifest.some((file) => typeof file !== 'string') ||
+    JSON.stringify(marker.sourceManifest) !== JSON.stringify(expectedManifest) ||
     !Array.isArray(marker.projects) ||
     marker.projects.length !== Object.keys(projects).length ||
     !Array.isArray(marker.evidence) ||
@@ -119,7 +121,7 @@ const validateEvidence = async (marker, config) => {
       item.numTotalTests < details.minimumTests ||
       item.numFailedTests !== 0 ||
       item.numPendingTests !== 0 ||
-      !item.report ||
+      item.report !== `tmp/coverage/${project}-tests.json` ||
       !item.reportHash ||
       !item.summaryHash
     )

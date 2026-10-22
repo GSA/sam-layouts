@@ -10,7 +10,7 @@ describe('SdsFeedbackComponent', () => {
   let fixture: ComponentFixture<SdsFeedbackComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, ReactiveFormsModule, SdsFeedbackModule],
     }).compileComponents();
   });

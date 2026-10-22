@@ -16,7 +16,7 @@ describe('SdsFooterComponent', () => {
   let component: SdsFooterComponent;
   let fixture: ComponentFixture<SdsFooterComponent>;
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
         RouterTestingModule,

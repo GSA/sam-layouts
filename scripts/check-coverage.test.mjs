@@ -39,10 +39,12 @@ async function run(setup = () => {}) {
     ['layouts', 26],
     ['sam-layouts', 3],
   ]) {
-    const reportPath = join(dir, `${project}-tests.json`);
+    const reportPath = `tmp/coverage/${project}-tests.json`;
+    const reportFile = join(dir, reportPath);
     reports[project] = reportPath;
+    await mkdir(join(dir, 'tmp/coverage'), { recursive: true });
     await writeFile(
-      reportPath,
+      reportFile,
       JSON.stringify({
         numTotalTests: count,
         numPassedTests: count,
@@ -72,7 +74,7 @@ async function run(setup = () => {}) {
       numFailedTests: 0,
       numPendingTests: 0,
       report,
-      reportHash: hash(await (await import('node:fs/promises')).readFile(report)),
+      reportHash: hash(await (await import('node:fs/promises')).readFile(join(dir, report))),
       summaryHash: hash(
         await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/coverage-summary.json`)),
       ),
@@ -86,7 +88,7 @@ async function run(setup = () => {}) {
       completedAt,
       success: true,
       fingerprint,
-      sourceManifest: ['sam-layouts/src/input.ts', 'apps/sam-layouts/src/input.ts'],
+      sourceManifest: ['apps/sam-layouts/src/input.ts', 'sam-layouts/src/input.ts'],
       projects: [
         { name: 'layouts', tests: 26 },
         { name: 'sam-layouts', tests: 3 },
@@ -138,6 +140,29 @@ for (const metric of metrics)
       ).code,
       1,
     ));
+test('rejects mismatched and unsorted source manifests', async () => {
+  for (const manifest of [
+    ['apps/sam-layouts/src/input.ts'],
+    ['sam-layouts/src/input.ts', 'apps/sam-layouts/src/input.ts'],
+  ]) {
+    const result = await run(async (dir) => {
+      const markerPath = join(dir, 'coverage/.coverage-run.json');
+      const marker = JSON.parse(await (await import('node:fs/promises')).readFile(markerPath, 'utf8'));
+      marker.sourceManifest = manifest;
+      await writeFile(markerPath, JSON.stringify(marker));
+    });
+    assert.equal(result.code, 1);
+  }
+});
+test('rejects arbitrary report paths', async () => {
+  const result = await run(async (dir) => {
+    const markerPath = join(dir, 'coverage/.coverage-run.json');
+    const marker = JSON.parse(await (await import('node:fs/promises')).readFile(markerPath, 'utf8'));
+    marker.evidence[0].report = 'arbitrary.json';
+    await writeFile(markerPath, JSON.stringify(marker));
+  });
+  assert.equal(result.code, 1);
+});
 test('rejects malformed types and inconsistent counts', async () =>
   assert.equal(
     (
@@ -149,7 +174,7 @@ test('rejects malformed types and inconsistent counts', async () =>
     ).code,
     1,
   ));
-test('rejects stale marker, changed source, and missing report', async () => {
+test('rejects stale marker, changed source, missing report, and stale timestamps', async () => {
   assert.equal(
     (
       await run(async (dir) => {
@@ -161,7 +186,17 @@ test('rejects stale marker, changed source, and missing report', async () => {
   assert.equal(
     (
       await run(async (dir) => {
-        await rm(join(dir, 'layouts-tests.json'));
+        await rm(join(dir, 'tmp/coverage/layouts-tests.json'));
+      })
+    ).code,
+    1,
+  );
+  assert.equal(
+    (
+      await run(async (dir) => {
+        const old = new Date(Date.now() - 200_000);
+        const { utimes } = await import('node:fs/promises');
+        await utimes(join(dir, 'coverage/layouts/coverage-summary.json'), old, old);
       })
     ).code,
     1,
@@ -172,10 +207,10 @@ test('rejects no tests, skips, failures, and inconsistent evidence', async () =>
     (
       await run(async (dir) => {
         const report = JSON.parse(
-          await (await import('node:fs/promises')).readFile(join(dir, 'layouts-tests.json'), 'utf8'),
+          await (await import('node:fs/promises')).readFile(join(dir, 'tmp/coverage/layouts-tests.json'), 'utf8'),
         );
         report.numPassedTests = 24;
-        await writeFile(join(dir, 'layouts-tests.json'), JSON.stringify(report));
+        await writeFile(join(dir, 'tmp/coverage/layouts-tests.json'), JSON.stringify(report));
       })
     ).code,
     1,

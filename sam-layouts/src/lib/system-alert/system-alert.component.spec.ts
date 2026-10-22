@@ -11,7 +11,7 @@ describe('SystemAlertComponent', () => {
   let fixture: ComponentFixture<SdsSystemAlertComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [IconModule, SdsCollapseModule, NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))],
     }).compileComponents();
   });

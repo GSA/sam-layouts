@@ -13,7 +13,7 @@ describe('SdsHeaderComponent', () => {
   let fixture: ComponentFixture<SdsHeaderComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         IconModule,
