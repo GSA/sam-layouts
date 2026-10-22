@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, writeFile, cp, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, cp, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFile, spawn } from 'node:child_process';
@@ -20,7 +20,19 @@ const summary = (pct = 100) => ({
 });
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 
-async function run(setup = () => {}) {
+async function refreshEvidence(dir, projectsToRefresh = ['layouts', 'sam-layouts']) {
+  const markerPath = join(dir, 'coverage/.coverage-run.json');
+  const marker = JSON.parse(await readFile(markerPath, 'utf8'));
+  for (const evidence of marker.evidence) {
+    if (!projectsToRefresh.includes(evidence.project)) continue;
+    evidence.summaryHash = hash(await readFile(join(dir, `coverage/${evidence.project}/coverage-summary.json`)));
+    evidence.lcovHash = hash(await readFile(join(dir, `coverage/${evidence.project}/lcov.info`)));
+    evidence.reportHash = hash(await readFile(join(dir, evidence.report)));
+  }
+  await writeFile(markerPath, JSON.stringify(marker));
+}
+
+async function run(setup = () => {}, command = 'check', verify = undefined) {
   const dir = await mkdtemp(join(tmpdir(), 'coverage-gate-'));
   await mkdir(join(dir, 'coverage/layouts'), { recursive: true });
   await mkdir(join(dir, 'coverage/sam-layouts'), { recursive: true });
@@ -97,15 +109,16 @@ async function run(setup = () => {}) {
       evidence,
     }),
   );
-  await setup(dir);
+  const requestedCommand = (await setup(dir)) ?? command;
   const result = await new Promise((resolve) => {
-    const child = spawn(process.execPath, ['check.mjs'], { cwd: dir });
+    const child = spawn(process.execPath, ['check.mjs', requestedCommand], { cwd: dir });
     let output = '';
     child.stderr.on('data', (data) => {
       output += data;
     });
     child.on('close', (code) => resolve({ code, output }));
   });
+  if (verify) await verify(dir, result);
   await rm(dir, { recursive: true, force: true });
   return result;
 }
@@ -130,17 +143,20 @@ test('passes valid independent floors', async () => {
   const result = await run();
   assert.equal(result.code, 0, result.output);
 });
-for (const metric of metrics)
-  test(`rejects ${metric} regression`, async () =>
-    assert.equal(
-      (
-        await run(async (dir) => {
-          const value = summary(60);
-          await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(value));
-        })
-      ).code,
-      1,
-    ));
+for (const project of ['layouts', 'sam-layouts'])
+  for (const metric of metrics)
+    test(`rejects ${project} ${metric} regression`, async () =>
+      assert.equal(
+        (
+          await run(async (dir) => {
+            const value = summary();
+            value.total[metric] = { total: 10, covered: 6, skipped: 0, pct: 60 };
+            await writeFile(join(dir, `coverage/${project}/coverage-summary.json`), JSON.stringify(value));
+            await refreshEvidence(dir, [project]);
+          })
+        ).code,
+        1,
+      ));
 test('rejects mismatched and unsorted source manifests', async () => {
   for (const manifest of [
     ['apps/sam-layouts/src/input.ts'],
@@ -186,6 +202,7 @@ test('rejects malformed types and inconsistent counts', async () =>
         const value = summary();
         value.total.statements.covered = '10';
         await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(value));
+        await refreshEvidence(dir, ['layouts']);
       })
     ).code,
     1,
@@ -238,10 +255,31 @@ test('rejects undeclared zero and empty instrumentation', async () =>
         const value = summary();
         value.total.branches = { total: 0, covered: 0, skipped: 0, pct: 100 };
         await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(value));
+        await refreshEvidence(dir, ['layouts']);
       })
     ).code,
     1,
   ));
+test('bump raises only relevant floors and never lowers them', async () => {
+  const result = await run(
+    async (dir) => {
+      const value = summary();
+      for (const metric of metrics) value.total[metric] = { total: 10, covered: 7, skipped: 0, pct: 70 };
+      value.total.branches = { total: 10, covered: 9, skipped: 0, pct: 90 };
+      await writeFile(join(dir, 'coverage/layouts/coverage-summary.json'), JSON.stringify(value));
+      await refreshEvidence(dir, ['layouts']);
+      return 'bump';
+    },
+    'check',
+    async (dir) => {
+      const config = JSON.parse(await readFile(join(dir, 'coverage-thresholds.json'), 'utf8'));
+      assert.equal(config.layouts.branches, 90);
+      assert.equal(config.layouts.statements, 70);
+      assert.equal(config['sam-layouts'].statements, 100);
+    },
+  );
+  assert.equal(result.code, 0, result.output);
+});
 test('rejects floor bumps that are stale or lower', async () =>
   assert.equal(
     (

@@ -11,7 +11,6 @@ import * as module6 from './lib/landing/button-group/button-group.module';
 import * as module7 from './lib/landing/card/card.component';
 import * as module8 from './lib/landing/card/card.module';
 import * as module9 from './lib/landing/link/link.component';
-import * as module10 from './lib/landing/link/link.model';
 import * as module11 from './lib/landing/link/link.module';
 import * as module12 from './lib/landing/list/list.component';
 import * as module13 from './lib/landing/list/list.module';
@@ -54,7 +53,6 @@ const productionModules = [
   ['card component', module7],
   ['card module', module8],
   ['link component', module9],
-  ['link model', module10],
   ['link module', module11],
   ['list component', module12],
   ['list module', module13],
@@ -89,7 +87,7 @@ const productionModules = [
 
 describe('coverage support', () => {
   it('evaluates every manifest module and exposes exports', () => {
-    expect(productionModules).toHaveLength(41);
+    expect(productionModules).toHaveLength(40);
     for (const [label, moduleExports] of productionModules) {
       expect(Object.keys(moduleExports), label).not.toHaveLength(0);
     }
