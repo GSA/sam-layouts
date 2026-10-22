@@ -269,9 +269,17 @@ export class SearchListLayoutComponent implements OnInit {
       return {};
     }
     if (Array.isArray(filter)) {
-      return filter.map((value) => this.normalizeFilterForComparison(value));
+      // Null entries are meaningful positions in a Formly model; do not turn
+      // them into empty objects or collapse them while cleaning controls.
+      return filter.map((value) => (value == null ? value : this.normalizeFilterForComparison(value)));
     }
     if (typeof filter === 'object') {
+      const prototype = Object.getPrototypeOf(filter);
+      // Formly control models are plain objects. Other values (for example a
+      // Date) carry semantics that must survive comparison unchanged.
+      if (prototype !== Object.prototype && prototype !== null) {
+        return filter;
+      }
       return Object.keys(filter as object).reduce(
         (result, key) => {
           const value = (filter as Record<string, unknown>)[key];

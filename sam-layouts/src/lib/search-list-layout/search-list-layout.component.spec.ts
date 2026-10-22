@@ -152,35 +152,79 @@ describe('SearchListLayoutComponent', () => {
     await fixture.whenStable();
   });
 
-  it('reconciles real Formly emissions after a results-model restoration (#104)', async () => {
+  it('applies an earlier Formly filter after restoring a different results page (#104)', async () => {
     fixture.detectChanges();
-    component.enableApiCall = false;
+    const requests: SearchParameters[] = [];
+    component.service = {
+      getData: (search) => {
+        requests.push(search);
+        return of({ totalItems: 0, items: [] });
+      },
+    };
     const service = TestBed.inject(SDSFormlyUpdateComunicationService);
     const filterA = { keyword: 'a' };
     const filterB = { keyword: 'b' };
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      service.updateFilter(filterA);
+      service.updateFilter(filterA);
+      component.updateSearchResultsModel({ page: 3, filterModel: filterB });
+      service.updateFilter(filterA);
+      await vi.advanceTimersByTimeAsync(100);
 
-    service.updateFilter(filterA);
-    service.updateFilter(filterA);
-    component.updateSearchResultsModel({ page: 3, filterModel: filterB });
-    service.updateFilter(filterA);
-
-    expect(component.page.pageNumber).toBe(1);
+      expect(component.page.pageNumber).toBe(1);
+      expect(requests.at(-1)?.filter).toEqual(filterA);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
-  it('preserves a restored page when Formly emits empty controls and null model (#104)', async () => {
+  it('preserves the restored URL page immediately for an equivalent Formly emission (#104)', () => {
     const originalUrl = window.location.href;
     window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');
     try {
       fixture.detectChanges();
       component.enableApiCall = false;
-      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
-      service.updateFilter({ keyword: 'test', unused: null });
-      component.updateSearchResultsModel({ page: 3, filterModel: null });
-      service.updateFilter({});
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ keyword: 'test', unused: null });
       expect(component.page.pageNumber).toBe(3);
     } finally {
       window.history.replaceState({}, '', originalUrl);
     }
+  });
+
+  it('publishes an empty effective model when restoring a null results filter (#104)', () => {
+    fixture.detectChanges();
+    const modelService = TestBed.inject(SDSFormlyUpdateModelService);
+    const updateSpy = vi.spyOn(modelService, 'updateModel');
+    component.updateSearchResultsModel({ page: 3, filterModel: null });
+    expect(component.page.pageNumber).toBe(3);
+    expect(updateSpy).toHaveBeenLastCalledWith({});
+  });
+
+  it('distinguishes null and empty-object array slots when restoring a page (#104)', () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    component.updateSearchResultsModel({ page: 3, filterModel: { values: [null] } });
+    component.updateFilter({ values: [{}] });
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('retains false and zero filter values during page comparison (#104)', () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const filter = { active: false, count: 0 };
+    component.updateSearchResultsModel({ page: 3, filterModel: filter });
+    component.updateFilter({ active: false, count: 0 });
+    expect(component.page.pageNumber).toBe(3);
+  });
+
+  it('distinguishes meaningful non-plain filter values during page comparison (#104)', () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const restored = { date: new Date('2026-01-01T00:00:00.000Z') };
+    component.updateSearchResultsModel({ page: 3, filterModel: restored });
+    component.updateFilter({ date: new Date('2026-01-02T00:00:00.000Z') });
+    expect(component.page.pageNumber).toBe(1);
   });
 
   it('retains excluded-field request suppression while resetting a changed filter page (#104)', async () => {
