@@ -4,9 +4,9 @@ import { UsaStepIndicatorComponent, UsaStepIndicatorConfig, UsaStepIndicatorModu
 import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
 
 @Component({
-    selector: 'sam-layouts-stepper-header',
-    templateUrl: './header.component.html',
-    imports: [UsaStepIndicatorModule, SdsStepperModule],
+  selector: 'sam-layouts-stepper-header',
+  templateUrl: './header.component.html',
+  imports: [UsaStepIndicatorModule, SdsStepperModule],
 })
 export class SLStepperHeaderComponent extends UsaStepIndicatorComponent implements AfterContentInit {
   @Input() custom = false;
@@ -35,8 +35,8 @@ export class SLStepperHeaderComponent extends UsaStepIndicatorComponent implemen
 }
 
 @Component({
-    selector: 'sam-layouts-stepper-header-with-status',
-    templateUrl: './header-with-status.component.html',
+  selector: 'sam-layouts-stepper-header-with-status',
+  templateUrl: './header-with-status.component.html',
 })
 export class SLStepperHeaderWithStatusComponent {
   @Input() title: string;

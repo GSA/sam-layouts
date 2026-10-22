@@ -8,16 +8,16 @@ import { SLStepperHeaderWithStatusComponent } from '../../header/header.componen
 import { SubawardeeDemoComponent } from './subawardee.component';
 
 @Component({
-    selector: `demo-stepper-advanced`,
-    templateUrl: `./advanced.component.html`,
-    providers: [StepperAdvancedService, SdsStepper],
-    imports: [
-        SLStepperComponent,
-        SLStepperHeaderWithStatusComponent,
-        SdsStepperModule,
-        SubawardeeDemoComponent,
-        FormlyModule,
-    ],
+  selector: `demo-stepper-advanced`,
+  templateUrl: `./advanced.component.html`,
+  providers: [StepperAdvancedService, SdsStepper],
+  imports: [
+    SLStepperComponent,
+    SLStepperHeaderWithStatusComponent,
+    SdsStepperModule,
+    SubawardeeDemoComponent,
+    FormlyModule,
+  ],
 })
 export class DemoStepperAdvancedComponent {
   model = {

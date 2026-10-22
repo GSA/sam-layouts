@@ -6,10 +6,8 @@ import {
 } from './item.component';
 
 @NgModule({
-    imports: [SdsWorkspaceTier2ItemComponent,
-        SdsWorkspaceTier2ItemHeadComponent,
-        SdsWorkspaceTier2ItemBodyComponent],
-    exports: [SdsWorkspaceTier2ItemComponent, SdsWorkspaceTier2ItemHeadComponent, SdsWorkspaceTier2ItemBodyComponent],
-    providers: [],
+  imports: [SdsWorkspaceTier2ItemComponent, SdsWorkspaceTier2ItemHeadComponent, SdsWorkspaceTier2ItemBodyComponent],
+  exports: [SdsWorkspaceTier2ItemComponent, SdsWorkspaceTier2ItemHeadComponent, SdsWorkspaceTier2ItemBodyComponent],
+  providers: [],
 })
 export class SdsWorkspaceTier2ItemModule {}

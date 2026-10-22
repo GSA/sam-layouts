@@ -5,18 +5,18 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-    selector: 'sds-subheader',
-    templateUrl: 'subheader.component.html',
-    styleUrls: ['subheader.component.scss'],
+  selector: 'sds-subheader',
+  templateUrl: 'subheader.component.html',
+  styleUrls: ['subheader.component.scss'],
 })
 export class SdsSubheaderComponent {
   constructor() {}
 }
 
 @Component({
-    selector: 'sds-subheader-actions',
-    templateUrl: 'subheader-actions.component.html',
-    imports: [SdsMenuModule, IconModule],
+  selector: 'sds-subheader-actions',
+  templateUrl: 'subheader-actions.component.html',
+  imports: [SdsMenuModule, IconModule],
 })
 export class SdsSubheaderActionsComponent {
   @Input() mobileTabletStyle: SUBHEADERACTIONSTYLE = SUBHEADERACTIONSTYLE.DEFAULT;
@@ -75,9 +75,9 @@ export enum SUBHEADERACTIONSTYLE {
 }
 
 @Component({
-    selector: 'sds-subheader-drawer',
-    templateUrl: 'subheader-drawer.component.html',
-    imports: [IconModule],
+  selector: 'sds-subheader-drawer',
+  templateUrl: 'subheader-drawer.component.html',
+  imports: [IconModule],
 })
 export class SdsSubheaderDrawerComponent implements OnInit {
   @Input() drawerContentTemplate: TemplateRef<any>;
@@ -93,9 +93,9 @@ export class SdsSubheaderDrawerComponent implements OnInit {
 }
 
 @Component({
-    selector: 'sds-drawer-content',
-    templateUrl: 'drawer.content.component.html',
-    imports: [NgTemplateOutlet],
+  selector: 'sds-drawer-content',
+  templateUrl: 'drawer.content.component.html',
+  imports: [NgTemplateOutlet],
 })
 export class SdsDrawerContentComponent implements OnInit {
   drawerContentTemplate: TemplateRef<any>;

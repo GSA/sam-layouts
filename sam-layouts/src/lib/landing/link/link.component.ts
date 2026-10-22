@@ -5,13 +5,9 @@ import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'sds-landing-link',
-    templateUrl: './link.component.html',
-    imports: [
-        SdsExternalLinkDirectivesModule,
-        NgClass,
-        RouterLink,
-    ],
+  selector: 'sds-landing-link',
+  templateUrl: './link.component.html',
+  imports: [SdsExternalLinkDirectivesModule, NgClass, RouterLink],
 })
 export class SdsLandingLinkComponent {
   @Input() link;

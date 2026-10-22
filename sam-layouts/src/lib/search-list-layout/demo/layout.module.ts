@@ -19,21 +19,22 @@ import { SdsAccordionModule } from '@gsa-sam/sam-material-extensions';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { FilterTabModalComponent } from './filter-tab-modal.component';
 @NgModule({
-    imports: [
-        CommonModule,
-        IconModule,
-        SdsAccordionModule,
-        SdsSideNavigationModule,
-        SdsFiltersModule,
-        SdsSearchResultListModule,
-        SearchListServiceModule,
-        ResultModule,
-        SdsSideToolbarModule,
-        SdsSelectionPanelModule,
-        SdsDialogModule,
-        LayoutResponsiveComponent, FilterTabModalComponent,
-    ],
-    exports: [LayoutResponsiveComponent],
-    providers: [FilterService, AutocompleteSampleDataService, SDSFormlyUpdateModelService],
+  imports: [
+    CommonModule,
+    IconModule,
+    SdsAccordionModule,
+    SdsSideNavigationModule,
+    SdsFiltersModule,
+    SdsSearchResultListModule,
+    SearchListServiceModule,
+    ResultModule,
+    SdsSideToolbarModule,
+    SdsSelectionPanelModule,
+    SdsDialogModule,
+    LayoutResponsiveComponent,
+    FilterTabModalComponent,
+  ],
+  exports: [LayoutResponsiveComponent],
+  providers: [FilterService, AutocompleteSampleDataService, SDSFormlyUpdateModelService],
 })
 export class ResultsLayoutModule {}

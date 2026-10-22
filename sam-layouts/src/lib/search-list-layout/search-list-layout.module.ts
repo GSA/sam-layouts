@@ -5,7 +5,7 @@ import { SearchListLayoutComponent } from './search-list-layout.component';
 import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
 
 @NgModule({
-    imports: [CommonModule, FormsModule, PaginationModule, SdsSearchResultListModule, SearchListLayoutComponent],
-    exports: [SearchListLayoutComponent],
+  imports: [CommonModule, FormsModule, PaginationModule, SdsSearchResultListModule, SearchListLayoutComponent],
+  exports: [SearchListLayoutComponent],
 })
 export class SearchListServiceModule {}

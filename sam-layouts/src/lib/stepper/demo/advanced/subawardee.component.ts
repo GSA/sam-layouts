@@ -7,14 +7,14 @@ import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { StepperAdvancedService } from './advanced.service';
 
 @Component({
-    // `-demo` is a suffix, not a prefix, so this selector can't be covered by
-    // the `component-selector` prefix allowlist in
-    // `sam-layouts/eslint.config.mjs` without adding a meaningless `subawardee`
-    // prefix. Demo-only (not exported from `src/lib/public-api.ts`); rename to
-    // `demo-subawardee` alongside the next intentional selector change.
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: `subawardee-demo`,
-    templateUrl: './subawardee.component.html',
+  // `-demo` is a suffix, not a prefix, so this selector can't be covered by
+  // the `component-selector` prefix allowlist in
+  // `sam-layouts/eslint.config.mjs` without adding a meaningless `subawardee`
+  // prefix. Demo-only (not exported from `src/lib/public-api.ts`); rename to
+  // `demo-subawardee` alongside the next intentional selector change.
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: `subawardee-demo`,
+  templateUrl: './subawardee.component.html',
 })
 export class SubawardeeDemoComponent {
   @Input() displayInput = true;
@@ -42,11 +42,11 @@ export class SubawardeeDemoComponent {
 }
 
 @Component({
-    // Same `-demo`-as-suffix case as `subawardee-demo` above; also only ever
-    // opened imperatively via `SdsDialog.open(...)`, never as an element.
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: `add-subawardee-dialog-demo`,
-    template: `
+  // Same `-demo`-as-suffix case as `subawardee-demo` above; also only ever
+  // opened imperatively via `SdsDialog.open(...)`, never as an element.
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: `add-subawardee-dialog-demo`,
+  template: `
     <div sds-dialog-title>
       <h3>Add Subawardee</h3>
     </div>
@@ -58,8 +58,8 @@ export class SubawardeeDemoComponent {
       <button type="submit" (click)="onFormSubmit()" class="usa-button margin-top-2">Submit</button>
     </div>
   `,
-    providers: [StepperAdvancedService],
-    imports: [FormlyModule],
+  providers: [StepperAdvancedService],
+  imports: [FormlyModule],
 })
 export class AddSubawardeeDialogDemo implements OnInit {
   subawardeeFields!: FormlyFieldConfig[];

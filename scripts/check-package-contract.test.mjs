@@ -18,11 +18,15 @@ test('reports missing qs and icons and accepts declared tslib dependency', () =>
   const errors = validateContract({ manifest: { peerDependencies: Object.fromEntries(REQUIRED_PEERS.filter((x) => x !== 'qs' && x !== '@gsa-sam/ngx-uswds-icons').map((x) => [x, allPeers[x]])), dependencies: { tslib: '^2.3.0' } }, dependencies: ['qs', '@gsa-sam/ngx-uswds-icons', 'tslib'] });
   assert.match(errors.join('\n'), /qs/); assert.match(errors.join('\n'), /ngx-uswds-icons/); assert.doesNotMatch(errors.join('\n'), /tslib/);
 });
-test('validates SDS floor, Angular OR range, and valid ngx-uswds 21.0.0 is rejected', () => {
+test('rejects widened Angular ranges and defective SDS artifacts while accepting valid USWDS', () => {
   const base = { peerDependencies: allPeers };
   assert.deepEqual(validateContract({ manifest: base, dependencies: [] }), []);
   assert.match(validateContract({ manifest: { peerDependencies: { ...allPeers, '@angular/core': '>=21 <23' } }, dependencies: [] }).join('\n'), /Angular 21/);
-  assert.match(validateContract({ manifest: { peerDependencies: { ...allPeers, '@gsa-sam/ngx-uswds': '21.0.0' } }, dependencies: [] }).join('\n'), /21\.0\.2/);
+  assert.deepEqual(validateContract({ manifest: { peerDependencies: { ...allPeers, '@gsa-sam/ngx-uswds': '^21.0.0', '@gsa-sam/ngx-uswds-icons': '^21.0.0' } }, dependencies: [] }), []);
+  for (const name of ['@gsa-sam/components', '@gsa-sam/sam-formly', '@gsa-sam/sam-material-extensions']) {
+    assert.match(validateContract({ manifest: { peerDependencies: { ...allPeers, [name]: '^21.0.0' } }, dependencies: [] }).join('\n'), /21\.0\.2/);
+  }
+  assert.match(validateContract({ manifest: { peerDependencies: { ...allPeers, '@angular/core': '^21.0.0 || ^22.0.0' } }, dependencies: [] }).join('\n'), /Angular 21/);
 });
 test('empty artifact directory fails', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'contract-')); const manifestPath = path.join(root, 'package.json'); await writeFile(manifestPath, '{}'); await assert.rejects(checkPackageContract({ dist: root, manifestPath }), /no emitted JavaScript/);

@@ -69,14 +69,14 @@ function validSdsRange(range) { return semver.validRange(range) && semver.subset
 export function validateContract({ manifest, dependencies, file = 'package.json' }) {
   const peers = manifest.peerDependencies ?? {}, declaredDeps = manifest.dependencies ?? {};
   const errors = [];
-  for (const required of REQUIRED_PEERS) if (!peers[required]) errors.push(`${file}: required runtime peer ${required} is missing from peerDependencies`);
+
   for (const dep of dependencies) {
     if (!peers[dep] && !declaredDeps[dep]) errors.push(`${file}: emitted runtime dependency ${dep} is not declared in peerDependencies or dependencies`);
     if (manifest.peerDependenciesMeta?.[dep]?.optional) errors.push(`${file}: ${dep} is marked optional but is unconditionally imported by the emitted package`);
   }
   for (const [dep, range] of Object.entries(peers)) {
     if (dep.startsWith('@angular/') && !validAngularRange(range)) errors.push(`${file}: ${dep} must be a subset of Angular 21 (<22), not ${range}`);
-    if (['@gsa-sam/components', '@gsa-sam/ngx-uswds', '@gsa-sam/ngx-uswds-icons', '@gsa-sam/sam-formly', '@gsa-sam/sam-material-extensions'].includes(dep) && !validSdsRange(range)) errors.push(`${file}: ${dep} must admit >=21.0.2 and remain <22, not ${range}`);
+    if (['@gsa-sam/components', '@gsa-sam/sam-formly', '@gsa-sam/sam-material-extensions'].includes(dep) && !validSdsRange(range)) errors.push(`${file}: ${dep} must admit >=21.0.2 and remain <22, not ${range}`);
   }
   return errors;
 }

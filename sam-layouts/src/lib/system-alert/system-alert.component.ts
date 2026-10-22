@@ -5,15 +5,10 @@ import { NgTemplateOutlet, DatePipe } from '@angular/common';
 import { SdsCollapseModule } from '@gsa-sam/components';
 
 @Component({
-    selector: 'sds-system-alert',
-    templateUrl: './system-alert.component.html',
-    styleUrls: ['./system-alert.component.scss'],
-    imports: [
-        IconModule,
-        NgTemplateOutlet,
-        SdsCollapseModule,
-        DatePipe,
-    ],
+  selector: 'sds-system-alert',
+  templateUrl: './system-alert.component.html',
+  styleUrls: ['./system-alert.component.scss'],
+  imports: [IconModule, NgTemplateOutlet, SdsCollapseModule, DatePipe],
 })
 export class SdsSystemAlertComponent {
   /** List of alerts to display. When the list contains only one item, the description of the alert will also

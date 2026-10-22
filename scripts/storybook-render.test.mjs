@@ -5,12 +5,20 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DOM_CONTRACTS, readStoryEntries, serveDirectory } from './storybook-render.mjs';
 
-function index(root, entries) { writeFileSync(join(root, 'index.json'), JSON.stringify({ entries })); }
+function index(root, entries) {
+  writeFileSync(join(root, 'index.json'), JSON.stringify({ entries }));
+}
 
 test('contracts cover stories and exclude docs', () => {
   const root = mkdtempSync(join(tmpdir(), 'storybook-render-'));
-  index(root, { story: { id: 'landing-card--default', type: 'story', title: 'Landing/Card' }, docs: { id: 'landing-card--docs', type: 'docs', title: 'Landing/Card' } });
-  assert.deepEqual(readStoryEntries(join(root, 'index.json')).map(({ id }) => id), ['landing-card--default']);
+  index(root, {
+    story: { id: 'landing-card--default', type: 'story', title: 'Landing/Card' },
+    docs: { id: 'landing-card--docs', type: 'docs', title: 'Landing/Card' },
+  });
+  assert.deepEqual(
+    readStoryEntries(join(root, 'index.json')).map(({ id }) => id),
+    ['landing-card--default'],
+  );
 });
 
 test('unknown title and invalid index entry fail clearly', () => {
@@ -23,16 +31,26 @@ test('unknown title and invalid index entry fail clearly', () => {
 
 test('static server rejects traversal, malformed encoding, directories, and sibling prefixes', async () => {
   const root = mkdtempSync(join(tmpdir(), 'storybook-server-'));
-  const sibling = `${root}-sibling`; mkdirSync(sibling); writeFileSync(join(sibling, 'secret'), 'secret');
-  mkdirSync(join(root, 'dir')); writeFileSync(join(root, 'index.html'), 'ok');
-  const server = serveDirectory(root); await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const sibling = `${root}-sibling`;
+  mkdirSync(sibling);
+  writeFileSync(join(sibling, 'secret'), 'secret');
+  mkdirSync(join(root, 'dir'));
+  writeFileSync(join(root, 'index.html'), 'ok');
+  const server = serveDirectory(root);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   const { port } = server.address();
   try {
-    for (const path of ['/../package.json', '/%2e%2e/package.json', '/%E0%A4%A', '/dir/', `${sibling}/secret`]) assert.ok([400, 404].includes((await fetch(`http://127.0.0.1:${port}${path}`)).status));
+    for (const path of ['/../package.json', '/%2e%2e/package.json', '/%E0%A4%A', '/dir/', `${sibling}/secret`])
+      assert.ok([400, 404].includes((await fetch(`http://127.0.0.1:${port}${path}`)).status));
     assert.equal((await fetch(`http://127.0.0.1:${port}/index.html`)).status, 200);
-  } finally { await new Promise((resolve) => server.close(resolve)); }
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
 
 test('contracts are concrete rather than generic body assertions', () => {
-  for (const contract of Object.values(DOM_CONTRACTS)) { assert.notEqual(contract.selector, 'body'); assert.notEqual(String(contract.text), '/./', 'contracts must not use a match-anything text regex'); }
+  for (const contract of Object.values(DOM_CONTRACTS)) {
+    assert.notEqual(contract.selector, 'body');
+    assert.notEqual(String(contract.text), '/./', 'contracts must not use a match-anything text regex');
+  }
 });

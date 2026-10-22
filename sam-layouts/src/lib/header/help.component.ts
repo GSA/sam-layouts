@@ -11,10 +11,10 @@ interface Data {
 }
 
 @Component({
-    selector: 'sds-header-help',
-    styleUrls: ['./help.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    template: `
+  selector: 'sds-header-help',
+  styleUrls: ['./help.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  template: `
     <button
       class="usa-button usa-button--unstyled"
       (click)="openSlidePanel()"
@@ -25,7 +25,7 @@ interface Data {
       <usa-icon class="text-info" [icon]="'question-circle'" [size]="'2x'"></usa-icon>
     </button>
   `,
-    imports: [MatTooltip, IconModule],
+  imports: [MatTooltip, IconModule],
 })
 export class SdsHeaderHelpComponent {
   @Input() content;
@@ -51,7 +51,7 @@ export class SdsHeaderHelpComponent {
 }
 
 @Component({
-    template: `
+  template: `
     <div class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2">
       <h2 class="font-heading-lg text-semibold">Help</h2>
       @for (item of data.help; track item) {
@@ -67,9 +67,9 @@ export class SdsHeaderHelpComponent {
       }
     </div>
   `,
-    styles: ['.help-slide-out .sds-list .usa-link:hover { color: #625028; }'], // 508: Contrast fix
-    encapsulation: ViewEncapsulation.None,
-    imports: [CdkPortalOutlet],
+  styles: ['.help-slide-out .sds-list .usa-link:hover { color: #625028; }'], // 508: Contrast fix
+  encapsulation: ViewEncapsulation.None,
+  imports: [CdkPortalOutlet],
 })
 export class HelpContentComponent {
   constructor(

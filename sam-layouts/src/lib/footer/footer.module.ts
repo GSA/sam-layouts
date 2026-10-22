@@ -9,16 +9,16 @@ import { UsaAccordionModule } from '@gsa-sam/ngx-uswds';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        SdsCollapseModule,
-        SdsExternalLinkDirectivesModule,
-        SdsFeedbackModule,
-        UsaAccordionModule,
-        IconModule,
-        SdsFooterComponent,
-    ],
-    exports: [SdsFooterComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    SdsCollapseModule,
+    SdsExternalLinkDirectivesModule,
+    SdsFeedbackModule,
+    UsaAccordionModule,
+    IconModule,
+    SdsFooterComponent,
+  ],
+  exports: [SdsFooterComponent],
 })
 export class SdsFooterModule {}

@@ -45,6 +45,9 @@ jobs:
       - name: Build layouts (library)
         run: npx nx build layouts
 
+      - name: Verify emitted package contract
+        run: npm run package:contract
+
       - name: Build sam-layouts (app)
         run: npx nx build sam-layouts
 
@@ -80,6 +83,14 @@ jobs:
             --min 34 \
             --require-title 'Subheader' \
             --require-title 'Subheader/Modes'
+
+      - name: Install Chromium for rendered-story verification
+        run: npx playwright install --with-deps chromium
+
+      # The index guard proves registration; this step proves that every story
+      # creates its expected component DOM without browser/runtime errors.
+      - name: Render every Storybook story in Chromium
+        run: npm run test:storybook-render
 
       # Stop-the-world formatting gate. Deliberately last: this is a whole-repo
       # mechanical check with no logical dependency on the steps above it, and

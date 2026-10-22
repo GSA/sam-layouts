@@ -24,23 +24,23 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { PortalModule } from '@angular/cdk/portal';
 
 @Component({
-    selector: 'sds-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    imports: [
-        SdsTopBannerModule,
-        NgTemplateOutlet,
-        SdsHeaderHelpComponent,
-        IconModule,
-        NgClass,
-        RouterLink,
-        FormsModule,
-        SdsDialogModule,
-        SdsLandingListModule,
-        MatTooltipModule,
-        A11yModule,
-        PortalModule,
-    ],
+  selector: 'sds-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  imports: [
+    SdsTopBannerModule,
+    NgTemplateOutlet,
+    SdsHeaderHelpComponent,
+    IconModule,
+    NgClass,
+    RouterLink,
+    FormsModule,
+    SdsDialogModule,
+    SdsLandingListModule,
+    MatTooltipModule,
+    A11yModule,
+    PortalModule,
+  ],
 })
 export class SdsHeaderComponent {
   @ViewChild('usaNavOpen') openNavBtn: ElementRef;

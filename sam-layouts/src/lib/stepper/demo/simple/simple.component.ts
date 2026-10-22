@@ -6,24 +6,20 @@ import { SLStepperComponent } from '../../stepper.component';
 import { SLStepperHeaderComponent } from '../../header/header.component';
 
 @Component({
-    selector: 'demo-stepper-simple',
-    templateUrl: './simple.component.html',
-    providers: [
-        {
-            // Stepper Header Configuration
-            provide: UsaStepIndicatorConfig,
-            useValue: {
-                displayCounters: true,
-                hideLabels: false,
-                headerPosition: 'top',
-            },
-        },
-    ],
-    imports: [
-        SLStepperComponent,
-        SLStepperHeaderComponent,
-        SdsStepperModule,
-    ],
+  selector: 'demo-stepper-simple',
+  templateUrl: './simple.component.html',
+  providers: [
+    {
+      // Stepper Header Configuration
+      provide: UsaStepIndicatorConfig,
+      useValue: {
+        displayCounters: true,
+        hideLabels: false,
+        headerPosition: 'top',
+      },
+    },
+  ],
+  imports: [SLStepperComponent, SLStepperHeaderComponent, SdsStepperModule],
 })
 export class DemoStepperSimpleComponent {
   stepOne: FormlyFieldConfig = {

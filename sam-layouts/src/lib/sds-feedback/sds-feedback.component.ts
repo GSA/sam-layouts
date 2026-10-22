@@ -4,15 +4,10 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsCollapseModule } from '@gsa-sam/components';
 
 @Component({
-    selector: 'sds-feedback',
-    templateUrl: './sds-feedback.component.html',
-    styleUrls: ['./sds-feedback.component.scss'],
-    imports: [
-        IconModule,
-        SdsCollapseModule,
-        FormsModule,
-        ReactiveFormsModule,
-    ],
+  selector: 'sds-feedback',
+  templateUrl: './sds-feedback.component.html',
+  styleUrls: ['./sds-feedback.component.scss'],
+  imports: [IconModule, SdsCollapseModule, FormsModule, ReactiveFormsModule],
 })
 export class SdsFeedbackComponent {
   @Input() feedbackModel: FormControl = new FormControl('');

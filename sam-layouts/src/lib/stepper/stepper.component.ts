@@ -7,18 +7,11 @@ import { SLStepperFooterComponent } from './footer/footer.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @Component({
-    selector: 'sam-layouts-stepper',
-    providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
-    templateUrl: './stepper.component.html',
-    styleUrls: ['./stepper.component.scss'],
-    imports: [
-        SdsSideToolbarModule,
-        NgClass,
-        NgTemplateOutlet,
-        SLStepperFooterComponent,
-        SdsStepperModule,
-        IconModule,
-    ],
+  selector: 'sam-layouts-stepper',
+  providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
+  templateUrl: './stepper.component.html',
+  styleUrls: ['./stepper.component.scss'],
+  imports: [SdsSideToolbarModule, NgClass, NgTemplateOutlet, SLStepperFooterComponent, SdsStepperModule, IconModule],
 })
 export class SLStepperComponent extends SdsStepper {
   @Input() versions: [];

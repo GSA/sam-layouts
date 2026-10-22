@@ -9,17 +9,17 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'sds-footer',
-    templateUrl: './footer.component.html',
-    styleUrls: ['./footer.component.scss'],
-    imports: [
-        NgTemplateOutlet,
-        SdsFeedbackComponent,
-        UsaAccordionModule,
-        IconModule,
-        RouterLink,
-        SdsExternalLinkDirectivesModule,
-    ],
+  selector: 'sds-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.scss'],
+  imports: [
+    NgTemplateOutlet,
+    SdsFeedbackComponent,
+    UsaAccordionModule,
+    IconModule,
+    RouterLink,
+    SdsExternalLinkDirectivesModule,
+  ],
 })
 export class SdsFooterComponent {
   public innerWidth: any;

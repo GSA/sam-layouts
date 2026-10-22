@@ -7,15 +7,9 @@ import { NgTemplateOutlet } from '@angular/common';
 import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 
 @Component({
-    selector: 'sds-subheader-wrapper',
-    templateUrl: 'sds-subheader-wrapper.component.html',
-    imports: [
-        SdsSubheaderComponent,
-        IconModule,
-        SdsSearchModule,
-        NgTemplateOutlet,
-        SdsButtonGroupModule,
-    ],
+  selector: 'sds-subheader-wrapper',
+  templateUrl: 'sds-subheader-wrapper.component.html',
+  imports: [SdsSubheaderComponent, IconModule, SdsSearchModule, NgTemplateOutlet, SdsButtonGroupModule],
 })
 export class SdsSubheaderWrapperComponent implements OnInit {
   constructor(private router: Router) {}

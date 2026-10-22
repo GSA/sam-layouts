@@ -4,13 +4,9 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsLandingLinkComponent } from '../link/link.component';
 
 @Component({
-    selector: 'sds-landing-list',
-    templateUrl: 'list.component.html',
-    imports: [
-        NgClass,
-        IconModule,
-        SdsLandingLinkComponent,
-    ],
+  selector: 'sds-landing-list',
+  templateUrl: 'list.component.html',
+  imports: [NgClass, IconModule, SdsLandingLinkComponent],
 })
 export class SdsLandingListComponent {
   @Input() list;
