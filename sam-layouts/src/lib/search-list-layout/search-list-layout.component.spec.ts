@@ -199,6 +199,10 @@ describe('SearchListLayoutComponent', () => {
     component.updateSearchResultsModel({ page: 3, filterModel: null });
     expect(component.page.pageNumber).toBe(3);
     expect(updateSpy).toHaveBeenLastCalledWith({});
+    component.enableApiCall = false;
+    const effectiveModel = updateSpy.mock.calls.at(-1)![0];
+    TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter(effectiveModel);
+    expect(component.page.pageNumber).toBe(3);
   });
 
   it('distinguishes null and empty-object array slots when restoring a page (#104)', () => {
@@ -224,6 +228,20 @@ describe('SearchListLayoutComponent', () => {
     const restored = { date: new Date('2026-01-01T00:00:00.000Z') };
     component.updateSearchResultsModel({ page: 3, filterModel: restored });
     component.updateFilter({ date: new Date('2026-01-02T00:00:00.000Z') });
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('resets the restored page after a Date is mutated through real Formly emissions (#104)', () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    const date = new Date('2026-01-01T00:00:00.000Z');
+    const filter = { date };
+    component.updateSearchResultsModel({ page: 3, filterModel: filter });
+    service.updateFilter(filter);
+    expect(component.page.pageNumber).toBe(3);
+    date.setUTCDate(2);
+    service.updateFilter(filter);
     expect(component.page.pageNumber).toBe(1);
   });
 

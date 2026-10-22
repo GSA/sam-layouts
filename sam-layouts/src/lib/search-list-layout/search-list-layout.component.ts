@@ -276,9 +276,10 @@ export class SearchListLayoutComponent implements OnInit {
     if (typeof filter === 'object') {
       const prototype = Object.getPrototypeOf(filter);
       // Formly control models are plain objects. Other values (for example a
-      // Date) carry semantics that must survive comparison unchanged.
+      // Date) carry semantics that must survive comparison, but must not retain
+      // consumer-owned references in the communication stream's snapshot.
       if (prototype !== Object.prototype && prototype !== null) {
-        return filter;
+        return _.cloneDeep(filter);
       }
       return Object.keys(filter as object).reduce(
         (result, key) => {
