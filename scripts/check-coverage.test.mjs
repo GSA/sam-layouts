@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, writeFile, cp, rm, utimes } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, cp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFile, spawn } from 'node:child_process';
@@ -25,6 +25,9 @@ async function run(setup = () => {}) {
   await mkdir(join(dir, 'coverage/layouts'), { recursive: true });
   await mkdir(join(dir, 'coverage/sam-layouts'), { recursive: true });
   await cp('scripts/check-coverage.mjs', join(dir, 'check.mjs'));
+  await cp('scripts/coverage-scope.mjs', join(dir, 'coverage-scope.mjs'));
+  await mkdir(join(dir, 'node_modules'), { recursive: true });
+  await cp(join(process.cwd(), 'node_modules/typescript'), join(dir, 'node_modules/typescript'), { recursive: true });
   await writeFile(join(dir, 'input.ts'), 'export const input = 1;');
   await mkdir(join(dir, 'sam-layouts/src'), { recursive: true });
   await mkdir(join(dir, 'apps/sam-layouts/src'), { recursive: true });
@@ -33,8 +36,8 @@ async function run(setup = () => {}) {
   await writeFile(join(dir, 'coverage-thresholds.json'), JSON.stringify(floors));
   const reports = {};
   for (const [project, count] of [
-    ['layouts', 25],
-    ['sam-layouts', 2],
+    ['layouts', 26],
+    ['sam-layouts', 3],
   ]) {
     const reportPath = join(dir, `${project}-tests.json`);
     reports[project] = reportPath;
@@ -61,7 +64,7 @@ async function run(setup = () => {}) {
   const completedAt = new Date(Date.now() + 100000).toISOString();
   const evidence = [];
   for (const [project, report] of Object.entries(reports)) {
-    const count = project === 'layouts' ? 25 : 2;
+    const count = project === 'layouts' ? 26 : 3;
     evidence.push({
       project,
       numTotalTests: count,
@@ -85,8 +88,8 @@ async function run(setup = () => {}) {
       fingerprint,
       sourceManifest: ['sam-layouts/src/input.ts', 'apps/sam-layouts/src/input.ts'],
       projects: [
-        { name: 'layouts', tests: 25 },
-        { name: 'sam-layouts', tests: 2 },
+        { name: 'layouts', tests: 26 },
+        { name: 'sam-layouts', tests: 3 },
       ],
       evidence,
     }),

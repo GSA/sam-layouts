@@ -1,5 +1,6 @@
-// Imports every executable production module in the coverage manifest.
-// This test performs no bootstrap or behavior assertions.
+// Smoke-load every executable production module in the checked-in coverage scope.
+// This intentionally validates module evaluation/exports, not application behavior.
+import { describe, expect, it } from 'vitest';
 import * as module0 from './lib/footer/footer.component';
 import * as module1 from './lib/footer/footer.module';
 import * as module2 from './lib/header/header.component';
@@ -42,13 +43,55 @@ import * as module38 from './lib/workspace-tier-2/label/label.module';
 import * as module39 from './lib/workspace-tier-2/title/title.component';
 import * as module40 from './lib/workspace-tier-2/title/title.module';
 
-const productionModules = [module0, module1, module2, module3, module4, module5, module6, module7, module8, module9, module10, module11, module12, module13, module14, module15, module16, module17, module18, module19, module20, module21, module22, module23, module24, module25, module26, module27, module28, module29, module30, module31, module32, module33, module34, module35, module36, module37, module38, module39, module40] as const;
-for (const productionModule of productionModules) expect(productionModule).toBeDefined();
-
-import { describe, expect, it } from 'vitest';
+const productionModules = [
+  ['footer component', module0],
+  ['footer module', module1],
+  ['header component', module2],
+  ['header module', module3],
+  ['help component', module4],
+  ['button group component', module5],
+  ['button group module', module6],
+  ['card component', module7],
+  ['card module', module8],
+  ['link component', module9],
+  ['link model', module10],
+  ['link module', module11],
+  ['list component', module12],
+  ['list module', module13],
+  ['page component', module14],
+  ['page module', module15],
+  ['layouts module', module16],
+  ['public api', module17],
+  ['feedback component', module18],
+  ['feedback module', module19],
+  ['search list component', module20],
+  ['search list module', module21],
+  ['stepper footer', module22],
+  ['stepper header', module23],
+  ['stepper component', module24],
+  ['stepper module', module25],
+  ['drawer service', module26],
+  ['autocomplete data', module27],
+  ['autocomplete service', module28],
+  ['subheader wrapper', module29],
+  ['subheader component', module30],
+  ['subheader module', module31],
+  ['alert component', module32],
+  ['alert module', module33],
+  ['item component', module34],
+  ['item module', module35],
+  ['label dot component', module36],
+  ['label component', module37],
+  ['label module', module38],
+  ['title component', module39],
+  ['title module', module40],
+] as const;
 
 describe('coverage support', () => {
-  it('loads the production module graph', () => {
-    expect(true).toBe(true);
+  it('evaluates every manifest module and exposes exports', () => {
+    expect(productionModules).toHaveLength(41);
+    for (const [label, moduleExports] of productionModules) {
+      expect(Object.keys(moduleExports), label).not.toHaveLength(0);
+    }
   });
 });

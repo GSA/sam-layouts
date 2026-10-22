@@ -4,14 +4,15 @@ import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { productionSource, trackedInputFiles } from './coverage-scope.mjs';
 
 const [, , command = 'check'] = process.argv;
 const metrics = ['statements', 'branches', 'functions', 'lines'];
 const configPath = 'coverage-thresholds.json';
 const markerPath = 'coverage/.coverage-run.json';
 const projects = {
-  layouts: { summary: 'coverage/layouts/coverage-summary.json', minimumTests: 25 },
-  'sam-layouts': { summary: 'coverage/sam-layouts/coverage-summary.json', minimumTests: 2 },
+  layouts: { summary: 'coverage/layouts/coverage-summary.json', minimumTests: 26 },
+  'sam-layouts': { summary: 'coverage/sam-layouts/coverage-summary.json', minimumTests: 3 },
 };
 const toleranceMs = 2_000;
 const fail = (message) => {
@@ -28,25 +29,7 @@ const loadJson = async (path) => {
 };
 const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
-const inputFiles = () => {
-  let files;
-  try {
-    files = execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], { encoding: 'utf8' })
-      .split('\0')
-      .filter(Boolean);
-  } catch {
-    throw new Error('cannot determine input files');
-  }
-  return files.filter((file) => file !== configPath && file !== markerPath && !file.startsWith('coverage/'));
-};
-const productionSource = () =>
-  inputFiles().filter((file) =>
-    /^(sam-layouts|apps\/sam-layouts)\/src\/.*\.ts$/.test(file) &&
-    !/(^|\/)([^/]+\.)?(spec|test|stories|demo)\.ts$/.test(file) && !file.includes('/demo/') &&
-    !file.endsWith('.d.ts') &&
-    !/(^|\/)(model|models)\/[^/]+\.ts$/.test(file) &&
-    !/(^|\/)(index|main|test-setup)\.ts$/.test(file),
-  );
+const inputFiles = () => trackedInputFiles();
 const fingerprint = async () => {
   const parts = [];
   for (const file of inputFiles()) parts.push(`${file}\0${sha256(await readFile(file))}`);
@@ -173,7 +156,7 @@ const validateEvidence = async (marker, config) => {
         return source.slice(source.indexOf(marker));
       }),
     );
-    const expected = marker.sourceManifest.filter((file) =>
+    const expected = (await productionSource(inputFiles())).filter((file) =>
       file.startsWith(project === 'layouts' ? 'sam-layouts/' : 'apps/sam-layouts/'),
     );
     if (expected.some((file) => !coveredSources.has(file)))

@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { productionSource, trackedInputFiles } from './coverage-scope.mjs';
 
 const exec = promisify(execFile);
 const root = process.cwd();
@@ -10,34 +11,19 @@ const markerPath = `${root}/coverage/.coverage-run.json`;
 const projects = [
   {
     name: 'layouts',
-    minimumTests: 25,
+    minimumTests: 26,
     report: 'tmp/coverage/layouts-tests.json',
     summary: 'coverage/layouts/coverage-summary.json',
   },
   {
     name: 'sam-layouts',
-    minimumTests: 2,
+    minimumTests: 3,
     report: 'tmp/coverage/sam-layouts-tests.json',
     summary: 'coverage/sam-layouts/coverage-summary.json',
   },
 ];
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
-const inputFiles = async () => {
-  const files = (
-    await new Promise((resolve, reject) =>
-      execFile('git', ['ls-files', '-co', '--exclude-standard', '-z'], { cwd: root }, (error, stdout) =>
-        error ? reject(error) : resolve(stdout),
-      ),
-    )
-  )
-    .split('\0')
-    .filter(Boolean)
-    .filter(
-      (file) =>
-        file !== 'coverage-thresholds.json' && file !== 'coverage/.coverage-run.json' && !file.startsWith('coverage/'),
-    );
-  return files;
-};
+const inputFiles = async () => trackedInputFiles();
 const fingerprint = async () => {
   const files = await inputFiles();
   const contents = await Promise.all(
@@ -55,14 +41,7 @@ const marker = {
   runId,
   startedAt,
   fingerprint: await fingerprint(),
-  sourceManifest: (await inputFiles()).filter(
-    (file) =>
-      /^(sam-layouts|apps\/sam-layouts)\/src\/.*\.ts$/.test(file) &&
-      !/(^|\/)([^/]+\.)?(spec|test|stories|demo)\.ts$/.test(file) && !file.includes('/demo/') &&
-      !file.endsWith('.d.ts') &&
-      !/(^|\/)(model|models)\/[^/]+\.ts$/.test(file) &&
-      !/(^|\/)(index|main|test-setup)\.ts$/.test(file),
-  ),
+  sourceManifest: await productionSource(await inputFiles()),
   projects: projects.map(({ name, minimumTests }) => ({ name, tests: minimumTests })),
 };
 await writeFile(markerPath, `${JSON.stringify(marker, null, 2)}\n`);
