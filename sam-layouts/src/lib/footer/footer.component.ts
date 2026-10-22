@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, TemplateRef, NgModule } from '@angular/core';
 import { FooterModel } from './model/FooterModel';
 import { INavigationLink, SdsExternalLinkDirectivesModule } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
@@ -9,6 +9,12 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { RouterLink } from '@angular/router';
 import { NgxBootstrapIconsModule, exclamationTriangle } from 'ngx-bootstrap-icons';
 
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ exclamationTriangle })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsFooterIconsModule {}
+
 @Component({
   selector: 'sds-footer',
   templateUrl: './footer.component.html',
@@ -18,7 +24,7 @@ import { NgxBootstrapIconsModule, exclamationTriangle } from 'ngx-bootstrap-icon
     SdsFeedbackComponent,
     UsaAccordionModule,
     IconModule,
-    NgxBootstrapIconsModule.pick({ exclamationTriangle }),
+    SdsFooterIconsModule,
     RouterLink,
     SdsExternalLinkDirectivesModule,
   ],

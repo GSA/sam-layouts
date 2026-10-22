@@ -8,6 +8,7 @@ import {
   HostListener,
   TemplateRef,
   ContentChild,
+  NgModule,
 } from '@angular/core';
 import type { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
 import { INavigationLink, Selectable } from '@gsa-sam/components';
@@ -37,15 +38,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { A11yModule } from '@angular/cdk/a11y';
 import { PortalModule } from '@angular/cdk/portal';
 
-@Component({
-  selector: 'sds-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+@NgModule({
   imports: [
-    SdsTopBannerModule,
-    NgTemplateOutlet,
-    SdsHeaderHelpComponent,
-    IconModule,
     NgxBootstrapIconsModule.pick({
       square,
       justifyLeft,
@@ -59,6 +53,21 @@ import { PortalModule } from '@angular/cdk/portal';
       xCircle,
       squareFill,
     }),
+  ],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsHeaderIconsModule {}
+
+@Component({
+  selector: 'sds-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  imports: [
+    SdsTopBannerModule,
+    NgTemplateOutlet,
+    SdsHeaderHelpComponent,
+    IconModule,
+    SdsHeaderIconsModule,
     NgClass,
     RouterLink,
     FormsModule,

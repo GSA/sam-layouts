@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, NgModule } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsLandingLinkComponent } from '../link/link.component';
@@ -26,12 +26,8 @@ import {
   arrowClockwise,
 } from 'ngx-bootstrap-icons';
 
-@Component({
-  selector: 'sds-landing-list',
-  templateUrl: 'list.component.html',
+@NgModule({
   imports: [
-    NgClass,
-    IconModule,
     NgxBootstrapIconsModule.pick({
       arrowRightCircleFill,
       arrowRightCircle,
@@ -54,8 +50,15 @@ import {
       filterCircle,
       arrowClockwise,
     }),
-    SdsLandingLinkComponent,
   ],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsLandingListIconsModule {}
+
+@Component({
+  selector: 'sds-landing-list',
+  templateUrl: 'list.component.html',
+  imports: [NgClass, IconModule, SdsLandingListIconsModule, SdsLandingLinkComponent],
 })
 export class SdsLandingListComponent {
   @Input() list;

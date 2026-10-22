@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit, NgModule } from '@angular/core';
 import { INavigationLink, NavigationMode, SearchSettings, Selectable, SdsSearchModule } from '@gsa-sam/components';
 import { Router } from '@angular/router';
 import { SdsSubheaderComponent } from './subheader.component';
@@ -7,13 +7,19 @@ import { NgxBootstrapIconsModule, chevronLeft } from 'ngx-bootstrap-icons';
 import { NgTemplateOutlet } from '@angular/common';
 import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ chevronLeft })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsSubheaderWrapperIconsModule {}
+
 @Component({
   selector: 'sds-subheader-wrapper',
   templateUrl: 'sds-subheader-wrapper.component.html',
   imports: [
     SdsSubheaderComponent,
     IconModule,
-    NgxBootstrapIconsModule.pick({ chevronLeft }),
+    SdsSubheaderWrapperIconsModule,
     SdsSearchModule,
     NgTemplateOutlet,
     SdsButtonGroupModule,

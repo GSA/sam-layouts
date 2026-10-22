@@ -1,5 +1,5 @@
 import { CdkPortalOutletAttachedRef, CdkPortalOutlet } from '@angular/cdk/portal';
-import { Component, ComponentRef, Inject, Input, ViewEncapsulation } from '@angular/core';
+import { Component, ComponentRef, Inject, Input, ViewEncapsulation, NgModule } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/components';
 import { filter } from 'rxjs/operators';
@@ -10,6 +10,12 @@ import { NgxBootstrapIconsModule, questionCircle } from 'ngx-bootstrap-icons';
 interface Data {
   help: [];
 }
+
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ questionCircle })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsHeaderHelpIconsModule {}
 
 @Component({
   selector: 'sds-header-help',
@@ -26,7 +32,7 @@ interface Data {
       <usa-icon class="text-info" [icon]="'question-circle'" [size]="'2x'"></usa-icon>
     </button>
   `,
-  imports: [MatTooltip, IconModule, NgxBootstrapIconsModule.pick({ questionCircle })],
+  imports: [MatTooltip, IconModule, SdsHeaderHelpIconsModule],
 })
 export class SdsHeaderHelpComponent {
   @Input() content;
