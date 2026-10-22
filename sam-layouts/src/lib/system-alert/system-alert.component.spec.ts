@@ -5,7 +5,6 @@ import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 
 import { SdsSystemAlertComponent } from './system-alert.component';
-import { SdsSystemAlertModule } from './system-alert.module';
 
 describe('SystemAlertComponent', () => {
   let component: SdsSystemAlertComponent;

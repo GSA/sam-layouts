@@ -9,7 +9,6 @@ import { of, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SDSFormlyUpdateComunicationService, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
-import { SimpleChange } from '@angular/core';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';

@@ -1,9 +1,7 @@
 /* tslint:disable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SdsHeaderComponent } from './header.component';
-import { SdsHeaderModule } from './header.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SdsTopBannerComponent } from '@gsa-sam/components';
 
 import { NavigationMode } from '@gsa-sam/components';
 import { A11yModule } from '@angular/cdk/a11y';

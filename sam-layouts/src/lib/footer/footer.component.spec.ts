@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SdsFooterComponent } from './footer.component';
-import { SdsFooterModule } from './footer.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NavigationMode } from '@gsa-sam/components';
 
