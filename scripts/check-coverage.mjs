@@ -123,7 +123,8 @@ const validateEvidence = async (marker, config) => {
       item.numPendingTests !== 0 ||
       item.report !== `tmp/coverage/${project}-tests.json` ||
       !item.reportHash ||
-      !item.summaryHash
+      !item.summaryHash ||
+      !item.lcovHash
     )
       throw new Error(`missing successful test evidence for ${project}`);
     seenProjects.add(project);
@@ -150,6 +151,9 @@ const validateEvidence = async (marker, config) => {
       throw new Error(`invalid test result evidence for ${project}`);
     const summaryPath = details.summary;
     const lcovPath = summaryPath.replace(/coverage-summary\.json$/, 'lcov.info');
+    const lcovStat = await stat(lcovPath);
+    inRunWindow(lcovStat.mtimeMs, started, completed, lcovPath);
+    if (sha256(await readFile(lcovPath)) !== item.lcovHash) throw new Error(`${project} coverage lcov changed`);
     const lcov = await readFile(lcovPath, 'utf8');
     const coveredSources = new Set(
       [...lcov.matchAll(/^SF:(.+)$/gm)].map((match) => {

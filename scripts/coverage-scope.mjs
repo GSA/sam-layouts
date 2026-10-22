@@ -17,7 +17,7 @@ export function trackedInputFiles() {
     );
 }
 
-function hasRuntimeSyntax(source) {
+export function hasRuntimeSyntax(source) {
   const file = ts.createSourceFile('source.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   const output = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
@@ -28,7 +28,8 @@ function hasRuntimeSyntax(source) {
       ts.isImportDeclaration(statement) ||
       ts.isExportDeclaration(statement) ||
       ts.isInterfaceDeclaration(statement) ||
-      ts.isTypeAliasDeclaration(statement)
+      ts.isTypeAliasDeclaration(statement) ||
+      (ts.getCombinedModifierFlags(statement) & ts.ModifierFlags.Ambient) !== 0
     )
       return false;
     if (ts.isModuleDeclaration(statement) && statement.flags & ts.NodeFlags.Namespace) return true;

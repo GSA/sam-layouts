@@ -78,6 +78,9 @@ async function run(setup = () => {}) {
       summaryHash: hash(
         await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/coverage-summary.json`)),
       ),
+      lcovHash: hash(
+        await (await import('node:fs/promises')).readFile(join(dir, `coverage/${project}/lcov.info`)),
+      ),
     });
   }
   await writeFile(
@@ -162,6 +165,21 @@ test('rejects arbitrary report paths', async () => {
     await writeFile(markerPath, JSON.stringify(marker));
   });
   assert.equal(result.code, 1);
+});
+test('rejects changed and stale lcov evidence', async () => {
+  for (const setup of [
+    async (dir) => {
+      await writeFile(join(dir, 'coverage/layouts/lcov.info'), 'changed');
+    },
+    async (dir) => {
+      const old = new Date(Date.now() - 200_000);
+      const { utimes } = await import('node:fs/promises');
+      await utimes(join(dir, 'coverage/layouts/lcov.info'), old, old);
+    },
+  ]) {
+    const result = await run(setup);
+    assert.equal(result.code, 1);
+  }
 });
 test('rejects malformed types and inconsistent counts', async () =>
   assert.equal(

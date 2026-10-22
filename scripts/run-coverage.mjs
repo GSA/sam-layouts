@@ -108,6 +108,7 @@ for (const project of projects) {
     report: project.report,
     reportHash: sha256(await readFile(reportPath)),
     summaryHash: sha256(await readFile(`${root}/${project.summary}`)),
+    lcovHash: sha256(await readFile(`${root}/${project.summary.replace(/coverage-summary\\.json$/, 'lcov.info')}`)),
   });
 }
 const completedAt = new Date().toISOString();
