@@ -48,14 +48,8 @@ jobs:
       - name: Build sam-layouts (app)
         run: npx nx build sam-layouts
 
-      - name: Test layouts (library) with coverage
-        run: npx nx test layouts --coverage
-
-      - name: Test sam-layouts (app) with coverage
-        run: npx nx test sam-layouts --coverage
-
-      - name: Enforce coverage floors
-        run: npm run coverage:check
+      - name: Run both Vitest suites and enforce coverage floors
+        run: npm run test:coverage
 
       # The guard script below is the only thing standing between us and
       # another check that is green against nothing, so its own tests run
