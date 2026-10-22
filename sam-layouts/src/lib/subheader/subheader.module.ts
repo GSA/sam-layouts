@@ -17,32 +17,30 @@ import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SdsMenuModule,
-    SdsObserversModule,
-    SdsSearchModule,
-    SdsTruncateModule,
-    SdsActionsMenuModule,
-    IconModule,
-    SdsButtonGroupModule,
-    NgxBootstrapIconsModule.pick({ threeDotsVertical, chevronLeft }),
-    FormsModule,
-  ],
-  exports: [
-    SdsSubheaderComponent,
-    SdsSubheaderActionsComponent,
-    SdsSubheaderDrawerComponent,
-    SdsDrawerContentComponent,
-    SdsSubheaderWrapperComponent,
-  ],
-  declarations: [
-    SdsSubheaderComponent,
-    SdsSubheaderActionsComponent,
-    SdsSubheaderDrawerComponent,
-    SdsDrawerContentComponent,
-    SdsSubheaderWrapperComponent,
-  ],
-  providers: [SdsDrawerCommunicationService],
+    imports: [
+        CommonModule,
+        SdsMenuModule,
+        SdsObserversModule,
+        SdsSearchModule,
+        SdsTruncateModule,
+        SdsActionsMenuModule,
+        IconModule,
+        SdsButtonGroupModule,
+        NgxBootstrapIconsModule.pick({ threeDotsVertical, chevronLeft }),
+        FormsModule,
+        SdsSubheaderComponent,
+        SdsSubheaderActionsComponent,
+        SdsSubheaderDrawerComponent,
+        SdsDrawerContentComponent,
+        SdsSubheaderWrapperComponent,
+    ],
+    exports: [
+        SdsSubheaderComponent,
+        SdsSubheaderActionsComponent,
+        SdsSubheaderDrawerComponent,
+        SdsDrawerContentComponent,
+        SdsSubheaderWrapperComponent,
+    ],
+    providers: [SdsDrawerCommunicationService],
 })
 export class SdsSubheaderModule {}

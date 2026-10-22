@@ -5,8 +5,7 @@ import { SdsSystemAlertComponent } from './system-alert.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @NgModule({
-  imports: [CommonModule, IconModule, SdsCollapseModule],
-  declarations: [SdsSystemAlertComponent],
-  exports: [SdsSystemAlertComponent],
+    imports: [CommonModule, IconModule, SdsCollapseModule, SdsSystemAlertComponent],
+    exports: [SdsSystemAlertComponent],
 })
 export class SdsSystemAlertModule {}

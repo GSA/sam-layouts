@@ -12,12 +12,35 @@ import {
 import type { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
 import { INavigationLink, Selectable } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
+import { SdsHeaderHelpComponent } from './help.component';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { SdsDialogModule, SdsTopBannerModule } from '@gsa-sam/components';
+import { SdsLandingListModule } from '../landing/list/list.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { A11yModule } from '@angular/cdk/a11y';
+import { PortalModule } from '@angular/cdk/portal';
 
 @Component({
-  standalone: false,
-  selector: 'sds-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'sds-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    imports: [
+        SdsTopBannerModule,
+        NgTemplateOutlet,
+        SdsHeaderHelpComponent,
+        IconModule,
+        NgClass,
+        RouterLink,
+        FormsModule,
+        SdsDialogModule,
+        SdsLandingListModule,
+        MatTooltipModule,
+        A11yModule,
+        PortalModule,
+    ],
 })
 export class SdsHeaderComponent {
   @ViewChild('usaNavOpen') openNavBtn: ElementRef;

@@ -7,14 +7,14 @@ import { SdsFeedbackComponent } from './sds-feedback.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SdsCollapseModule,
-    IconModule,
-    NgxBootstrapIconsModule.pick({ arrowDownCircleFill, arrowUpCircleFill }),
-  ],
-  declarations: [SdsFeedbackComponent],
-  exports: [SdsFeedbackComponent],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SdsCollapseModule,
+        IconModule,
+        NgxBootstrapIconsModule.pick({ arrowDownCircleFill, arrowUpCircleFill }),
+        SdsFeedbackComponent,
+    ],
+    exports: [SdsFeedbackComponent],
 })
 export class SdsFeedbackModule {}

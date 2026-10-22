@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  standalone: false,
-  selector: 'sds-workspace-tier2-item-label',
-  template: `
+    selector: 'sds-workspace-tier2-item-label',
+    template: `
     <span
       class="text-semibold margin-right-2px"
       [class.padding-x-05]="size === 'small'"

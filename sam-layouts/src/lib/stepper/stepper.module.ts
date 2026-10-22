@@ -21,37 +21,35 @@ import { SLStepperHeaderComponent, SLStepperHeaderWithStatusComponent } from './
 import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from './footer/footer.component';
 
 @NgModule({
-  declarations: [
-    SLStepperComponent,
-    SLStepperHeaderComponent,
-    SLStepperHeaderWithStatusComponent,
-    SLStepperFooterComponent,
-    SLStepperFooterCustomActionComponent,
-  ],
-  imports: [
-    CommonModule,
-    SdsSideToolbarModule,
-    UsaStepIndicatorModule,
-    NgxBootstrapIconsModule.pick({
-      chevronLeft,
-      chevronRight,
-      circle,
-      slashCircleFill,
-      checkCircleFill,
-      question,
-      save,
-      x,
-      list,
-    }),
-    IconModule,
-    SdsStepperModule,
-  ],
-  exports: [
-    SLStepperComponent,
-    SLStepperHeaderComponent,
-    SLStepperHeaderWithStatusComponent,
-    SLStepperFooterComponent,
-    SLStepperFooterCustomActionComponent,
-  ],
+    imports: [
+        CommonModule,
+        SdsSideToolbarModule,
+        UsaStepIndicatorModule,
+        NgxBootstrapIconsModule.pick({
+            chevronLeft,
+            chevronRight,
+            circle,
+            slashCircleFill,
+            checkCircleFill,
+            question,
+            save,
+            x,
+            list,
+        }),
+        IconModule,
+        SdsStepperModule,
+        SLStepperComponent,
+        SLStepperHeaderComponent,
+        SLStepperHeaderWithStatusComponent,
+        SLStepperFooterComponent,
+        SLStepperFooterCustomActionComponent,
+    ],
+    exports: [
+        SLStepperComponent,
+        SLStepperHeaderComponent,
+        SLStepperHeaderWithStatusComponent,
+        SLStepperFooterComponent,
+        SLStepperFooterCustomActionComponent,
+    ],
 })
 export class SLStepperModule {}

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationLink, SdsDialogConfig, SdsDialogRef, SelectionPanelModel } from '@gsa-sam/components';
+import { NavigationLink, SdsDialogConfig, SdsDialogRef, SelectionPanelModel, SdsSideToolbarModule, SdsSelectionPanelModule } from '@gsa-sam/components';
 import { ResultsModel, SearchListConfiguration } from '../../model/search-list-layout.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BehaviorSubject, timer } from 'rxjs';
@@ -8,11 +8,24 @@ import { DataService } from '../data.service';
 import { FilterService } from '../filter.service';
 import { navigationConfig } from '../navigate.config';
 import { debounce, filter, pairwise, tap } from 'rxjs/operators';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgClass } from '@angular/common';
+import { SdsFiltersModule } from '@gsa-sam/sam-formly';
+import { SearchListLayoutComponent } from '../../search-list-layout.component';
+import { ResultComponent } from '../result/result.component';
 
 @Component({
-  standalone: false,
-  selector: 'demo-search-list-layout',
-  templateUrl: './layout-responsive.component.html',
+    selector: 'demo-search-list-layout',
+    templateUrl: './layout-responsive.component.html',
+    imports: [
+        SdsSideToolbarModule,
+        IconModule,
+        NgClass,
+        SdsSelectionPanelModule,
+        SdsFiltersModule,
+        SearchListLayoutComponent,
+        ResultComponent,
+    ],
 })
 export class LayoutResponsiveComponent implements AfterViewInit {
   @ViewChild('resultList') resultList;

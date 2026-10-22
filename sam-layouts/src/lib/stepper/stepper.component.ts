@@ -1,13 +1,24 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SdsStepper } from '@gsa-sam/sam-formly';
+import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
+import { SdsSideToolbarModule } from '@gsa-sam/components';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { SLStepperFooterComponent } from './footer/footer.component';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @Component({
-  standalone: false,
-  selector: 'sam-layouts-stepper',
-  providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
-  templateUrl: './stepper.component.html',
-  styleUrls: ['./stepper.component.scss'],
+    selector: 'sam-layouts-stepper',
+    providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
+    templateUrl: './stepper.component.html',
+    styleUrls: ['./stepper.component.scss'],
+    imports: [
+        SdsSideToolbarModule,
+        NgClass,
+        NgTemplateOutlet,
+        SLStepperFooterComponent,
+        SdsStepperModule,
+        IconModule,
+    ],
 })
 export class SLStepperComponent extends SdsStepper {
   @Input() versions: [];

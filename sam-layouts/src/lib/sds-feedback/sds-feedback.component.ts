@@ -1,11 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { SdsCollapseModule } from '@gsa-sam/components';
 
 @Component({
-  standalone: false,
-  selector: 'sds-feedback',
-  templateUrl: './sds-feedback.component.html',
-  styleUrls: ['./sds-feedback.component.scss'],
+    selector: 'sds-feedback',
+    templateUrl: './sds-feedback.component.html',
+    styleUrls: ['./sds-feedback.component.scss'],
+    imports: [
+        IconModule,
+        SdsCollapseModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
 })
 export class SdsFeedbackComponent {
   @Input() feedbackModel: FormControl = new FormControl('');

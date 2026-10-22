@@ -19,24 +19,31 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { SDSFormlyUpdateComunicationService, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash-es';
-import { Location } from '@angular/common';
+import { Location, NgTemplateOutlet } from '@angular/common';
+import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  standalone: false,
-  // `search-list-layout` is a legacy, unprefixed selector that does not match
-  // the `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
-  // (`sds` / `sam-layouts` / `demo`). This component IS exported from
-  // `src/lib/public-api.ts`, so the selector is PUBLIC API: consumers render
-  // `<search-list-layout>` directly (see the @Optional() regression note in
-  // `search-list-layout.component.spec.ts`), and renaming it is a breaking,
-  // consumer-visible change. Disabled here rather than widening the allowlist
-  // with a `search` prefix (which would admit arbitrary future `search-*`
-  // selectors). Rename to a prefixed selector alongside the Wave 3
-  // Angular 20 -> 21 breaking slice of GSA/sam-layouts#52.
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'search-list-layout',
-  templateUrl: './search-list-layout.component.html',
-  styleUrls: ['./search-list-layout.component.scss'],
+    // `search-list-layout` is a legacy, unprefixed selector that does not match
+    // the `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
+    // (`sds` / `sam-layouts` / `demo`). This component IS exported from
+    // `src/lib/public-api.ts`, so the selector is PUBLIC API: consumers render
+    // `<search-list-layout>` directly (see the @Optional() regression note in
+    // `search-list-layout.component.spec.ts`), and renaming it is a breaking,
+    // consumer-visible change. Disabled here rather than widening the allowlist
+    // with a `search` prefix (which would admit arbitrary future `search-*`
+    // selectors). Rename to a prefixed selector alongside the Wave 3
+    // Angular 20 -> 21 breaking slice of GSA/sam-layouts#52.
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'search-list-layout',
+    templateUrl: './search-list-layout.component.html',
+    styleUrls: ['./search-list-layout.component.scss'],
+    imports: [
+        PaginationModule,
+        FormsModule,
+        SdsSearchResultListModule,
+        NgTemplateOutlet,
+    ],
 })
 export class SearchListLayoutComponent implements OnInit {
   /**

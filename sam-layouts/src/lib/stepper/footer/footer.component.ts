@@ -1,10 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SdsStepper } from '@gsa-sam/sam-formly';
+import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgStyle } from '@angular/common';
 
 @Component({
-  standalone: false,
-  selector: 'sam-layouts-stepper-footer',
-  templateUrl: './footer.component.html',
+    selector: 'sam-layouts-stepper-footer',
+    templateUrl: './footer.component.html',
+    imports: [
+        SdsStepperModule,
+        IconModule,
+        NgStyle,
+    ],
 })
 export class SLStepperFooterComponent {
   @Input() customSave = false;
@@ -64,9 +70,8 @@ export class SLStepperFooterComponent {
 }
 
 @Component({
-  standalone: false,
-  selector: 'sam-layouts-stepper-footer-custom-action',
-  template: `
+    selector: 'sam-layouts-stepper-footer-custom-action',
+    template: `
     <div class="margin-right-1">
       <button
         class="usa-button sds-button--circle usa-button--big usa-button--base bg-base-lighter padding-2"
@@ -85,6 +90,7 @@ export class SLStepperFooterComponent {
       </label>
     </div>
   `,
+    imports: [IconModule],
 })
 export class SLStepperFooterCustomActionComponent {
   @Input() icon!: string;

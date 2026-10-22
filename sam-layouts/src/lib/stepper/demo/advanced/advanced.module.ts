@@ -10,17 +10,17 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { NgxBootstrapIconsModule, chevronRight } from 'ngx-bootstrap-icons';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormlyModule,
-    SdsStepperModule,
-    SLStepperModule,
-    NgxBootstrapIconsModule.pick({
-      chevronRight,
-    }),
-    IconModule,
-  ],
-  declarations: [DemoStepperAdvancedComponent, SubawardeeDemoComponent, AddSubawardeeDialogDemo],
-  exports: [DemoStepperAdvancedComponent],
+    imports: [
+        CommonModule,
+        FormlyModule,
+        SdsStepperModule,
+        SLStepperModule,
+        NgxBootstrapIconsModule.pick({
+            chevronRight,
+        }),
+        IconModule,
+        DemoStepperAdvancedComponent, SubawardeeDemoComponent, AddSubawardeeDialogDemo,
+    ],
+    exports: [DemoStepperAdvancedComponent],
 })
 export class DemoStepperAdvancedModule {}

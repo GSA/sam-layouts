@@ -5,9 +5,8 @@ import { RouterModule } from '@angular/router';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, IconModule],
-  exports: [SdsLandingButtonGroupComponent],
-  declarations: [SdsLandingButtonGroupComponent],
-  providers: [],
+    imports: [CommonModule, RouterModule, IconModule, SdsLandingButtonGroupComponent],
+    exports: [SdsLandingButtonGroupComponent],
+    providers: [],
 })
 export class SdsLandingButtonGroupModule {}

@@ -1,11 +1,21 @@
 import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
-import { INavigationLink, NavigationMode, SearchSettings, Selectable } from '@gsa-sam/components';
+import { INavigationLink, NavigationMode, SearchSettings, Selectable, SdsSearchModule } from '@gsa-sam/components';
 import { Router } from '@angular/router';
+import { SdsSubheaderComponent } from './subheader.component';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgTemplateOutlet } from '@angular/common';
+import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 
 @Component({
-  standalone: false,
-  selector: 'sds-subheader-wrapper',
-  templateUrl: 'sds-subheader-wrapper.component.html',
+    selector: 'sds-subheader-wrapper',
+    templateUrl: 'sds-subheader-wrapper.component.html',
+    imports: [
+        SdsSubheaderComponent,
+        IconModule,
+        SdsSearchModule,
+        NgTemplateOutlet,
+        SdsButtonGroupModule,
+    ],
 })
 export class SdsSubheaderWrapperComponent implements OnInit {
   constructor(private router: Router) {}
