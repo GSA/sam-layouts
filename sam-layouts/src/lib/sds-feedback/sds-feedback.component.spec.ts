@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SdsCollapseModule } from '@gsa-sam/components';
 import { SdsFeedbackComponent } from './sds-feedback.component';
+import { SdsFeedbackModule } from './sds-feedback.module';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 
@@ -11,18 +12,11 @@ describe('SdsFeedbackComponent', () => {
   let component: SdsFeedbackComponent;
   let fixture: ComponentFixture<SdsFeedbackComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        ReactiveFormsModule,
-        SdsCollapseModule,
-        IconModule,
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
-      ],
-      declarations: [SdsFeedbackComponent],
+      imports: [NoopAnimationsModule, ReactiveFormsModule, SdsFeedbackModule],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsFeedbackComponent);
@@ -36,7 +30,7 @@ describe('SdsFeedbackComponent', () => {
 
   it('Should emit feedback content on submit click', () => {
     component.feedbackModel.setValue('Test Feedback');
-    const feedbackSubmitSpy = jest.spyOn(component.feedbackSubmit, 'emit');
+    const feedbackSubmitSpy = vi.spyOn(component.feedbackSubmit, 'emit');
 
     const feedbackSubmitButton = fixture.debugElement.query(By.css('#feedbackSubmit'));
     feedbackSubmitButton.triggerEventHandler('click', null);

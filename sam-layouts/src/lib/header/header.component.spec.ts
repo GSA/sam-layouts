@@ -1,6 +1,7 @@
 /* tslint:disable */
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SdsHeaderComponent } from './header.component';
+import { SdsHeaderModule } from './header.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SdsTopBannerComponent } from '@gsa-sam/components';
 
@@ -13,9 +14,8 @@ describe('SdsHeaderComponent', () => {
   let component: SdsHeaderComponent;
   let fixture: ComponentFixture<SdsHeaderComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [SdsHeaderComponent, SdsTopBannerComponent],
       imports: [
         RouterTestingModule,
         IconModule,
@@ -23,7 +23,7 @@ describe('SdsHeaderComponent', () => {
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsHeaderComponent);
@@ -115,7 +115,7 @@ describe('SdsHeaderComponent', () => {
 
   it('event click', () => {
     const navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
-    jest.spyOn(component.linkEvent, 'emit');
+    vi.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);
   });

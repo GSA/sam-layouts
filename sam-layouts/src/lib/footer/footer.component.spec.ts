@@ -1,6 +1,7 @@
 /* tslint:disable */
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SdsFooterComponent } from './footer.component';
+import { SdsFooterModule } from './footer.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NavigationMode } from '@gsa-sam/components';
 
@@ -15,9 +16,8 @@ import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 describe('SdsFooterComponent', () => {
   let component: SdsFooterComponent;
   let fixture: ComponentFixture<SdsFooterComponent>;
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [SdsFooterComponent],
       imports: [
         NoopAnimationsModule,
         RouterTestingModule,
@@ -28,7 +28,7 @@ describe('SdsFooterComponent', () => {
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsFooterComponent);
@@ -46,7 +46,7 @@ describe('SdsFooterComponent', () => {
 
   it('event click', () => {
     const navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
-    jest.spyOn(component.linkEvent, 'emit');
+    vi.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);
   });

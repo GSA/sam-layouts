@@ -9,7 +9,7 @@ import {
   TemplateRef,
   ContentChild,
 } from '@angular/core';
-import { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
+import type { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
 import { INavigationLink, Selectable } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
 
