@@ -42,6 +42,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "tsConfig": "sam-layouts/tsconfig.spec.json",
+        "runnerConfig": "vitest-base.config.ts",
+        "setupFiles": ["sam-layouts/test-setup.ts"],
         "coverage": true,
         "coverageInclude": ["src/**/*.ts"],
         "coverageExclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.d.ts"],
