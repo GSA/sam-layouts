@@ -178,16 +178,18 @@ export class SearchListLayoutComponent implements OnInit {
       this.formlySubscription = this.formlyUpdateComunicationService.filterUpdate
         .pipe(
           distinctUntilChanged((prev, curr) => {
+            const normalized = this.normalizeFilterForComparison(curr);
             if (this.triggeredByPopState) {
-              this.lastKnownFilter = _.cloneDeep(curr); // Sync lastKnownFilter with the current filter
-              // popstateEvent = false; // Reset flag after handling
+              this.lastKnownFilter = normalized; // Sync with the restored filter snapshot
               return false; // Allow this event through
             }
 
-            // If not popstate, use equality check
-            const isEqual = !_.isEqual(this.lastKnownFilter, curr);
-            this.lastKnownFilter = _.cloneDeep(curr); // Update lastKnownFilter only when a distinct event is detected
-            return !isEqual; // Only pass distinct events afterward
+            // Compare the effective Formly model. Form controls that are empty
+            // are represented as null by Formly and are omitted by the filters
+            // component's clean model, so they must not reset a restored page.
+            const isEqual = _.isEqual(this.lastKnownFilter, normalized);
+            this.lastKnownFilter = normalized;
+            return isEqual; // Only pass genuinely different events afterward
           }),
         )
         .subscribe((filter) => {
@@ -246,7 +248,9 @@ export class SearchListLayoutComponent implements OnInit {
     }
 
     this.filterData = filter;
-    const preservePage = this.hasPageFilter ? _.isEqual(this.pageFilter, filter) : this.page.default;
+    const preservePage = this.hasPageFilter
+      ? _.isEqual(this.normalizeFilterForComparison(this.pageFilter), this.normalizeFilterForComparison(filter))
+      : this.page.default;
     this.page.pageNumber = preservePage ? this.page.pageNumber : 1;
     this.pageFilter = _.cloneDeep(filter);
     this.hasPageFilter = true;
@@ -258,6 +262,28 @@ export class SearchListLayoutComponent implements OnInit {
       }
     }
     this.updateContent(true);
+  }
+
+  private normalizeFilterForComparison(filter: unknown): unknown {
+    if (filter == null) {
+      return {};
+    }
+    if (Array.isArray(filter)) {
+      return filter.map((value) => this.normalizeFilterForComparison(value));
+    }
+    if (typeof filter === 'object') {
+      return Object.keys(filter as object).reduce(
+        (result, key) => {
+          const value = (filter as Record<string, unknown>)[key];
+          if (value != null) {
+            result[key] = this.normalizeFilterForComparison(value);
+          }
+          return result;
+        },
+        {} as Record<string, unknown>,
+      );
+    }
+    return filter;
   }
 
   isDefaultFilter(filter) {
@@ -424,6 +450,10 @@ export class SearchListLayoutComponent implements OnInit {
   public updateSearchResultsModel(historyModel: ResultsModel) {
     this.filterData = historyModel.filterModel;
     this.pageFilter = _.cloneDeep(historyModel.filterModel);
+    // Reconcile the communication stream with the newly restored snapshot:
+    // an in-flight old value must remain observable if it differs from this
+    // restoration, rather than being suppressed by stale deduplication state.
+    this.lastKnownFilter = this.normalizeFilterForComparison(historyModel.filterModel);
     this.hasPageFilter = true;
     this.page.default = historyModel.page || historyModel.sort ? true : false;
     this.page.pageNumber = historyModel.page ? historyModel.page : 1;

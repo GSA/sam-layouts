@@ -152,6 +152,37 @@ describe('SearchListLayoutComponent', () => {
     await fixture.whenStable();
   });
 
+  it('reconciles real Formly emissions after a results-model restoration (#104)', async () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    const filterA = { keyword: 'a' };
+    const filterB = { keyword: 'b' };
+
+    service.updateFilter(filterA);
+    service.updateFilter(filterA);
+    component.updateSearchResultsModel({ page: 3, filterModel: filterB });
+    service.updateFilter(filterA);
+
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('preserves a restored page when Formly emits empty controls and null model (#104)', async () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+      service.updateFilter({ keyword: 'test', unused: null });
+      component.updateSearchResultsModel({ page: 3, filterModel: null });
+      service.updateFilter({});
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('retains excluded-field request suppression while resetting a changed filter page (#104)', async () => {
     fixture.detectChanges();
     const requests: SearchParameters[] = [];
