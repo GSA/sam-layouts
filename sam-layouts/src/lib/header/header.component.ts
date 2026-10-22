@@ -37,6 +37,7 @@ import { SdsLandingListModule } from '../landing/list/list.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { A11yModule } from '@angular/cdk/a11y';
 import { PortalModule } from '@angular/cdk/portal';
+import { group_8_login_gov_icon } from './login-gov-icon';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { PortalModule } from '@angular/cdk/portal';
       list,
       xCircle,
       squareFill,
+      group_8_login_gov_icon,
     }),
   ],
   exports: [NgxBootstrapIconsModule],

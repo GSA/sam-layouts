@@ -1,7 +1,7 @@
 import { Injectable, TemplateRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SdsDrawerCommunicationService {
   private isOpen = new BehaviorSubject(false);
   isDrawerOpen = this.isOpen.asObservable();
