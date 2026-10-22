@@ -1,0 +1,16 @@
+{
+  "layouts": {
+    "statements": 64.13,
+    "branches": 59.37,
+    "functions": 52.73,
+    "lines": 60.11,
+    "zeroTotalMetrics": []
+  },
+  "sam-layouts": {
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100,
+    "zeroTotalMetrics": []
+  }
+}

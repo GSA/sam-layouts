@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { SdsCollapseModule } from '@gsa-sam/components';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
@@ -10,12 +10,11 @@ describe('SystemAlertComponent', () => {
   let component: SdsSystemAlertComponent;
   let fixture: ComponentFixture<SdsSystemAlertComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [IconModule, SdsCollapseModule, NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))],
-      declarations: [SdsSystemAlertComponent],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsSystemAlertComponent);
@@ -49,7 +48,7 @@ describe('SystemAlertComponent', () => {
   });
 
   it('Should emit event when see all alerts is clicked', () => {
-    const seeAllAlertsSpy = jest.spyOn(component.seeAllAlerts, 'emit');
+    const seeAllAlertsSpy = vi.spyOn(component.seeAllAlerts, 'emit');
     const seeAllAlertsBtn = fixture.debugElement.query(By.css('#seeAllAlertsTabletBtn'));
     seeAllAlertsBtn.triggerEventHandler('click', null);
     fixture.detectChanges();

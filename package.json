@@ -13,7 +13,10 @@
     "lint:baseline:bump": "npm run lint:report && node scripts/check-lint-baseline.mjs --bump layouts tmp/lint/layouts.json && node scripts/check-lint-baseline.mjs --bump sam-layouts tmp/lint/sam-layouts.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:scripts": "node --test scripts/*.test.mjs"
+    "test:scripts": "node --test scripts/*.test.mjs",
+    "test:coverage": "node scripts/run-coverage.mjs",
+    "coverage:check": "node scripts/check-coverage.mjs",
+    "coverage:bump": "node scripts/check-coverage.mjs bump"
   },
   "private": true,
   "dependencies": {
@@ -51,6 +54,7 @@
     "@angular-devkit/build-angular": "21.2.9",
     "@angular-devkit/core": "21.2.9",
     "@angular-devkit/schematics": "21.2.9",
+    "@angular/build": "21.2.9",
     "@angular/cli": "21.2.9",
     "@angular/compiler-cli": "21.2.25",
     "@angular/language-service": "21.2.25",
@@ -58,7 +62,6 @@
     "@nx/angular": "22.7.12",
     "@nx/eslint": "22.7.12",
     "@nx/eslint-plugin": "22.7.12",
-    "@nx/jest": "22.7.12",
     "@nx/js": "22.7.12",
     "@nx/web": "22.7.12",
     "@nx/workspace": "22.7.12",
@@ -68,17 +71,14 @@
     "@swc-node/register": "1.12.1",
     "@swc/core": "1.16.2",
     "@swc/helpers": "0.5.23",
-    "@types/jest": "30.0.0",
     "@types/node": "24.19.2",
     "@typescript-eslint/utils": "^8.33.1",
+    "@vitest/coverage-v8": "4.0.8",
     "angular-eslint": "21.4.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.8",
-    "jest": "30.5.2",
-    "jest-environment-jsdom": "30.5.2",
-    "jest-preset-angular": "16.0.0",
-    "jest-util": "30.5.1",
+    "jsdom": "27.1.0",
     "jsonc-eslint-parser": "^2.1.0",
     "ng-packagr": "21.2.7",
     "nx": "22.7.12",
@@ -90,7 +90,8 @@
     "tslib": "^2.3.0",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.33.1",
-    "verdaccio": "^6.0.5"
+    "verdaccio": "^6.0.5",
+    "vitest": "4.0.8"
   },
   "overrides": {
     "tar": "^7.5.22",

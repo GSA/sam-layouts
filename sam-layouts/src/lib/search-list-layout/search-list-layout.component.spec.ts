@@ -1,5 +1,7 @@
-import { ComponentFixture, TestBed, tick, fakeAsync, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { SearchListLayoutComponent } from './search-list-layout.component';
+import { SearchListServiceModule } from './search-list-layout.module';
 import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
 import { FormsModule } from '@angular/forms';
 import { SearchParameters, SearchResult, SearchListInterface, ResultsModel } from './model/search-list-layout.model';
@@ -7,23 +9,24 @@ import { of, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SDSFormlyUpdateComunicationService, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
-import { SimpleChange } from '@angular/core';
 import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
 
 describe('SearchListLayoutComponent', () => {
   let component: SearchListLayoutComponent;
   let fixture: ComponentFixture<SearchListLayoutComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [SearchListLayoutComponent],
       imports: [
+        SearchListServiceModule,
         PaginationModule,
         SdsSearchResultListModule,
         FormsModule,
         RouterTestingModule.withRoutes([]),
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
+        IconModule,
       ],
       // `SearchListLayoutComponent` injects `SDSFormlyUpdateComunicationService`
       // with `@Optional()` but dereferences `.filterUpdate` unguarded in
@@ -31,8 +34,9 @@ describe('SearchListLayoutComponent', () => {
       // declares it as a bare `@Injectable()` with no `providedIn`, so it is
       // never available by default.
       providers: [SDSFormlyUpdateModelService, SDSFormlyUpdateComunicationService],
-    }).compileComponents();
-  }));
+    });
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchListLayoutComponent);
@@ -49,14 +53,16 @@ describe('SearchListLayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onSelectChange', () => {
+  it('onSelectChange', async () => {
     component.onSelectChange();
     fixture.detectChanges();
-    fakeAsync(() => tick(100));
+    // The old fakeAsync(() => tick(100)) was never invoked. Await the actual
+    // navigation/change-detection work before asserting the default empty list.
+    await fixture.whenStable();
     expect(component.items.length).toBe(0);
   });
 
-  it('should call filterUpdate', fakeAsync(() => {
+  it('should call filterUpdate', async () => {
     const filterData = { searchKeyword: 'test', entity: 'testEntity' };
     component.page = {
       pageNumber: 1,
@@ -66,15 +72,13 @@ describe('SearchListLayoutComponent', () => {
     };
     fixture.detectChanges();
 
-    component.updateFilter(filterData);
-    fixture.detectChanges();
-    tick(100);
+    await updateFilterAndWait(fixture, filterData);
     expect(component.page.default).toBe(false);
-  }));
+  });
 
   it('should call updateFilterModel', () => {
     const service = fixture.debugElement.injector.get(SDSFormlyUpdateModelService);
-    const serviceSpy = jest.spyOn(service, 'updateModel'); // create spy (jest.spyOn calls through by default)
+    const serviceSpy = vi.spyOn(service, 'updateModel');
     const filterData = {
       filterModel: { searchKeyword: 'test', entity: 'testEntity' },
     };
@@ -96,7 +100,7 @@ describe('SearchListLayoutComponent', () => {
   // it back to `queryObj.hasOwnProperty(...)`.
   it('does not crash and clears sfm when the URL shadows hasOwnProperty (GSA/sam-layouts#76)', () => {
     const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     // jsdom updates window.location from history.replaceState, so this stands
     // up the malicious query string without a real navigation or new deps.
@@ -147,21 +151,23 @@ describe('SearchListLayoutComponent without SDSFormlyUpdateComunicationService',
   let component: SearchListLayoutComponent;
   let fixture: ComponentFixture<SearchListLayoutComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [SearchListLayoutComponent],
       imports: [
+        SearchListServiceModule,
         PaginationModule,
         SdsSearchResultListModule,
         FormsModule,
         RouterTestingModule.withRoutes([]),
         NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
+        IconModule,
       ],
       // Intentionally omit `SDSFormlyUpdateComunicationService` from providers
       // to reproduce the absent-service path permitted by `@Optional()`.
       providers: [SDSFormlyUpdateModelService],
-    }).compileComponents();
-  }));
+    });
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchListLayoutComponent);
@@ -178,16 +184,34 @@ describe('SearchListLayoutComponent without SDSFormlyUpdateComunicationService',
     expect(() => fixture.detectChanges()).not.toThrow();
   });
 
-  it('still updates the filter when triggered directly, with no formly subscription', fakeAsync(() => {
+  it('still updates the filter when triggered directly, with no formly subscription', async () => {
     fixture.detectChanges();
 
     const filterData = { searchKeyword: 'test', entity: 'testEntity' };
-    component.updateFilter(filterData);
-    fixture.detectChanges();
-    tick(100);
+    await updateFilterAndWait(fixture, filterData);
     expect(component.page.default).toBe(false);
-  }));
+  });
 });
+
+async function updateFilterAndWait(fixture: ComponentFixture<SearchListLayoutComponent>, filterData: object) {
+  const component = fixture.componentInstance;
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  try {
+    component.updateFilter(filterData);
+    // Direct method calls do not notify Angular's zoneless scheduler.
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    expect(component.loading).toBe(true);
+    await vi.advanceTimersByTimeAsync(100);
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.items).toEqual([{ id: 1 }]);
+    expect(component.loading).toBe(false);
+  } finally {
+    vi.useRealTimers();
+  }
+}
 
 class TestService implements SearchListInterface {
   getData(search: SearchParameters): Observable<SearchResult> {
