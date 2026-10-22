@@ -76,6 +76,101 @@ describe('SearchListLayoutComponent', () => {
     expect(component.page.default).toBe(false);
   });
 
+  it('preserves the URL-restored page across equivalent nested filter emissions (#104)', async () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[keyword][value]=test');
+    try {
+      fixture.detectChanges();
+      await updateFilterAndWait(fixture, { keyword: { value: 'test' } });
+      await updateFilterAndWait(fixture, { keyword: { value: 'test' } });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
+  it('preserves a newly restored results-model page after an earlier filter (#104)', async () => {
+    fixture.detectChanges();
+    await updateFilterAndWait(fixture, { keyword: { value: 'earlier' } });
+    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: { value: 'restored' } } });
+    await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
+    await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
+    expect(component.page.pageNumber).toBe(3);
+  });
+
+  it('resets the page for a different filter even on the first restoration emission (#104)', async () => {
+    fixture.detectChanges();
+    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: { value: 'restored' } } });
+    await updateFilterAndWait(fixture, { keyword: { value: 'changed' } });
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('does not retain consumer-owned references when restoring a results model (#104)', async () => {
+    fixture.detectChanges();
+    const filter = { keyword: { value: 'restored' } };
+    component.updateSearchResultsModel({ page: 3, filterModel: filter });
+    filter.keyword.value = 'changed';
+    await updateFilterAndWait(fixture, filter);
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('resets after an in-place mutation of a previously emitted filter (#104)', async () => {
+    fixture.detectChanges();
+    const filter = { keyword: { value: 'restored' } };
+    component.updateSearchResultsModel({ page: 3, filterModel: filter });
+    await updateFilterAndWait(fixture, filter);
+    filter.keyword.value = 'changed';
+    await updateFilterAndWait(fixture, filter);
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it('preserves the new history page after popstate-style restoration (#104)', async () => {
+    const originalUrl = window.location.href;
+    try {
+      fixture.detectChanges();
+      await updateFilterAndWait(fixture, { keyword: { value: 'earlier' } });
+      window.history.replaceState({}, '', '?page=4&sfm[keyword][value]=restored');
+      component.onpopstate(new PopStateEvent('popstate'));
+      await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
+      await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
+      expect(component.page.pageNumber).toBe(4);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
+  it('preserves restored pages through real Formly service emissions (#104)', async () => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: { value: 'restored' } } });
+    service.updateFilter({ keyword: { value: 'restored' } });
+    service.updateFilter({ keyword: { value: 'restored' } });
+    expect(component.page.pageNumber).toBe(3);
+    service.updateFilter({ keyword: { value: 'changed' } });
+    expect(component.page.pageNumber).toBe(1);
+    await fixture.whenStable();
+  });
+
+  it('retains excluded-field request suppression while resetting a changed filter page (#104)', async () => {
+    fixture.detectChanges();
+    const requests: SearchParameters[] = [];
+    component.service = {
+      getData: (search) => {
+        requests.push(search);
+        return of({ totalItems: 1, items: [{ id: 1 }] });
+      },
+    };
+    component.configuration.excludeFilterFields = [{ field: 'presentation', unless: () => false }];
+    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: 'restored', presentation: 'list' } });
+    await updateFilterAndWait(fixture, { keyword: 'restored', presentation: 'list' });
+    expect(requests).toHaveLength(1);
+    component.updateFilter({ keyword: 'restored', presentation: 'grid' });
+    await fixture.whenStable();
+    expect(component.page.pageNumber).toBe(1);
+    expect(requests).toHaveLength(1);
+  });
+
   it('should call updateFilterModel', () => {
     const service = fixture.debugElement.injector.get(SDSFormlyUpdateModelService);
     const serviceSpy = vi.spyOn(service, 'updateModel');

@@ -154,6 +154,10 @@ export class SearchListLayoutComponent implements OnInit {
   // Introduce a variable to store the last distinct filter state
   private lastKnownFilter = null;
 
+  // The filter associated with the current page must not share consumer-owned references.
+  private pageFilter: unknown;
+  private hasPageFilter = false;
+
   @HostListener('window:popstate', ['$event'])
   onpopstate(event) {
     this.triggeredByPopState = true;
@@ -211,6 +215,8 @@ export class SearchListLayoutComponent implements OnInit {
     this.page.pageSize = paramModel['pageSize'] ? Number.parseInt(paramModel['pageSize']) : this.configuration.pageSize;
 
     this.sortField = paramModel['sort'];
+    this.pageFilter = _.cloneDeep(paramModel['sfm'] ?? this.configuration.defaultFilterValue);
+    this.hasPageFilter = true;
     if (this.filterUpdateModelService) {
       if (paramModel && paramModel['sfm']) {
         this.filterUpdateModelService.updateModel(paramModel['sfm']);
@@ -240,7 +246,10 @@ export class SearchListLayoutComponent implements OnInit {
     }
 
     this.filterData = filter;
-    this.page.pageNumber = this.page.default ? this.page.pageNumber : 1;
+    const preservePage = this.hasPageFilter ? _.isEqual(this.pageFilter, filter) : this.page.default;
+    this.page.pageNumber = preservePage ? this.page.pageNumber : 1;
+    this.pageFilter = _.cloneDeep(filter);
+    this.hasPageFilter = true;
     this.page.default = filter ? false : true;
     if (this.skipUpdate === false) {
       this.isDefaultFilter(filter);
@@ -414,6 +423,8 @@ export class SearchListLayoutComponent implements OnInit {
 
   public updateSearchResultsModel(historyModel: ResultsModel) {
     this.filterData = historyModel.filterModel;
+    this.pageFilter = _.cloneDeep(historyModel.filterModel);
+    this.hasPageFilter = true;
     this.page.default = historyModel.page || historyModel.sort ? true : false;
     this.page.pageNumber = historyModel.page ? historyModel.page : 1;
     this.sortField = historyModel.sort ? historyModel.sort : this.sortField;
