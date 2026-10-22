@@ -1,14 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
-import { FormlyUtilsService, SdsStepper } from '@gsa-sam/sam-formly';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyUtilsService, SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { StepperAdvancedService } from './advanced.service';
+import { SLStepperComponent } from '../../stepper.component';
+import { SLStepperHeaderWithStatusComponent } from '../../header/header.component';
+import { SubawardeeDemoComponent } from './subawardee.component';
 
 @Component({
-  standalone: false,
   selector: `demo-stepper-advanced`,
   templateUrl: `./advanced.component.html`,
   providers: [StepperAdvancedService, SdsStepper],
+  imports: [
+    SLStepperComponent,
+    SLStepperHeaderWithStatusComponent,
+    SdsStepperModule,
+    SubawardeeDemoComponent,
+    FormlyModule,
+  ],
 })
 export class DemoStepperAdvancedComponent {
   model = {

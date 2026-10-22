@@ -19,8 +19,10 @@ import { NgxBootstrapIconsModule, chevronRight } from 'ngx-bootstrap-icons';
       chevronRight,
     }),
     IconModule,
+    DemoStepperAdvancedComponent,
+    SubawardeeDemoComponent,
+    AddSubawardeeDialogDemo,
   ],
-  declarations: [DemoStepperAdvancedComponent, SubawardeeDemoComponent, AddSubawardeeDialogDemo],
   exports: [DemoStepperAdvancedComponent],
 })
 export class DemoStepperAdvancedModule {}

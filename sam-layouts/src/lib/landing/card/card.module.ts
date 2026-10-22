@@ -4,9 +4,8 @@ import { NgModule } from '@angular/core';
 import { SdsLandingCardComponent, SdsLandingCardTitleDirective } from './card.component';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, SdsLandingCardComponent, SdsLandingCardTitleDirective],
   exports: [SdsLandingCardComponent, SdsLandingCardTitleDirective],
-  declarations: [SdsLandingCardComponent, SdsLandingCardTitleDirective],
   providers: [],
 })
 export class SdsLandingCardModule {}

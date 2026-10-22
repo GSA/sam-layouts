@@ -14,6 +14,11 @@ const config: StorybookConfig = {
   // that is still a separate package and still has to be registered here, or
   // the eight `.mdx` files stop producing docs entries.
   addons: ['@storybook/addon-docs'],
+  // Story fixtures use the same public image assets as SAM styles.
+  staticDirs: [
+    { from: '../../../node_modules/@gsa-sam/sam-styles/sam-styles/packages/images', to: '/assets/img' },
+    { from: '../../../node_modules/@gsa-sam/sam-styles/sam-styles/packages/images', to: '/assets/uswds/img' },
+  ],
   framework: {
     name: '@storybook/angular',
     options: {},

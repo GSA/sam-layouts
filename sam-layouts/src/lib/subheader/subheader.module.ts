@@ -10,7 +10,6 @@ import {
 } from './subheader.component';
 import { SdsSubheaderWrapperComponent } from './sds-subheader-wrapper.component';
 import { SdsActionsMenuModule } from '@gsa-sam/components';
-import { SdsDrawerCommunicationService } from './drawer-communication.service';
 import { NgxBootstrapIconsModule, threeDotsVertical, chevronLeft } from 'ngx-bootstrap-icons';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
@@ -28,6 +27,11 @@ import { FormsModule } from '@angular/forms';
     SdsButtonGroupModule,
     NgxBootstrapIconsModule.pick({ threeDotsVertical, chevronLeft }),
     FormsModule,
+    SdsSubheaderComponent,
+    SdsSubheaderActionsComponent,
+    SdsSubheaderDrawerComponent,
+    SdsDrawerContentComponent,
+    SdsSubheaderWrapperComponent,
   ],
   exports: [
     SdsSubheaderComponent,
@@ -36,13 +40,5 @@ import { FormsModule } from '@angular/forms';
     SdsDrawerContentComponent,
     SdsSubheaderWrapperComponent,
   ],
-  declarations: [
-    SdsSubheaderComponent,
-    SdsSubheaderActionsComponent,
-    SdsSubheaderDrawerComponent,
-    SdsDrawerContentComponent,
-    SdsSubheaderWrapperComponent,
-  ],
-  providers: [SdsDrawerCommunicationService],
 })
 export class SdsSubheaderModule {}

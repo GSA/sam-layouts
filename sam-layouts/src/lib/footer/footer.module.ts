@@ -17,8 +17,8 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
     SdsFeedbackModule,
     UsaAccordionModule,
     IconModule,
+    SdsFooterComponent,
   ],
-  declarations: [SdsFooterComponent],
   exports: [SdsFooterComponent],
 })
 export class SdsFooterModule {}

@@ -46,7 +46,14 @@
         "setupFiles": ["sam-layouts/test-setup.ts"],
         "coverage": true,
         "coverageInclude": ["src/**/*.ts"],
-        "coverageExclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.d.ts"],
+        "coverageExclude": [
+          "src/**/*.spec.ts",
+          "src/**/*.test.ts",
+          "src/**/*.d.ts",
+          "src/**/*.stories.ts",
+          "src/**/*.demo.ts",
+          "src/**/demo/**"
+        ],
         "coverageReporters": ["text-summary", "json-summary", "lcov"]
       }
     }

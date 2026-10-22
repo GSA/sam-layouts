@@ -1,12 +1,12 @@
 import { AfterContentInit, Component, ElementRef, Input, TemplateRef } from '@angular/core';
 
-import { UsaStepIndicatorComponent, UsaStepIndicatorConfig } from '@gsa-sam/ngx-uswds';
-import { SdsStepper } from '@gsa-sam/sam-formly';
+import { UsaStepIndicatorComponent, UsaStepIndicatorConfig, UsaStepIndicatorModule } from '@gsa-sam/ngx-uswds';
+import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
 
 @Component({
-  standalone: false,
   selector: 'sam-layouts-stepper-header',
   templateUrl: './header.component.html',
+  imports: [UsaStepIndicatorModule, SdsStepperModule],
 })
 export class SLStepperHeaderComponent extends UsaStepIndicatorComponent implements AfterContentInit {
   @Input() custom = false;
@@ -35,7 +35,6 @@ export class SLStepperHeaderComponent extends UsaStepIndicatorComponent implemen
 }
 
 @Component({
-  standalone: false,
   selector: 'sam-layouts-stepper-header-with-status',
   templateUrl: './header-with-status.component.html',
 })

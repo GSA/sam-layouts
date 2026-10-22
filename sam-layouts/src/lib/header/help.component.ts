@@ -1,15 +1,23 @@
-import { CdkPortalOutletAttachedRef } from '@angular/cdk/portal';
-import { Component, ComponentRef, Inject, Input, ViewEncapsulation } from '@angular/core';
+import { CdkPortalOutletAttachedRef, CdkPortalOutlet } from '@angular/cdk/portal';
+import { Component, ComponentRef, Inject, Input, ViewEncapsulation, NgModule } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/components';
 import { filter } from 'rxjs/operators';
+import { MatTooltip } from '@angular/material/tooltip';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, questionCircle } from 'ngx-bootstrap-icons';
 
 interface Data {
   help: [];
 }
 
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ questionCircle })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsHeaderHelpIconsModule {}
+
 @Component({
-  standalone: false,
   selector: 'sds-header-help',
   styleUrls: ['./help.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -24,6 +32,7 @@ interface Data {
       <usa-icon class="text-info" [icon]="'question-circle'" [size]="'2x'"></usa-icon>
     </button>
   `,
+  imports: [MatTooltip, IconModule, SdsHeaderHelpIconsModule],
 })
 export class SdsHeaderHelpComponent {
   @Input() content;
@@ -49,7 +58,6 @@ export class SdsHeaderHelpComponent {
 }
 
 @Component({
-  standalone: false,
   template: `
     <div class="help-slide-out bg-base-lighter minh-full padding-x-2 padding-top-2">
       <h2 class="font-heading-lg text-semibold">Help</h2>
@@ -68,6 +76,7 @@ export class SdsHeaderHelpComponent {
   `,
   styles: ['.help-slide-out .sds-list .usa-link:hover { color: #625028; }'], // 508: Contrast fix
   encapsulation: ViewEncapsulation.None,
+  imports: [CdkPortalOutlet],
 })
 export class HelpContentComponent {
   constructor(

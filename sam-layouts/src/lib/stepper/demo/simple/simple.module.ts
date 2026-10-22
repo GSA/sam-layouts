@@ -6,8 +6,7 @@ import { DemoStepperSimpleComponent } from './simple.component';
 import { SLStepperModule } from '../../stepper.module';
 
 @NgModule({
-  declarations: [DemoStepperSimpleComponent],
-  imports: [CommonModule, SdsStepperModule, SLStepperModule],
+  imports: [CommonModule, SdsStepperModule, SLStepperModule, DemoStepperSimpleComponent],
   exports: [DemoStepperSimpleComponent],
 })
 export class DemoStepperSimpleModule {}

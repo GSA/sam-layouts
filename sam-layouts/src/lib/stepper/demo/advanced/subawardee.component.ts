@@ -3,11 +3,10 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/components';
 import { SdsFormlyDialogData } from '@gsa-sam/sam-formly';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { StepperAdvancedService } from './advanced.service';
 
 @Component({
-  standalone: false,
   // `-demo` is a suffix, not a prefix, so this selector can't be covered by
   // the `component-selector` prefix allowlist in
   // `sam-layouts/eslint.config.mjs` without adding a meaningless `subawardee`
@@ -43,7 +42,6 @@ export class SubawardeeDemoComponent {
 }
 
 @Component({
-  standalone: false,
   // Same `-demo`-as-suffix case as `subawardee-demo` above; also only ever
   // opened imperatively via `SdsDialog.open(...)`, never as an element.
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -61,6 +59,7 @@ export class SubawardeeDemoComponent {
     </div>
   `,
   providers: [StepperAdvancedService],
+  imports: [FormlyModule],
 })
 export class AddSubawardeeDialogDemo implements OnInit {
   subawardeeFields!: FormlyFieldConfig[];

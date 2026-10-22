@@ -1,20 +1,40 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationLink, SdsDialogConfig, SdsDialogRef, SelectionPanelModel } from '@gsa-sam/components';
+import {
+  NavigationLink,
+  SdsDialogConfig,
+  SdsDialogRef,
+  SelectionPanelModel,
+  SdsSideToolbarModule,
+  SdsSelectionPanelModule,
+} from '@gsa-sam/components';
 import { ResultsModel, SearchListConfiguration } from '../../model/search-list-layout.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { BehaviorSubject, timer } from 'rxjs';
+import { BehaviorSubject, Subscription, timer } from 'rxjs';
 import { DataService } from '../data.service';
 import { FilterService } from '../filter.service';
 import { navigationConfig } from '../navigate.config';
-import { debounce, filter, pairwise, tap } from 'rxjs/operators';
+import { debounce, filter, pairwise } from 'rxjs/operators';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgClass } from '@angular/common';
+import { SdsFiltersModule } from '@gsa-sam/sam-formly';
+import { SearchListLayoutComponent } from '../../search-list-layout.component';
+import { ResultComponent } from '../result/result.component';
 
 @Component({
-  standalone: false,
   selector: 'demo-search-list-layout',
   templateUrl: './layout-responsive.component.html',
+  imports: [
+    SdsSideToolbarModule,
+    IconModule,
+    NgClass,
+    SdsSelectionPanelModule,
+    SdsFiltersModule,
+    SearchListLayoutComponent,
+    ResultComponent,
+  ],
 })
-export class LayoutResponsiveComponent implements AfterViewInit {
+export class LayoutResponsiveComponent implements OnDestroy {
   @ViewChild('resultList') resultList;
   @ViewChild('filters') filterComponent;
 
@@ -38,6 +58,10 @@ export class LayoutResponsiveComponent implements AfterViewInit {
   };
 
   public filterPanelConfig;
+
+  private keywordRadioSubscription: Subscription;
+  private keywordRadioField: FormlyFieldConfig;
+  private originalKeywordRadioHooks: FormlyFieldConfig['hooks'];
 
   selectedPanel: NavigationLink = this.navigationModel.navigationLinks[1];
 
@@ -86,6 +110,8 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     this.form = this.filterService.form;
     this.options = this.filterService.options;
 
+    this.configureKeywordRadioLifecycle();
+
     this.filterPanelConfig = {
       title: 'Filter By',
       fields: this.fields,
@@ -95,6 +121,43 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       isHistoryEnabled: true,
       advancedFilters: true,
     };
+  }
+
+  private configureKeywordRadioLifecycle() {
+    const keywordField = this.fields.find((field) => field.key === 'keyword');
+    const keywordRadioField = (keywordField as any)?.fieldGroup?.[0]?.fieldGroup?.find(
+      (field) => field.key === 'keywordRadio',
+    );
+
+    if (!keywordRadioField) return;
+
+    this.keywordRadioField = keywordRadioField;
+    this.originalKeywordRadioHooks = keywordRadioField.hooks;
+    const existingHooks = this.originalKeywordRadioHooks ?? {};
+    keywordRadioField.hooks = {
+      ...existingHooks,
+      afterViewInit: (field) => {
+        existingHooks.afterViewInit?.(field);
+        this.keywordRadioSubscription?.unsubscribe();
+        this.keywordRadioSubscription = field.formControl.valueChanges.subscribe(() => {
+          // Let Formly update the model before refreshing autocomplete chips.
+          queueMicrotask(() => this.filterService.keywordChangeSubject.next({}));
+        });
+      },
+      onDestroy: (field) => {
+        existingHooks.onDestroy?.(field);
+        this.keywordRadioSubscription?.unsubscribe();
+        this.keywordRadioSubscription = undefined;
+      },
+    };
+  }
+
+  ngOnDestroy() {
+    this.keywordRadioSubscription?.unsubscribe();
+    if (this.keywordRadioField) {
+      this.keywordRadioField.hooks = this.originalKeywordRadioHooks;
+      this.keywordRadioField = undefined;
+    }
   }
 
   ngAfterViewInit() {
@@ -120,20 +183,6 @@ export class LayoutResponsiveComponent implements AfterViewInit {
     filters$.subscribe((model) => {
       this.resultList.updateFilter(model);
     });
-
-    // Listen for radio change and refresh autocomplete
-    const keywordGroup = (<any>this.fields.find((field) => field.key === 'keyword')).fieldArray.fieldGroup[0]
-      .fieldGroup;
-
-    keywordGroup
-      .find((keyword) => keyword.key === 'keywordRadio')
-      .formControl.valueChanges.subscribe((change) => {
-        // Refresh autocomplete chips - we do set timeout so that our model for radio option can update first, then
-        // this refresh will update our chips depending on the updated model value
-        setTimeout(() => {
-          this.filterService.keywordChangeSubject.next({});
-        });
-      });
   }
 
   updateConfig(update: boolean) {
@@ -182,7 +231,7 @@ export class LayoutResponsiveComponent implements AfterViewInit {
       },
     };
 
-    (<any>this.fields[0]).fieldArray.fieldGroup[0].form.setValue(model.filterModel.keyword);
+    this.form.get('keyword')?.patchValue(model.filterModel.keyword);
     this.resultList.updateSearchResultsModel(model);
   }
 

@@ -1,13 +1,33 @@
-import { Component, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, TemplateRef, NgModule } from '@angular/core';
 import { FooterModel } from './model/FooterModel';
-import { INavigationLink } from '@gsa-sam/components';
+import { INavigationLink, SdsExternalLinkDirectivesModule } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
+import { NgTemplateOutlet } from '@angular/common';
+import { SdsFeedbackComponent } from '../sds-feedback/sds-feedback.component';
+import { UsaAccordionModule } from '@gsa-sam/ngx-uswds';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { RouterLink } from '@angular/router';
+import { NgxBootstrapIconsModule, exclamationTriangle } from 'ngx-bootstrap-icons';
+
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ exclamationTriangle })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsFooterIconsModule {}
 
 @Component({
-  standalone: false,
   selector: 'sds-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
+  imports: [
+    NgTemplateOutlet,
+    SdsFeedbackComponent,
+    UsaAccordionModule,
+    IconModule,
+    SdsFooterIconsModule,
+    RouterLink,
+    SdsExternalLinkDirectivesModule,
+  ],
 })
 export class SdsFooterComponent {
   public innerWidth: any;

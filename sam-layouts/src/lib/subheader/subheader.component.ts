@@ -1,8 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, Input, TemplateRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, TemplateRef, NgModule } from '@angular/core';
 import { SdsDrawerCommunicationService } from './drawer-communication.service';
+import { SdsMenuModule } from '@gsa-sam/components';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, threeDotsVertical, arrowUp, arrowDown } from 'ngx-bootstrap-icons';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'sds-subheader',
   templateUrl: 'subheader.component.html',
   styleUrls: ['subheader.component.scss'],
@@ -11,10 +14,22 @@ export class SdsSubheaderComponent {
   constructor() {}
 }
 
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ threeDotsVertical })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsSubheaderActionsIconsModule {}
+
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ arrowUp, arrowDown })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsSubheaderDrawerIconsModule {}
+
 @Component({
-  standalone: false,
   selector: 'sds-subheader-actions',
   templateUrl: 'subheader-actions.component.html',
+  imports: [SdsMenuModule, IconModule, SdsSubheaderActionsIconsModule],
 })
 export class SdsSubheaderActionsComponent {
   @Input() mobileTabletStyle: SUBHEADERACTIONSTYLE = SUBHEADERACTIONSTYLE.DEFAULT;
@@ -73,9 +88,9 @@ export enum SUBHEADERACTIONSTYLE {
 }
 
 @Component({
-  standalone: false,
   selector: 'sds-subheader-drawer',
   templateUrl: 'subheader-drawer.component.html',
+  imports: [IconModule, SdsSubheaderDrawerIconsModule],
 })
 export class SdsSubheaderDrawerComponent implements OnInit {
   @Input() drawerContentTemplate: TemplateRef<any>;
@@ -91,9 +106,9 @@ export class SdsSubheaderDrawerComponent implements OnInit {
 }
 
 @Component({
-  standalone: false,
   selector: 'sds-drawer-content',
   templateUrl: 'drawer.content.component.html',
+  imports: [NgTemplateOutlet],
 })
 export class SdsDrawerContentComponent implements OnInit {
   drawerContentTemplate: TemplateRef<any>;

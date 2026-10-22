@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 @Component({
-  standalone: false,
   // `result-item` is a legacy, unprefixed selector that does not match the
   // `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
   // (`sds` / `sam-layouts` / `demo`). Demo-only (NOT exported from
@@ -11,6 +12,7 @@ import { Component, Input } from '@angular/core';
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'result-item',
   templateUrl: './result.component.html',
+  imports: [RouterLink, DatePipe],
 })
 export class ResultComponent {
   @Input() model: any;

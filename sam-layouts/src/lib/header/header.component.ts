@@ -8,16 +8,77 @@ import {
   HostListener,
   TemplateRef,
   ContentChild,
+  NgModule,
 } from '@angular/core';
 import type { HeaderModel, HeaderNavigationLink, HeaderSecondaryLink } from './model/HeaderModel';
 import { INavigationLink, Selectable } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
+import { SdsHeaderHelpComponent } from './help.component';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import {
+  NgxBootstrapIconsModule,
+  square,
+  justifyLeft,
+  circle,
+  circleFill,
+  pencilSquare,
+  bell,
+  grid,
+  arrowRightSquare,
+  list,
+  xCircle,
+  squareFill,
+} from 'ngx-bootstrap-icons';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { SdsDialogModule, SdsTopBannerModule } from '@gsa-sam/components';
+import { SdsLandingListModule } from '../landing/list/list.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { A11yModule } from '@angular/cdk/a11y';
+import { PortalModule } from '@angular/cdk/portal';
+import { group_8_login_gov_icon } from './login-gov-icon';
+
+@NgModule({
+  imports: [
+    NgxBootstrapIconsModule.pick({
+      square,
+      justifyLeft,
+      circle,
+      circleFill,
+      pencilSquare,
+      bell,
+      grid,
+      arrowRightSquare,
+      list,
+      xCircle,
+      squareFill,
+      group_8_login_gov_icon,
+    }),
+  ],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsHeaderIconsModule {}
 
 @Component({
-  standalone: false,
   selector: 'sds-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  imports: [
+    SdsTopBannerModule,
+    NgTemplateOutlet,
+    SdsHeaderHelpComponent,
+    IconModule,
+    SdsHeaderIconsModule,
+    NgClass,
+    RouterLink,
+    FormsModule,
+    SdsDialogModule,
+    SdsLandingListModule,
+    MatTooltipModule,
+    A11yModule,
+    PortalModule,
+  ],
 })
 export class SdsHeaderComponent {
   @ViewChild('usaNavOpen') openNavBtn: ElementRef;

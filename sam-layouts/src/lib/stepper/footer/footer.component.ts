@@ -1,10 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SdsStepper } from '@gsa-sam/sam-formly';
+import { Component, EventEmitter, Input, Output, NgModule } from '@angular/core';
+import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgStyle } from '@angular/common';
+import { NgxBootstrapIconsModule, chevronLeft, chevronRight, save, x } from 'ngx-bootstrap-icons';
+
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ chevronLeft, chevronRight, save, x })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SLStepperFooterIconsModule {}
 
 @Component({
-  standalone: false,
   selector: 'sam-layouts-stepper-footer',
   templateUrl: './footer.component.html',
+  imports: [SdsStepperModule, IconModule, SLStepperFooterIconsModule, NgStyle],
 })
 export class SLStepperFooterComponent {
   @Input() customSave = false;
@@ -64,7 +73,6 @@ export class SLStepperFooterComponent {
 }
 
 @Component({
-  standalone: false,
   selector: 'sam-layouts-stepper-footer-custom-action',
   template: `
     <div class="margin-right-1">
@@ -85,6 +93,7 @@ export class SLStepperFooterComponent {
       </label>
     </div>
   `,
+  imports: [IconModule],
 })
 export class SLStepperFooterCustomActionComponent {
   @Input() icon!: string;

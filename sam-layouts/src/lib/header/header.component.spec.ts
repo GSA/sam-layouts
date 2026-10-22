@@ -4,9 +4,7 @@ import { SdsHeaderComponent } from './header.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavigationMode } from '@gsa-sam/components';
-import { A11yModule } from '@angular/cdk/a11y';
-import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
-import { IconModule, allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
+import { group_8_login_gov_icon } from './header.module';
 
 describe('SdsHeaderComponent', () => {
   let component: SdsHeaderComponent;
@@ -14,12 +12,7 @@ describe('SdsHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        IconModule,
-        A11yModule,
-        NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons)),
-      ],
+      imports: [RouterTestingModule, SdsHeaderComponent],
     }).compileComponents();
   });
 
@@ -56,6 +49,16 @@ describe('SdsHeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders the Login.gov SVG when imported standalone without SdsHeaderModule or a global icon registry', () => {
+    component.model.secondaryLinks[0].imageClass = 'group_8_login_gov_icon';
+    fixture.detectChanges();
+
+    const svg = fixture.nativeElement.querySelector('#secNavLink usa-icon svg');
+    expect(svg).not.toBeNull();
+    expect(svg.querySelector('path[id="Fill-1"]')).not.toBeNull();
+    expect(group_8_login_gov_icon).toContain('Fill-1');
   });
 
   it('should remove white space', () => {

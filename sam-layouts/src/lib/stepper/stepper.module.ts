@@ -21,13 +21,6 @@ import { SLStepperHeaderComponent, SLStepperHeaderWithStatusComponent } from './
 import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from './footer/footer.component';
 
 @NgModule({
-  declarations: [
-    SLStepperComponent,
-    SLStepperHeaderComponent,
-    SLStepperHeaderWithStatusComponent,
-    SLStepperFooterComponent,
-    SLStepperFooterCustomActionComponent,
-  ],
   imports: [
     CommonModule,
     SdsSideToolbarModule,
@@ -45,6 +38,11 @@ import { SLStepperFooterComponent, SLStepperFooterCustomActionComponent } from '
     }),
     IconModule,
     SdsStepperModule,
+    SLStepperComponent,
+    SLStepperHeaderComponent,
+    SLStepperHeaderWithStatusComponent,
+    SLStepperFooterComponent,
+    SLStepperFooterCustomActionComponent,
   ],
   exports: [
     SLStepperComponent,

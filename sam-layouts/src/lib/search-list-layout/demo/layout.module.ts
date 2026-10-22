@@ -31,10 +31,10 @@ import { FilterTabModalComponent } from './filter-tab-modal.component';
     SdsSideToolbarModule,
     SdsSelectionPanelModule,
     SdsDialogModule,
+    LayoutResponsiveComponent,
+    FilterTabModalComponent,
   ],
-
   exports: [LayoutResponsiveComponent],
-  declarations: [LayoutResponsiveComponent, FilterTabModalComponent],
   providers: [FilterService, AutocompleteSampleDataService, SDSFormlyUpdateModelService],
 })
 export class ResultsLayoutModule {}

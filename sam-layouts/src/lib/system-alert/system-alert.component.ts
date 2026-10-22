@@ -1,11 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, NgModule } from '@angular/core';
 import { Alert } from './model/alert.model';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgTemplateOutlet, DatePipe } from '@angular/common';
+import { SdsCollapseModule } from '@gsa-sam/components';
+import { NgxBootstrapIconsModule, exclamationTriangle, caretDownFill, x } from 'ngx-bootstrap-icons';
+
+@NgModule({
+  imports: [NgxBootstrapIconsModule.pick({ exclamationTriangle, caretDownFill, x })],
+  exports: [NgxBootstrapIconsModule],
+})
+class SdsSystemAlertIconsModule {}
 
 @Component({
-  standalone: false,
   selector: 'sds-system-alert',
   templateUrl: './system-alert.component.html',
   styleUrls: ['./system-alert.component.scss'],
+  imports: [IconModule, SdsSystemAlertIconsModule, NgTemplateOutlet, SdsCollapseModule, DatePipe],
 })
 export class SdsSystemAlertComponent {
   /** List of alerts to display. When the list contains only one item, the description of the alert will also

@@ -15,8 +15,8 @@ import {
 } from './page.component';
 
 @NgModule({
-  imports: [CommonModule],
-  exports: [
+  imports: [
+    CommonModule,
     SdsLandingPageComponent,
     SdsLandingPageHeadComponent,
     SdsLandingPageHeaderComponent,
@@ -28,7 +28,7 @@ import {
     SdsLandingPageTileDirective,
     SdsLandingPageCardDirective,
   ],
-  declarations: [
+  exports: [
     SdsLandingPageComponent,
     SdsLandingPageHeadComponent,
     SdsLandingPageHeaderComponent,

@@ -1,9 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { SdsDialogRef, SDS_DIALOG_DATA, TabPanelComponent } from '@gsa-sam/components';
+import { SdsDialogRef, SDS_DIALOG_DATA, TabPanelComponent, SdsDialogModule } from '@gsa-sam/components';
 import { SdsFormlyDialogComponent } from '@gsa-sam/sam-formly';
 
 @Component({
-  standalone: false,
   // `filter-tab-modal.component` is a latent typo: the `.component` suffix
   // belongs to the *filename*, not the selector, and ESLint parses it as an
   // element `filter-tab-modal` plus a class `.component` — which is why it
@@ -28,6 +27,7 @@ import { SdsFormlyDialogComponent } from '@gsa-sam/sam-formly';
       <button (click)="changeTabs()" cdkFocusInitial class="usa-button">Switch</button>
     </div>
   `,
+  imports: [SdsDialogModule],
 })
 export class FilterTabModalComponent {
   selectedTab: TabPanelComponent;
@@ -42,16 +42,15 @@ export class FilterTabModalComponent {
   changeTabs() {
     this.data.fields[0].templateOptions.selectedTab = this.selectedTab;
 
-    const keywordFieldArray = this.data.form.controls.keyword._fields[0].fieldArray;
+    const keywordField = this.data.fields.find((field) => field.key === 'keyword');
+    const keywordTabs = keywordField?.fieldGroup ?? [];
 
     if (this.selectedTab.tabHeader === 'Simple Search') {
-      keywordFieldArray.fieldGroup[1].fieldGroup[0].formControl.setValue(null);
+      keywordTabs[1]?.fieldGroup?.[0]?.formControl?.setValue(null);
     }
 
     if (this.selectedTab.tabHeader === 'Search Editor') {
-      keywordFieldArray.fieldGroup[0].fieldGroup.forEach((field) => {
-        field.formControl.setValue(null);
-      });
+      keywordTabs[0]?.fieldGroup?.forEach((field) => field.formControl?.setValue(null));
     }
 
     this.dialogRef.close();

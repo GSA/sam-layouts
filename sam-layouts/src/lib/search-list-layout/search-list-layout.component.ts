@@ -19,10 +19,11 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { SDSFormlyUpdateComunicationService, SDSFormlyUpdateModelService } from '@gsa-sam/sam-formly';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash-es';
-import { Location } from '@angular/common';
+import { Location, NgTemplateOutlet } from '@angular/common';
+import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  standalone: false,
   // `search-list-layout` is a legacy, unprefixed selector that does not match
   // the `component-selector` prefix allowlist in `sam-layouts/eslint.config.mjs`
   // (`sds` / `sam-layouts` / `demo`). This component IS exported from
@@ -37,6 +38,7 @@ import { Location } from '@angular/common';
   selector: 'search-list-layout',
   templateUrl: './search-list-layout.component.html',
   styleUrls: ['./search-list-layout.component.scss'],
+  imports: [PaginationModule, FormsModule, SdsSearchResultListModule, NgTemplateOutlet],
 })
 export class SearchListLayoutComponent implements OnInit {
   /**

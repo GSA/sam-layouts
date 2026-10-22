@@ -13,8 +13,8 @@ import { IconModule } from '@gsa-sam/ngx-uswds-icons';
     SdsCollapseModule,
     IconModule,
     NgxBootstrapIconsModule.pick({ arrowDownCircleFill, arrowUpCircleFill }),
+    SdsFeedbackComponent,
   ],
-  declarations: [SdsFeedbackComponent],
   exports: [SdsFeedbackComponent],
 })
 export class SdsFeedbackModule {}

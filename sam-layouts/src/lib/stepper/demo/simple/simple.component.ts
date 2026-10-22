@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { UsaStepIndicatorConfig } from '@gsa-sam/ngx-uswds';
-import { SdsFormlyTypes } from '@gsa-sam/sam-formly';
+import { SdsFormlyTypes, SdsStepperModule } from '@gsa-sam/sam-formly';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { SLStepperComponent } from '../../stepper.component';
+import { SLStepperHeaderComponent } from '../../header/header.component';
 
 @Component({
-  standalone: false,
   selector: 'demo-stepper-simple',
   templateUrl: './simple.component.html',
   providers: [
@@ -18,6 +19,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
       },
     },
   ],
+  imports: [SLStepperComponent, SLStepperHeaderComponent, SdsStepperModule],
 })
 export class DemoStepperSimpleComponent {
   stepOne: FormlyFieldConfig = {
