@@ -14,6 +14,20 @@ import { INavigationLink, Selectable } from '@gsa-sam/components';
 import { NavigationHelper } from '@gsa-sam/components';
 import { SdsHeaderHelpComponent } from './help.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import {
+  NgxBootstrapIconsModule,
+  square,
+  justifyLeft,
+  circle,
+  circleFill,
+  pencilSquare,
+  bell,
+  grid,
+  arrowRightSquare,
+  list,
+  xCircle,
+  squareFill,
+} from 'ngx-bootstrap-icons';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -32,6 +46,19 @@ import { PortalModule } from '@angular/cdk/portal';
     NgTemplateOutlet,
     SdsHeaderHelpComponent,
     IconModule,
+    NgxBootstrapIconsModule.pick({
+      square,
+      justifyLeft,
+      circle,
+      circleFill,
+      pencilSquare,
+      bell,
+      grid,
+      arrowRightSquare,
+      list,
+      xCircle,
+      squareFill,
+    }),
     NgClass,
     RouterLink,
     FormsModule,

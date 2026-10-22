@@ -5,6 +5,7 @@ import { SdsDialogRef, SdsDialogService, SDS_DIALOG_DATA } from '@gsa-sam/compon
 import { filter } from 'rxjs/operators';
 import { MatTooltip } from '@angular/material/tooltip';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, questionCircle } from 'ngx-bootstrap-icons';
 
 interface Data {
   help: [];
@@ -25,7 +26,7 @@ interface Data {
       <usa-icon class="text-info" [icon]="'question-circle'" [size]="'2x'"></usa-icon>
     </button>
   `,
-  imports: [MatTooltip, IconModule],
+  imports: [MatTooltip, IconModule, NgxBootstrapIconsModule.pick({ questionCircle })],
 })
 export class SdsHeaderHelpComponent {
   @Input() content;

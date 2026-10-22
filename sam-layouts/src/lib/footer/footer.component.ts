@@ -7,6 +7,7 @@ import { SdsFeedbackComponent } from '../sds-feedback/sds-feedback.component';
 import { UsaAccordionModule } from '@gsa-sam/ngx-uswds';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { RouterLink } from '@angular/router';
+import { NgxBootstrapIconsModule, exclamationTriangle } from 'ngx-bootstrap-icons';
 
 @Component({
   selector: 'sds-footer',
@@ -17,6 +18,7 @@ import { RouterLink } from '@angular/router';
     SdsFeedbackComponent,
     UsaAccordionModule,
     IconModule,
+    NgxBootstrapIconsModule.pick({ exclamationTriangle }),
     RouterLink,
     SdsExternalLinkDirectivesModule,
   ],

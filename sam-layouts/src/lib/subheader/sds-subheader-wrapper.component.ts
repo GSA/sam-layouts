@@ -3,13 +3,21 @@ import { INavigationLink, NavigationMode, SearchSettings, Selectable, SdsSearchM
 import { Router } from '@angular/router';
 import { SdsSubheaderComponent } from './subheader.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, chevronLeft } from 'ngx-bootstrap-icons';
 import { NgTemplateOutlet } from '@angular/common';
 import { SdsButtonGroupModule } from '@gsa-sam/sam-material-extensions';
 
 @Component({
   selector: 'sds-subheader-wrapper',
   templateUrl: 'sds-subheader-wrapper.component.html',
-  imports: [SdsSubheaderComponent, IconModule, SdsSearchModule, NgTemplateOutlet, SdsButtonGroupModule],
+  imports: [
+    SdsSubheaderComponent,
+    IconModule,
+    NgxBootstrapIconsModule.pick({ chevronLeft }),
+    SdsSearchModule,
+    NgTemplateOutlet,
+    SdsButtonGroupModule,
+  ],
 })
 export class SdsSubheaderWrapperComponent implements OnInit {
   constructor(private router: Router) {}

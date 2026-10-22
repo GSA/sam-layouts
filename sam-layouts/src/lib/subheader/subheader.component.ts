@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input, TemplateRef } from '@an
 import { SdsDrawerCommunicationService } from './drawer-communication.service';
 import { SdsMenuModule } from '@gsa-sam/components';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule, threeDotsVertical, arrowUp, arrowDown } from 'ngx-bootstrap-icons';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
@@ -16,7 +17,7 @@ export class SdsSubheaderComponent {
 @Component({
   selector: 'sds-subheader-actions',
   templateUrl: 'subheader-actions.component.html',
-  imports: [SdsMenuModule, IconModule],
+  imports: [SdsMenuModule, IconModule, NgxBootstrapIconsModule.pick({ threeDotsVertical })],
 })
 export class SdsSubheaderActionsComponent {
   @Input() mobileTabletStyle: SUBHEADERACTIONSTYLE = SUBHEADERACTIONSTYLE.DEFAULT;
@@ -77,7 +78,7 @@ export enum SUBHEADERACTIONSTYLE {
 @Component({
   selector: 'sds-subheader-drawer',
   templateUrl: 'subheader-drawer.component.html',
-  imports: [IconModule],
+  imports: [IconModule, NgxBootstrapIconsModule.pick({ arrowUp, arrowDown })],
 })
 export class SdsSubheaderDrawerComponent implements OnInit {
   @Input() drawerContentTemplate: TemplateRef<any>;

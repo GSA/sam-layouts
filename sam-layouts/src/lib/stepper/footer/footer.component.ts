@@ -2,11 +2,23 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SdsStepper, SdsStepperModule } from '@gsa-sam/sam-formly';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
 import { NgStyle } from '@angular/common';
+import {
+  NgxBootstrapIconsModule,
+  chevronLeft,
+  chevronRight,
+  save,
+  x,
+} from 'ngx-bootstrap-icons';
 
 @Component({
   selector: 'sam-layouts-stepper-footer',
   templateUrl: './footer.component.html',
-  imports: [SdsStepperModule, IconModule, NgStyle],
+  imports: [
+    SdsStepperModule,
+    IconModule,
+    NgxBootstrapIconsModule.pick({ chevronLeft, chevronRight, save, x }),
+    NgStyle,
+  ],
 })
 export class SLStepperFooterComponent {
   @Input() customSave = false;

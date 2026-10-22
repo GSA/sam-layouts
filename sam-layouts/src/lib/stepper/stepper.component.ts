@@ -5,13 +5,27 @@ import { SdsSideToolbarModule } from '@gsa-sam/components';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { SLStepperFooterComponent } from './footer/footer.component';
 import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import {
+  NgxBootstrapIconsModule,
+  checkCircleFill,
+  slashCircleFill,
+  circle,
+} from 'ngx-bootstrap-icons';
 
 @Component({
   selector: 'sam-layouts-stepper',
   providers: [{ provide: SdsStepper, useExisting: SLStepperComponent }],
   templateUrl: './stepper.component.html',
   styleUrls: ['./stepper.component.scss'],
-  imports: [SdsSideToolbarModule, NgClass, NgTemplateOutlet, SLStepperFooterComponent, SdsStepperModule, IconModule],
+  imports: [
+    SdsSideToolbarModule,
+    NgClass,
+    NgTemplateOutlet,
+    SLStepperFooterComponent,
+    SdsStepperModule,
+    IconModule,
+    NgxBootstrapIconsModule.pick({ checkCircleFill, slashCircleFill, circle }),
+  ],
 })
 export class SLStepperComponent extends SdsStepper {
   @Input() versions: [];
