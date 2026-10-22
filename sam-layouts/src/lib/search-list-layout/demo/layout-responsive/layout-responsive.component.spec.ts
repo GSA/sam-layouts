@@ -95,6 +95,52 @@ describe('LayoutResponsiveComponent keyword radio lifecycle', () => {
     expect(() => component.ngOnInit()).not.toThrow();
   });
 
+  it('patches the partial keyword payload before updating search results', () => {
+    const { component, filterService } = createComponent([]);
+    const keyword = new FormGroup({
+      keywordRadio: new FormControl('anyWords'),
+      keywordTags: new FormControl([]),
+      keywordExactPhrase: new FormControl('preserved'),
+      keywordTextarea: new FormControl('editor text'),
+    });
+    filterService.form.addControl('keyword', keyword);
+    component.ngOnInit();
+    component.resultList = { updateSearchResultsModel: vi.fn() };
+
+    expect(() => component.onSearchModelUpdate()).not.toThrow();
+    expect(keyword.get('keywordRadio')?.value).toBe('allWords');
+    expect(keyword.get('keywordExactPhrase')?.value).toBe('preserved');
+    expect(keyword.get('keywordTextarea')?.value).toBe('editor text');
+    expect(component.resultList.updateSearchResultsModel).toHaveBeenCalledOnce();
+  });
+
+  it('restores shared hooks on destroy so a recreated component does not subscribe twice', async () => {
+    const originalAfterViewInit = vi.fn();
+    const originalOnDestroy = vi.fn();
+    const originalHooks = { afterViewInit: originalAfterViewInit, onDestroy: originalOnDestroy };
+    const radioField: any = { key: 'keywordRadio', hooks: originalHooks };
+    const fields = [{ key: 'keyword', fieldGroup: [{ fieldGroup: [radioField] }] }];
+    const { component: first, filterService } = createComponent(fields);
+    const refresh = vi.spyOn(filterService.keywordChangeSubject, 'next');
+    radioField.formControl = new FormControl('anyWords');
+    first.ngOnInit();
+    radioField.hooks.afterViewInit(radioField);
+    first.ngOnDestroy();
+    expect(radioField.hooks).toBe(originalHooks);
+
+    const second = new LayoutResponsiveComponent({} as any, filterService, {} as any, {} as any);
+    second.ngOnInit();
+    radioField.hooks.afterViewInit(radioField);
+    radioField.formControl.setValue('allWords');
+    await Promise.resolve();
+
+    expect(originalAfterViewInit).toHaveBeenCalledTimes(2);
+    expect(refresh).toHaveBeenCalledTimes(1);
+    second.ngOnDestroy();
+    expect(radioField.hooks).toBe(originalHooks);
+    expect(originalOnDestroy).not.toHaveBeenCalled();
+  });
+
   it('refreshes autocomplete when the lazily-created radio control changes', async () => {
     const radioField: any = { key: 'keywordRadio' };
     const fields = [

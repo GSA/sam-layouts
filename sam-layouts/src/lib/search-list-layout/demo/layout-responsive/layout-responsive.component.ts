@@ -60,6 +60,8 @@ export class LayoutResponsiveComponent implements OnDestroy {
   public filterPanelConfig;
 
   private keywordRadioSubscription: Subscription;
+  private keywordRadioField: FormlyFieldConfig;
+  private originalKeywordRadioHooks: FormlyFieldConfig['hooks'];
 
   selectedPanel: NavigationLink = this.navigationModel.navigationLinks[1];
 
@@ -129,7 +131,9 @@ export class LayoutResponsiveComponent implements OnDestroy {
 
     if (!keywordRadioField) return;
 
-    const existingHooks = keywordRadioField.hooks ?? {};
+    this.keywordRadioField = keywordRadioField;
+    this.originalKeywordRadioHooks = keywordRadioField.hooks;
+    const existingHooks = this.originalKeywordRadioHooks ?? {};
     keywordRadioField.hooks = {
       ...existingHooks,
       afterViewInit: (field) => {
@@ -150,6 +154,10 @@ export class LayoutResponsiveComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.keywordRadioSubscription?.unsubscribe();
+    if (this.keywordRadioField) {
+      this.keywordRadioField.hooks = this.originalKeywordRadioHooks;
+      this.keywordRadioField = undefined;
+    }
   }
 
   ngAfterViewInit() {
@@ -223,7 +231,7 @@ export class LayoutResponsiveComponent implements OnDestroy {
       },
     };
 
-    this.form.get('keyword')?.setValue(model.filterModel.keyword);
+    this.form.get('keyword')?.patchValue(model.filterModel.keyword);
     this.resultList.updateSearchResultsModel(model);
   }
 
