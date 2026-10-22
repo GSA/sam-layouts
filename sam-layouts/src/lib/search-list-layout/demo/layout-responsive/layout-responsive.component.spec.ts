@@ -2,6 +2,7 @@ import '@angular/compiler';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormlyModule, FormlyForm } from '@ngx-formly/core';
 import { SdsFormlyModule } from '@gsa-sam/sam-formly';
 import { Subject } from 'rxjs';
@@ -42,6 +43,7 @@ class FormlyTabsHostComponent {
             {
               key: 'keywordRadio',
               type: 'radio',
+              defaultValue: 'anyWords',
               props: {
                 options: [
                   { label: 'Any', value: 'anyWords' },
@@ -64,6 +66,7 @@ describe('Formly tabs configuration', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [FormlyModule.forRoot(), SdsFormlyModule.forChild(), FormlyTabsHostComponent],
+      providers: [provideNoopAnimations()],
     });
     await TestBed.compileComponents();
   });
@@ -72,7 +75,7 @@ describe('Formly tabs configuration', () => {
     const fixture = TestBed.createComponent(FormlyTabsHostComponent);
     fixture.detectChanges();
     const host = fixture.componentInstance;
-    const keyword = host.form.get('keyword') as FormGroup;
+    const keyword = host.form.get('keyword') as unknown as FormGroup;
 
     expect(keyword).toBeTruthy();
     expect(keyword.get('keywordRadio')?.value).toBe('anyWords');
@@ -80,7 +83,7 @@ describe('Formly tabs configuration', () => {
 
     keyword.get('keywordRadio')?.setValue('allWords');
     keyword.get('keywordTextarea')?.setValue('expression');
-    expect(keyword.value).toEqual({ keywordRadio: 'allWords', keywordTextarea: 'expression' });
+    expect(keyword.getRawValue()).toEqual({ keywordRadio: 'allWords', keywordTextarea: 'expression' });
   });
 });
 

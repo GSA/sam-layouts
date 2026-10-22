@@ -22,7 +22,7 @@ Coverage floors are recorded in `coverage-thresholds.json` for statements, branc
 
 The package now declares every runtime external emitted by its FESM as a peer dependency. Consumers must install peers that satisfy the package manifest rather than relying on workspace hoisting or transitive copies. In particular, the corrected partial-Ivy SDS packages require `@gsa-sam/components`, `@gsa-sam/sam-formly`, and `@gsa-sam/sam-material-extensions` at `21.0.2` or newer within major 21. Use a strict install without `legacy-peer-deps` and resolve any peer conflict instead of suppressing it.
 
-After building the library, `npm run package:contract` verifies that every emitted runtime external is declared and that Angular/SDS ranges remain on the supported Angular 21 line. Storybook registration alone is not render proof; `npm run test:storybook-render` renders every registered story in Chromium, asserts component-specific DOM, and fails on browser errors.
+After building the library, `npm run package:contract` verifies that every emitted runtime external is declared and that Angular/SDS ranges remain on the supported Angular 21 line. `npm run package:consumer` then packs the artifact, installs it outside the workspace from public npm without `legacy-peer-deps`, verifies the complete dependency tree and peer identities, and strictly compiles both direct-standalone and compatibility-NgModule Angular 21 consumers. Storybook registration alone is not render proof; `npm run test:storybook-render` renders every registered story in Chromium, asserts component-specific DOM, and fails on browser errors.
 
 To run the dev server for your app, use:
 

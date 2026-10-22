@@ -48,6 +48,9 @@ jobs:
       - name: Verify emitted package contract
         run: npm run package:contract
 
+      - name: Compile strict external Angular 21 consumers
+        run: npm run package:consumer
+
       - name: Build sam-layouts (app)
         run: npx nx build sam-layouts
 

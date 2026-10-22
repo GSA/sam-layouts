@@ -16,6 +16,7 @@
     "test:scripts": "node --test scripts/*.test.mjs",
     "test:storybook-render": "node scripts/storybook-render.mjs dist/storybook/sam-layouts",
     "package:contract": "node scripts/check-package-contract.mjs dist/sam-layouts",
+    "package:consumer": "node scripts/verify-package-consumer.mjs 21.0.0",
     "test:coverage": "node scripts/run-coverage.mjs",
     "coverage:check": "node scripts/check-coverage.mjs",
     "coverage:bump": "node scripts/check-coverage.mjs bump"
