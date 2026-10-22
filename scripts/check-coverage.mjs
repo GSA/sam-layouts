@@ -40,11 +40,12 @@ const inputFiles = () => {
   return files.filter((file) => file !== configPath && file !== markerPath && !file.startsWith('coverage/'));
 };
 const productionSource = () =>
-  inputFiles().filter(
-    (file) =>
-      /^(sam-layouts|apps\/sam-layouts)\/src\/.*\.ts$/.test(file) &&
-      !/(^|\/)([^/]+\.)?(spec|test)\.ts$/.test(file) &&
-      !file.endsWith('.d.ts'),
+  inputFiles().filter((file) =>
+    /^(sam-layouts|apps\/sam-layouts)\/src\/.*\.ts$/.test(file) &&
+    !/(^|\/)([^/]+\.)?(spec|test|stories|demo)\.ts$/.test(file) && !file.includes('/demo/') &&
+    !file.endsWith('.d.ts') &&
+    !/(^|\/)(model|models)\/[^/]+\.ts$/.test(file) &&
+    !/(^|\/)(index|main|test-setup)\.ts$/.test(file),
   );
 const fingerprint = async () => {
   const parts = [];

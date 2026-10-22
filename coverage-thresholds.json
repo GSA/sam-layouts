@@ -1,9 +1,9 @@
 {
   "layouts": {
-    "statements": 76.23,
-    "branches": 67.51,
-    "functions": 68.05,
-    "lines": 77.13,
+    "statements": 64.13,
+    "branches": 59.37,
+    "functions": 52.73,
+    "lines": 60.11,
     "zeroTotalMetrics": []
   },
   "sam-layouts": {

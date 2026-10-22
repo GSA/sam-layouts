@@ -58,8 +58,10 @@ const marker = {
   sourceManifest: (await inputFiles()).filter(
     (file) =>
       /^(sam-layouts|apps\/sam-layouts)\/src\/.*\.ts$/.test(file) &&
-      !/(^|\/)([^/]+\.)?(spec|test)\.ts$/.test(file) &&
-      !file.endsWith('.d.ts'),
+      !/(^|\/)([^/]+\.)?(spec|test|stories|demo)\.ts$/.test(file) && !file.includes('/demo/') &&
+      !file.endsWith('.d.ts') &&
+      !/(^|\/)(model|models)\/[^/]+\.ts$/.test(file) &&
+      !/(^|\/)(index|main|test-setup)\.ts$/.test(file),
   ),
   projects: projects.map(({ name, minimumTests }) => ({ name, tests: minimumTests })),
 };

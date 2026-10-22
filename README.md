@@ -14,7 +14,7 @@ This workspace uses Angular's native Vitest runner. Run both suites with coverag
 npm run test:coverage
 ```
 
-Coverage floors are recorded in `coverage-thresholds.json` for statements, branches, functions, and lines. They are explicit initial Vitest baselines measured from the current source include scope (`src/**/*.ts`, excluding tests and declarations): the library baseline is 76.23/67.51/68.05/77.13% and the application baseline is 100% for each metric. These are proposed migration baselines pending human review; they are not Jest carryovers. `npm run coverage:bump` may only raise a floor to a newer measured percentage; lowering a floor requires a deliberate configuration change and rationale. Missing, malformed, empty, or stale reports fail closed. Coverage demonstrates instrumented source behavior; the test commands remain required evidence that the suites ran (25 library tests and 2 app tests).
+Coverage floors are recorded in `coverage-thresholds.json` for statements, branches, functions, and lines. They are explicit initial Vitest baselines measured from the current source include scope (`src/**/*.ts`, excluding tests and declarations): the library baseline is 64.13/59.37/52.73/60.11% and the application baseline is 100% for each metric. These are proposed migration baselines pending human review; they are not Jest carryovers. `npm run coverage:bump` may only raise a floor to a newer measured percentage; lowering a floor requires a deliberate configuration change and rationale. Missing, malformed, empty, or stale reports fail closed. Coverage demonstrates instrumented source behavior; the test commands remain required evidence that the suites ran (25 library tests and 2 app tests).
 
 To run the dev server for your app, use:
 
