@@ -130,10 +130,11 @@ jobs:
       - name: Build layouts (library)
         run: npx nx build layouts
 
-      # `--codeCoverage` is required: without it the Jest executor writes no
-      # coverage output at all. Matches the convention established in ci.yml.
       - name: Test layouts (library) with coverage
-        run: npx nx test layouts --codeCoverage
+        run: npx nx test layouts --coverage
+
+      - name: Enforce coverage floors
+        run: npm run coverage:check
 
   publish:
     name: Publish to npm

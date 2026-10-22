@@ -8,6 +8,16 @@
 
 ## Run tasks
 
+This workspace uses Angular's native Vitest runner. Run both suites with coverage and enforce the checked-in per-project floors with:
+
+```sh
+npx nx test layouts --codeCoverage
+npx nx test sam-layouts --codeCoverage
+npm run coverage:check
+```
+
+Coverage floors are recorded in `coverage-thresholds.json` for statements, branches, functions, and lines. They are explicit initial Vitest baselines measured from the current source include scope (`src/**/*.ts`, excluding tests and declarations): the library baseline is 76.23/67.51/68.05/77.13% and the application baseline is 100% for each metric. These are reviewed migration baselines, not Jest carryovers. `npm run coverage:bump` may only raise a floor to a newer measured percentage; lowering a floor requires a deliberate configuration change and rationale. Missing, malformed, empty, or stale reports fail closed. Coverage demonstrates instrumented source behavior; the test commands remain required evidence that the suites ran (25 library tests and 2 app tests).
+
 To run the dev server for your app, use:
 
 ```sh
