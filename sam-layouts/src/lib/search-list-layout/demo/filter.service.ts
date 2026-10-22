@@ -53,84 +53,82 @@ export class FilterService {
           }
         },
       },
-      fieldArray: {
-        fieldGroup: [
-          // tab 1
-          {
-            templateOptions: {
-              tabHeader: 'Simple Search',
-            },
-            fieldGroupClassName: 'grid-row',
-            fieldGroup: [
-              {
-                key: 'keywordRadio',
-                className: 'grid-col-5',
-                type: 'radio',
-                defaultValue: 'anyWords',
-                templateOptions: {
-                  options: [
-                    {
-                      label: 'Any Words',
-                      value: 'anyWords',
-                    },
-                    {
-                      label: 'All Words',
-                      value: 'allWords',
-                    },
-                  ],
-                },
-              },
-              {
-                className: 'grid-col-6 margin-top-auto margin-left-auto',
-                key: 'keywordExactPhrase',
-                type: 'checkbox',
-                templateOptions: {
-                  label: 'Exact Phrase',
-                  hideOptional: true,
-                },
-              },
-              {
-                key: 'keywordTags',
-                type: 'autocomplete',
-                className: 'grid-col-12',
-                templateOptions: {
-                  expand: false,
-                  configuration: {
-                    id: 'keyword',
-                    primaryKeyField: 'key',
-                    primaryTextField: 'text',
-                    labelText: 'Search Keyword',
-                    selectionMode: SelectionMode.MULTIPLE,
-                    autocompletePlaceHolderText: '',
-                    isTagModeEnabled: true,
-                    // Bind context of this service so we have access to radio button value
-                    displayModifierFn: this.displayModifierFn.bind(this),
-                    // Add observable so that we can tell autocomplete to run change detection later when radio option changes
-                    registerChanges$: this.keywordChangeSubject.asObservable(),
+      fieldGroup: [
+        // tab 1
+        {
+          templateOptions: {
+            tabHeader: 'Simple Search',
+          },
+          fieldGroupClassName: 'grid-row',
+          fieldGroup: [
+            {
+              key: 'keywordRadio',
+              className: 'grid-col-5',
+              type: 'radio',
+              defaultValue: 'anyWords',
+              templateOptions: {
+                options: [
+                  {
+                    label: 'Any Words',
+                    value: 'anyWords',
                   },
-                },
+                  {
+                    label: 'All Words',
+                    value: 'allWords',
+                  },
+                ],
               },
-            ],
-          },
-          //tab 2
-          {
-            templateOptions: {
-              tabHeader: 'Search Editor',
             },
-            fieldGroup: [
-              {
-                key: 'keywordTextarea',
-                id: 'keyword-textarea',
-                type: SdsFormlyTypes.TEXTAREA,
-                className: 'display-block padding-left-2 padding-right-2',
-                templateOptions: {
-                  placeholder: 'e.g. ((rental AND property) OR (lease and property) AND NOT ( "short term"))',
+            {
+              className: 'grid-col-6 margin-top-auto margin-left-auto',
+              key: 'keywordExactPhrase',
+              type: 'checkbox',
+              templateOptions: {
+                label: 'Exact Phrase',
+                hideOptional: true,
+              },
+            },
+            {
+              key: 'keywordTags',
+              type: 'autocomplete',
+              className: 'grid-col-12',
+              templateOptions: {
+                expand: false,
+                configuration: {
+                  id: 'keyword',
+                  primaryKeyField: 'key',
+                  primaryTextField: 'text',
+                  labelText: 'Search Keyword',
+                  selectionMode: SelectionMode.MULTIPLE,
+                  autocompletePlaceHolderText: '',
+                  isTagModeEnabled: true,
+                  // Bind context of this service so we have access to radio button value
+                  displayModifierFn: this.displayModifierFn.bind(this),
+                  // Add observable so that we can tell autocomplete to run change detection later when radio option changes
+                  registerChanges$: this.keywordChangeSubject.asObservable(),
                 },
               },
-            ],
+            },
+          ],
+        },
+        //tab 2
+        {
+          templateOptions: {
+            tabHeader: 'Search Editor',
           },
-        ],
-      },
+          fieldGroup: [
+            {
+              key: 'keywordTextarea',
+              id: 'keyword-textarea',
+              type: SdsFormlyTypes.TEXTAREA,
+              className: 'display-block padding-left-2 padding-right-2',
+              templateOptions: {
+                placeholder: 'e.g. ((rental AND property) OR (lease and property) AND NOT ( "short term"))',
+              },
+            },
+          ],
+        },
+      ],
     },
     {
       key: 'searchEntity',

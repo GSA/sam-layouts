@@ -1,6 +1,13 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationLink, SdsDialogConfig, SdsDialogRef, SelectionPanelModel, SdsSideToolbarModule, SdsSelectionPanelModule } from '@gsa-sam/components';
+import {
+  NavigationLink,
+  SdsDialogConfig,
+  SdsDialogRef,
+  SelectionPanelModel,
+  SdsSideToolbarModule,
+  SdsSelectionPanelModule,
+} from '@gsa-sam/components';
 import { ResultsModel, SearchListConfiguration } from '../../model/search-list-layout.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BehaviorSubject, Subscription, timer } from 'rxjs';
@@ -15,17 +22,17 @@ import { SearchListLayoutComponent } from '../../search-list-layout.component';
 import { ResultComponent } from '../result/result.component';
 
 @Component({
-    selector: 'demo-search-list-layout',
-    templateUrl: './layout-responsive.component.html',
-    imports: [
-        SdsSideToolbarModule,
-        IconModule,
-        NgClass,
-        SdsSelectionPanelModule,
-        SdsFiltersModule,
-        SearchListLayoutComponent,
-        ResultComponent,
-    ],
+  selector: 'demo-search-list-layout',
+  templateUrl: './layout-responsive.component.html',
+  imports: [
+    SdsSideToolbarModule,
+    IconModule,
+    NgClass,
+    SdsSelectionPanelModule,
+    SdsFiltersModule,
+    SearchListLayoutComponent,
+    ResultComponent,
+  ],
 })
 export class LayoutResponsiveComponent implements OnDestroy {
   @ViewChild('resultList') resultList;
@@ -116,7 +123,7 @@ export class LayoutResponsiveComponent implements OnDestroy {
 
   private configureKeywordRadioLifecycle() {
     const keywordField = this.fields.find((field) => field.key === 'keyword');
-    const keywordRadioField = (keywordField as any)?.fieldArray?.fieldGroup?.[0]?.fieldGroup?.find(
+    const keywordRadioField = (keywordField as any)?.fieldGroup?.[0]?.fieldGroup?.find(
       (field) => field.key === 'keywordRadio',
     );
 
@@ -168,7 +175,6 @@ export class LayoutResponsiveComponent implements OnDestroy {
     filters$.subscribe((model) => {
       this.resultList.updateFilter(model);
     });
-
   }
 
   updateConfig(update: boolean) {
@@ -217,7 +223,7 @@ export class LayoutResponsiveComponent implements OnDestroy {
       },
     };
 
-    (<any>this.fields[0]).fieldArray.fieldGroup[0].form.setValue(model.filterModel.keyword);
+    this.form.get('keyword')?.setValue(model.filterModel.keyword);
     this.resultList.updateSearchResultsModel(model);
   }
 
