@@ -5,6 +5,7 @@
  * missing peer dependency.
  */
 import { execFile } from 'node:child_process';
+import { realpathSync } from 'node:fs';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -142,7 +143,7 @@ async function main() {
   }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)))
   main().catch((error) => {
     console.error(`consumer proof failed: ${error.message}`);
     process.exitCode = 1;

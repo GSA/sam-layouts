@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, cpSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import { DOM_CONTRACTS, readStoryEntries, serveDirectory } from './storybook-render.mjs';
 
 const run = promisify(execFile);
@@ -15,7 +15,8 @@ function index(root, entries) {
 
 test('CLI runs from a checkout path containing spaces and rejects a missing artifact', async () => {
   const root = mkdtempSync(join(tmpdir(), 'storybook checkout with spaces-'));
-  const script = resolve('scripts/storybook-render.mjs');
+  const script = join(root, 'storybook-render.mjs');
+  copyFileSync(new URL('./storybook-render.mjs', import.meta.url), script);
   await assert.rejects(
     run(process.execPath, [script, join(root, 'missing-dist')], { cwd: root }),
     /index\.json|ENOENT/,

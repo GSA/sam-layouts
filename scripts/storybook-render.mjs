@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /** Render each concrete Storybook story in Chromium and verify its component DOM. */
-import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -145,7 +145,7 @@ export async function runStorybookRender({ root = resolve(argv[2] ?? DEFAULT_STO
   return entries.length;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)))
   runStorybookRender()
     .then((count) => stdout.write(`Rendered ${count} Storybook stories with component DOM assertions\n`))
     .catch((error) => {

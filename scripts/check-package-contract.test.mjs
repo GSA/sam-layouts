@@ -97,7 +97,7 @@ test('CLI runs from a checkout path containing spaces and rejects a missing arti
   await symlink(path.resolve('node_modules'), path.join(root, 'node_modules'));
   await assert.rejects(
     run(process.execPath, [script, path.join(root, 'missing-dist'), path.join(root, 'missing-package.json')]),
-    /no emitted JavaScript/,
+    /package contract: ENOENT/,
   );
 });
 

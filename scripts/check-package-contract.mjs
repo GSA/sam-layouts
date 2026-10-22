@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /** Audit the runtime contract of emitted JavaScript, not TypeScript source. */
+import { realpathSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { builtinModules, createRequire } from 'node:module';
 import path from 'node:path';
@@ -142,7 +143,7 @@ export async function checkPackageContract({ dist, manifestPath }) {
   const dependencies = await extractEmittedDependencies(dist);
   return { dependencies, errors: validateContract({ manifest, dependencies, file: manifestPath }) };
 }
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const [dist = 'dist/sam-layouts', manifestPath = path.join(dist, 'package.json')] = process.argv.slice(2);
   try {
     const result = await checkPackageContract({ dist, manifestPath });
