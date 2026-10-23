@@ -215,6 +215,7 @@ export async function runStorybookRender({
           });
         }
 
+        if (errors.length) throw new Error(errors.join('\n'));
         stdout.write(`PASS ${entry.id}\n`);
       } catch (error) {
         const phase = rendered ? 'post-render' : 'render';

@@ -16,10 +16,8 @@ function assertAxeEvaluatedRules(results: {
 }) {
   const evaluated =
     results.passes.length + results.violations.length + results.incomplete.length + results.inapplicable.length;
-  expect(
-    evaluated,
-    'axe returned an empty result; refuse to trust or write a baseline from empty analysis',
-  ).toBeGreaterThan(0);
+  expect(evaluated, 'axe returned an empty result; refuse to trust or write a baseline').toBeGreaterThan(0);
+  expect(results.passes.length, 'axe must report rules that passed against rendered content').toBeGreaterThan(0);
 }
 
 async function assertAxeSelfTest(page: Page) {
@@ -67,6 +65,12 @@ test('rendered stories have no new or stale WCAG 2.1 AA violations', async ({ ba
         await root.locator(':scope > *').count(),
         `${entry.id} rendered no storybook-root children`,
       ).toBeGreaterThan(0);
+      const { DOM_CONTRACTS } = await import('../../scripts/storybook-render.mjs');
+      const component = root.locator(DOM_CONTRACTS[entry.title].selector).first();
+      expect(
+        await component.evaluate((element) => !!element.closest('[aria-hidden="true"]')),
+        `${entry.id} contract component is hidden from axe by an aria-hidden ancestor`,
+      ).toBe(false);
 
       // Explicit negative-control probe: inject a real missing-alt image into one rendered story.
       if (process.env.AXE_INJECT_VIOLATION === '1' && entry.id === 'footer--footer')
@@ -90,6 +94,7 @@ test('rendered stories have no new or stale WCAG 2.1 AA violations', async ({ ba
 
   // An explicit update is permitted only after all stories rendered and axe self-test passed.
   if (process.env.UPDATE_A11Y_BASELINE === '1') {
+    expect(process.env.CI, 'Do not regenerate the baseline in CI').toBeFalsy();
     expect(process.env.AXE_INJECT_VIOLATION, 'Do not update the baseline with a negative-control violation').not.toBe(
       '1',
     );

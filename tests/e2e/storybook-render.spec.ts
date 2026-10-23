@@ -14,5 +14,7 @@ test('every registered story renders expected component DOM without browser erro
     knownFailures,
     minimumStories: MIN_RENDERED_STORIES,
   });
-  expect(count).toBeGreaterThanOrEqual(MIN_RENDERED_STORIES);
+  expect(count - knownFailures.length, 'At least 26 stories must actually render').toBeGreaterThanOrEqual(
+    MIN_RENDERED_STORIES,
+  );
 });
