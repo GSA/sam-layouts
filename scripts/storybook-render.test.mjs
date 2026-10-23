@@ -5,7 +5,17 @@ import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DOM_CONTRACTS, readStoryEntries, runStorybookRender, serveDirectory } from './storybook-render.mjs';
+import { fileURLToPath } from 'node:url';
+import {
+  DOM_CONTRACTS,
+  MIN_RENDERED_STORIES,
+  isExecutedDirectly,
+  matchKnownFailure,
+  normalizeKnownFailures,
+  readStoryEntries,
+  runStorybookRender,
+  serveDirectory,
+} from './storybook-render.mjs';
 
 const run = promisify(execFile);
 
@@ -44,7 +54,10 @@ test('empty story index fails even when docs exist', () => {
 test('a shrunken but nonempty Storybook fails before launching Chromium', async () => {
   const root = mkdtempSync(join(tmpdir(), 'storybook-shrunken-'));
   index(root, { story: { id: 'landing-card--default', type: 'story', title: 'Landing/Card' } });
-  await assert.rejects(runStorybookRender({ root }), /registered 1 stories, expected at least 26/);
+  await assert.rejects(
+    runStorybookRender({ root }),
+    new RegExp(`registered 1 stories, expected at least ${MIN_RENDERED_STORIES}`),
+  );
 });
 
 test('unknown title and invalid index entry fail clearly', () => {
@@ -79,4 +92,38 @@ test('contracts are concrete rather than generic body assertions', () => {
     assert.notEqual(contract.selector, 'body');
     assert.notEqual(String(contract.text), '/./', 'contracts must not use a match-anything text regex');
   }
+});
+
+test('known failures require structured signatures and exact matches', () => {
+  assert.throws(() => normalizeKnownFailures(['footer--footer']), /bare story IDs are not supported/);
+
+  const known = normalizeKnownFailures([
+    {
+      id: 'footer--footer',
+      phase: 'render',
+      signature: 'expected #storybook-root sds-footer content matching /Our Website|Customer Service/i',
+    },
+  ]);
+
+  assert.equal(
+    matchKnownFailure(known, {
+      id: 'footer--footer',
+      phase: 'render',
+      signature: 'expected #storybook-root sds-footer content matching /Our Website|Customer Service/i',
+    }),
+    0,
+  );
+  assert.equal(
+    matchKnownFailure(known, {
+      id: 'footer--footer',
+      phase: 'render',
+      signature: 'different failure signature',
+    }),
+    -1,
+  );
+});
+
+test('CLI entry guard is based on module path, not hard-coded script basename', () => {
+  assert.equal(isExecutedDirectly(import.meta.url, fileURLToPath(import.meta.url)), true);
+  assert.equal(isExecutedDirectly(import.meta.url, '/definitely/not-this-module.mjs'), false);
 });

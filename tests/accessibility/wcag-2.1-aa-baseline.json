@@ -1,6 +1,6 @@
 [
   "footer--footer | aria-allowed-attr | .usa-accordion",
-  "responsive-layout--responsive-layout | aria-allowed-attr | .usa-accordion[aria-multiselectable=\"true\"]",
+  "responsive-layout--responsive-layout | aria-allowed-attr | .usa-accordion[aria-multiselectable=\"true\"] | occurrences 8",
   "responsive-layout--responsive-layout | aria-hidden-focus | .display-none",
   "responsive-layout--responsive-layout | aria-valid-attr | .h1",
   "stepper--stepper-with-navigation | color-contrast | .usa-sidenav__item--disabled > span:nth-child(1)",

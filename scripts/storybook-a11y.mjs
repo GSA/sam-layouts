@@ -10,10 +10,22 @@ export function normalizeTarget(selector) {
     .trim();
 }
 
+/**
+ * Produce deterministic fingerprints while preserving repeated target occurrences.
+ * Repeated normalized targets are suffixed so they do not collapse in the baseline.
+ */
 export function violationFingerprints(storyId, violations) {
-  return violations.flatMap((violation) =>
-    violation.nodes.map((node) => [storyId, violation.id, ...node.target.map(normalizeTarget)].join(' | ')),
-  );
+  const counts = new Map();
+  for (const violation of violations)
+    for (const node of violation.nodes)
+      for (const target of node.target) {
+        const key = [storyId, violation.id, normalizeTarget(target)].join(' | ');
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+
+  return [...counts.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, count]) => (count === 1 ? key : `${key} | occurrences ${count}`));
 }
 
 export function compareBaseline(current, baseline) {

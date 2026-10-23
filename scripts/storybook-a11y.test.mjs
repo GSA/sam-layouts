@@ -19,3 +19,12 @@ test('new and resolved violations require explicit baseline update', () => {
     resolved: ['story | rule | #old'],
   });
 });
+
+test('duplicate normalized targets keep deterministic occurrence fingerprints', () => {
+  assert.deepEqual(
+    violationFingerprints('story--one', [
+      { id: 'label', nodes: [{ target: ['.ng-tns-c1-2#field'] }, { target: ['#field'] }] },
+    ]),
+    ['story--one | label | #field | occurrences 2'],
+  );
+});

@@ -108,8 +108,10 @@ jobs:
         with:
           name: playwright-results
           path: |
-            test-results/
-            playwright-report/
+            test-results/e2e/
+            test-results/a11y/
+            playwright-report/e2e/
+            playwright-report/a11y/
           if-no-files-found: warn
 
       # Stop-the-world formatting gate. Deliberately last: this is a whole-repo

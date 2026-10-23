@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+const e2eHtmlReport = 'playwright-report/e2e';
+
 // The CI job builds once. Local runs build first so the served artifact is fresh.
 export default defineConfig({
   testDir: './tests/e2e',
@@ -7,7 +9,10 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list'], ['html', { open: 'never' }]],
+  outputDir: 'test-results/e2e',
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never', outputFolder: e2eHtmlReport }]]
+    : [['list'], ['html', { open: 'never', outputFolder: e2eHtmlReport }]],
   use: { baseURL: 'http://127.0.0.1:6007', trace: 'retain-on-failure' },
   webServer: {
     command: process.env.CI
