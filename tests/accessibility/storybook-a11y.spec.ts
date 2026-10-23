@@ -46,6 +46,10 @@ test('rendered stories have no new or stale WCAG 2.1 AA violations', async ({ ba
   const { MIN_RENDERED_STORIES, normalizeKnownFailures, runStorybookRender } =
     await import('../../scripts/storybook-render.mjs');
   const knownFailures = normalizeKnownFailures(JSON.parse(readFileSync(renderFailuresPath, 'utf8')));
+  expect(
+    knownFailures.filter(({ phase }) => phase === 'post-render'),
+    'Axe failures must never be allowlisted',
+  ).toEqual([]);
 
   const baselineBefore = readBaseline();
   const fingerprints: string[] = [];
@@ -78,6 +82,9 @@ test('rendered stories have no new or stale WCAG 2.1 AA violations', async ({ ba
     },
   });
 
+  expect(count - knownFailures.length, 'Axe must analyze at least 26 real stories').toBeGreaterThanOrEqual(
+    MIN_RENDERED_STORIES,
+  );
   const current = [...fingerprints].sort();
   const { added, resolved } = compareBaseline(current, baselineBefore);
 
@@ -88,6 +95,8 @@ test('rendered stories have no new or stale WCAG 2.1 AA violations', async ({ ba
     );
     expect(process.env.AXE_SELF_TEST_INJECT_EMPTY, 'Do not update the baseline with disabled axe').not.toBe('1');
     writeFileSync(baselinePath, `${JSON.stringify(current, null, 2)}\n`);
+    console.log(`Updated WCAG baseline after analyzing ${count} stories (${current.length} fingerprints)`);
+    return;
   }
 
   console.log(
