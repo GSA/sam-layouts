@@ -5,7 +5,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DOM_CONTRACTS, readStoryEntries, serveDirectory } from './storybook-render.mjs';
+import { DOM_CONTRACTS, readStoryEntries, runStorybookRender, serveDirectory } from './storybook-render.mjs';
 
 const run = promisify(execFile);
 
@@ -33,6 +33,18 @@ test('contracts cover stories and exclude docs', () => {
     readStoryEntries(join(root, 'index.json')).map(({ id }) => id),
     ['landing-card--default'],
   );
+});
+
+test('empty story index fails even when docs exist', () => {
+  const root = mkdtempSync(join(tmpdir(), 'storybook-empty-'));
+  index(root, { docs: { id: 'landing-card--docs', type: 'docs', title: 'Landing/Card' } });
+  assert.throws(() => readStoryEntries(join(root, 'index.json')), /No story entries/);
+});
+
+test('a shrunken but nonempty Storybook fails before launching Chromium', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'storybook-shrunken-'));
+  index(root, { story: { id: 'landing-card--default', type: 'story', title: 'Landing/Card' } });
+  await assert.rejects(runStorybookRender({ root }), /registered 1 stories, expected at least 26/);
 });
 
 test('unknown title and invalid index entry fail clearly', () => {

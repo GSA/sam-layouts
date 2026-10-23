@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /** Render each concrete Storybook story in Chromium and verify its component DOM. */
-import { createReadStream, existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { basename, extname, join, relative, resolve } from 'node:path';
 import { argv, exit, stderr, stdout } from 'node:process';
 
 export const DEFAULT_STORYBOOK_DIR = 'dist/storybook/sam-layouts';
@@ -36,7 +35,7 @@ export function readStoryEntries(indexPath) {
     throw new Error(
       `Invalid Storybook index entry (missing id/title): ${invalid.map((e) => JSON.stringify(e)).join(', ')}`,
     );
-  return entries;
+  return entries.sort((left, right) => left.id.localeCompare(right.id));
 }
 
 function contentType(path) {
@@ -95,21 +94,34 @@ export async function assertStoryDom(page, entry) {
     );
 }
 
-export async function runStorybookRender({ root = resolve(argv[2] ?? DEFAULT_STORYBOOK_DIR), screenshotDir } = {}) {
+export async function runStorybookRender({
+  root = resolve(argv[2] ?? DEFAULT_STORYBOOK_DIR),
+  screenshotDir,
+  baseURL,
+  onStory,
+  knownFailures = [],
+  minimumStories = 26,
+} = {}) {
   const entries = readStoryEntries(join(root, 'index.json'));
+  if (entries.length < minimumStories)
+    throw new Error(`Storybook registered ${entries.length} stories, expected at least ${minimumStories}`);
   const { chromium } = await import('playwright');
-  const server = serveDirectory(root);
+  const server = baseURL ? undefined : serveDirectory(root);
   let browser;
   const failures = [];
+  const observedFailures = [];
   try {
-    await new Promise((resolveListen, reject) => {
-      server.once('error', reject);
-      server.listen(0, '127.0.0.1', resolveListen);
-    });
-    const { port } = server.address();
+    if (server) {
+      await new Promise((resolveListen, reject) => {
+        server.once('error', reject);
+        server.listen(0, '127.0.0.1', resolveListen);
+      });
+    }
+    const url = baseURL ?? `http://127.0.0.1:${server.address().port}`;
     browser = await chromium.launch({ headless: true });
     for (const entry of entries) {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+      const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      const page = await context.newPage();
       const errors = [];
       page.on('console', (message) => {
         if (message.type() === 'error') errors.push(`console: ${message.text()}`);
@@ -118,13 +130,16 @@ export async function runStorybookRender({ root = resolve(argv[2] ?? DEFAULT_STO
       page.on('requestfailed', (request) =>
         errors.push(`resource failed: ${request.url()} (${request.failure()?.errorText ?? 'unknown'})`),
       );
+      let rendered = false;
       try {
-        await page.goto(`http://127.0.0.1:${port}/iframe.html?id=${encodeURIComponent(entry.id)}&viewMode=story`, {
+        await page.goto(`${url}/iframe.html?id=${encodeURIComponent(entry.id)}&viewMode=story`, {
           waitUntil: 'networkidle',
           timeout: 30_000,
         });
         await assertStoryDom(page, entry);
         if (errors.length) throw new Error(errors.join('\n'));
+        rendered = true;
+        if (onStory) await onStory(page, entry);
         if (screenshotDir)
           await page.screenshot({
             path: join(resolve(screenshotDir), `${entry.id.replaceAll('--', '__')}.png`),
@@ -132,20 +147,27 @@ export async function runStorybookRender({ root = resolve(argv[2] ?? DEFAULT_STO
           });
         stdout.write(`PASS ${entry.id}\n`);
       } catch (error) {
-        failures.push(`${entry.id}: ${error.message}${errors.length ? `\n${errors.join('\n')}` : ''}`);
+        if (!rendered) observedFailures.push(entry.id);
+        if (rendered || !knownFailures.includes(entry.id))
+          failures.push(`${entry.id}: ${error.message}${errors.length ? `\n${errors.join('\n')}` : ''}`);
       } finally {
-        await page.close();
+        await context.close();
       }
     }
   } finally {
     if (browser) await browser.close();
-    if (server.listening) await new Promise((done) => server.close(done));
+    if (server?.listening) await new Promise((done) => server.close(done));
   }
-  if (failures.length) throw new Error(`${failures.length}/${entries.length} stories failed\n${failures.join('\n')}`);
+  const fixed = knownFailures.filter((id) => !observedFailures.includes(id));
+  if (failures.length || fixed.length)
+    throw new Error(
+      `${failures.length}/${entries.length} stories failed unexpectedly; ${fixed.length} allowlisted stories now pass\n` +
+        [...failures, ...fixed.map((id) => `${id}: remove from render failure allowlist`)].join('\n'),
+    );
   return entries.length;
 }
 
-if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)))
+if (process.argv[1] && basename(process.argv[1]) === 'storybook-render.mjs')
   runStorybookRender()
     .then((count) => stdout.write(`Rendered ${count} Storybook stories with component DOM assertions\n`))
     .catch((error) => {
