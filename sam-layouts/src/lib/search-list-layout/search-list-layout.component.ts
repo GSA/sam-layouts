@@ -158,6 +158,7 @@ export class SearchListLayoutComponent implements OnInit {
   // The filter associated with the current page must not share consumer-owned references.
   private pageFilter: unknown;
   private hasPageFilter = false;
+  private pageFilterFromUrl = false;
 
   @HostListener('window:popstate', ['$event'])
   onpopstate(event) {
@@ -229,6 +230,7 @@ export class SearchListLayoutComponent implements OnInit {
     this.sortField = paramModel['sort'];
     this.pageFilter = _.cloneDeep(paramModel['sfm'] ?? this.configuration.defaultFilterValue);
     this.hasPageFilter = true;
+    this.pageFilterFromUrl = true;
     if (this.filterUpdateModelService) {
       if (paramModel && paramModel['sfm']) {
         this.filterUpdateModelService.updateModel(paramModel['sfm']);
@@ -258,12 +260,17 @@ export class SearchListLayoutComponent implements OnInit {
     }
 
     this.filterData = filter;
+    const normalizedPageFilter = this.normalizeFilterForComparison(this.pageFilter);
+    const normalizedFilter = this.normalizeFilterForComparison(filter);
     const preservePage = this.hasPageFilter
-      ? _.isEqual(this.normalizeFilterForComparison(this.pageFilter), this.normalizeFilterForComparison(filter))
+      ? this.pageFilterFromUrl
+        ? _.isEqual(this.convertToParam({ sfm: normalizedPageFilter }), this.convertToParam({ sfm: normalizedFilter }))
+        : _.isEqual(normalizedPageFilter, normalizedFilter)
       : this.page.default;
     this.page.pageNumber = preservePage ? this.page.pageNumber : 1;
     this.pageFilter = _.cloneDeep(filter);
     this.hasPageFilter = true;
+    this.pageFilterFromUrl = false;
     this.page.default = filter ? false : true;
     if (this.skipUpdate === false) {
       this.isDefaultFilter(filter);
@@ -486,6 +493,7 @@ export class SearchListLayoutComponent implements OnInit {
     this.lastKnownFilter = this.normalizeFilterForComparison(historyModel.filterModel);
     this.restorationEmissionPending = true;
     this.hasPageFilter = true;
+    this.pageFilterFromUrl = false;
     this.page.default = historyModel.page || historyModel.sort ? true : false;
     this.page.pageNumber = historyModel.page ? historyModel.page : 1;
     this.sortField = historyModel.sort ? historyModel.sort : this.sortField;
