@@ -237,6 +237,27 @@ describe('SearchListLayoutComponent', () => {
     }
   });
 
+  it('preserves the URL-restored page when a class control has null or undefined object fields (#122)', () => {
+    class Selection {
+      constructor(
+        public id: string,
+        public label: string | null,
+        public hint?: string,
+      ) {}
+    }
+
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[selection][id]=AL');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ selection: new Selection('AL', null) });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('preserves the URL-restored page when Formly emits an equivalent numeric value (#104)', () => {
     const originalUrl = window.location.href;
     window.history.replaceState({}, '', '?page=3&sfm[count]=0');
@@ -271,6 +292,24 @@ describe('SearchListLayoutComponent', () => {
       component.enableApiCall = false;
       TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ keyword: 'test', values: [] });
       expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
+  it('keeps URL equivalence across successive Formly emissions until the filter changes (#122)', () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+      service.updateFilter({ keyword: 'test', values: [] });
+      expect(component.page.pageNumber).toBe(3);
+      service.updateFilter({ keyword: 'test' });
+      expect(component.page.pageNumber).toBe(3);
+      service.updateFilter({ keyword: 'changed' });
+      expect(component.page.pageNumber).toBe(1);
     } finally {
       window.history.replaceState({}, '', originalUrl);
     }

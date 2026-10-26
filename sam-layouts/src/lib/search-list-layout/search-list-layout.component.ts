@@ -271,9 +271,14 @@ export class SearchListLayoutComponent implements OnInit {
         : _.isEqual(normalizedPageFilter, normalizedFilter)
       : this.page.default;
     this.page.pageNumber = preservePage ? this.page.pageNumber : 1;
-    this.pageFilter = _.cloneDeep(filter);
+    // Keep comparing against the URL snapshot while emissions are URL-equivalent:
+    // distinct Formly shapes (such as an omitted empty array) need not be
+    // type-identical to each other. A genuine change starts a new typed snapshot.
+    if (!this.pageFilterFromUrl || !preservePage) {
+      this.pageFilter = _.cloneDeep(filter);
+      this.pageFilterFromUrl = false;
+    }
     this.hasPageFilter = true;
-    this.pageFilterFromUrl = false;
     this.page.default = filter ? false : true;
     if (this.skipUpdate === false) {
       this.isDefaultFilter(filter);
@@ -338,6 +343,11 @@ export class SearchListLayoutComponent implements OnInit {
       }
       return keys.reduce(
         (result, key) => {
+          // qs skips nullish object properties, including those on class controls.
+          // Array slots are handled above and must remain positional.
+          if (model[key] == null) {
+            return result;
+          }
           const normalized = this.normalizeUrlFilterForComparison(model[key]);
           // Empty arrays and recursively empty plain-object controls have no
           // URL representation, but array slots remain meaningful.
