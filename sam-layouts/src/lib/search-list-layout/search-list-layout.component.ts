@@ -332,9 +332,12 @@ export class SearchListLayoutComponent implements OnInit {
       return keys.reduce(
         (result, key) => {
           const normalized = this.normalizeUrlFilterForComparison(filter[key]);
-          // Empty arrays have no URL representation, just like omitted empty
-          // plain-object controls, but non-empty arrays retain every slot.
-          if (!(Array.isArray(normalized) && normalized.length === 0)) {
+          // Empty arrays and recursively empty plain-object controls have no
+          // URL representation, but array slots remain meaningful.
+          if (
+            !(Array.isArray(normalized) && normalized.length === 0) &&
+            !(this.isPlainObject(normalized) && Object.keys(normalized).length === 0)
+          ) {
             result[key] = normalized;
           }
           return result;

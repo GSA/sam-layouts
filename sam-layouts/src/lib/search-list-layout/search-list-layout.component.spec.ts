@@ -259,6 +259,22 @@ describe('SearchListLayoutComponent', () => {
     }
   });
 
+  it('preserves the URL-restored page when Formly emits a group containing only an empty array (#104)', () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({
+        keyword: 'test',
+        location: { state: [] },
+      });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('preserves the URL-restored page for arrays beyond the qs array limit (#104)', () => {
     const originalUrl = window.location.href;
     const values = Array.from({ length: 21 }, (_, index) => String(index));
