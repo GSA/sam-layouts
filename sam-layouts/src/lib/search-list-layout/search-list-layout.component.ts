@@ -228,7 +228,7 @@ export class SearchListLayoutComponent implements OnInit {
     this.page.pageSize = paramModel['pageSize'] ? Number.parseInt(paramModel['pageSize']) : this.configuration.pageSize;
 
     this.sortField = paramModel['sort'];
-    this.pageFilter = _.cloneDeep(paramModel['sfm'] ?? this.configuration.defaultFilterValue);
+    this.pageFilter = _.cloneDeep(paramModel['sfm'] || this.configuration.defaultFilterValue);
     this.hasPageFilter = true;
     this.pageFilterFromUrl = true;
     if (this.filterUpdateModelService) {

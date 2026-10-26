@@ -76,6 +76,20 @@ describe('SearchListLayoutComponent', () => {
     expect(component.page.default).toBe(false);
   });
 
+  it('preserves the initial URL page for an empty sfm and equivalent default Formly filter (#122)', () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm=');
+    try {
+      component.configuration.defaultFilterValue = { keyword: 'fallback' };
+      component.enableApiCall = false;
+      fixture.detectChanges();
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ keyword: 'fallback' });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('preserves the URL-restored page across equivalent nested filter emissions (#104)', async () => {
     const originalUrl = window.location.href;
     window.history.replaceState({}, '', '?page=3&sfm[keyword][value]=test');
