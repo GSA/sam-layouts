@@ -220,6 +220,23 @@ describe('SearchListLayoutComponent', () => {
     await fixture.whenStable();
   });
 
+  it('preserves the URL-restored page for an equivalent nested Formly class instance (#122)', () => {
+    class Selection {
+      constructor(public id: string) {}
+    }
+
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[selection][id]=AL');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ selection: new Selection('AL') });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('preserves the URL-restored page when Formly emits an equivalent numeric value (#104)', () => {
     const originalUrl = window.location.href;
     window.history.replaceState({}, '', '?page=3&sfm[count]=0');

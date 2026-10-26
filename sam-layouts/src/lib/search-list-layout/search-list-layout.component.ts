@@ -322,16 +322,23 @@ export class SearchListLayoutComponent implements OnInit {
     if (Array.isArray(filter)) {
       return filter.map((value) => (value == null ? value : this.normalizeUrlFilterForComparison(value)));
     }
-    if (this.isPlainObject(filter)) {
-      const keys = Object.keys(filter);
+    // qs serializes enumerable fields of class-based Formly controls as nested
+    // URL keys, just as it does for plain objects. Keep values such as Dates
+    // (and non-plain objects without enumerable fields) on the scalar path.
+    if (
+      this.isPlainObject(filter) ||
+      (typeof filter === 'object' && filter !== null && !(filter instanceof Date) && Object.keys(filter).length > 0)
+    ) {
+      const model = filter as Record<string, unknown>;
+      const keys = Object.keys(model);
       // qs parses arrays above its default limit as index-keyed objects. Turn
       // contiguous numeric keys back into arrays so they compare with Formly.
       if (keys.length > 0 && keys.every((key, index) => key === index.toString())) {
-        return keys.map((key) => this.normalizeUrlFilterForComparison(filter[key]));
+        return keys.map((key) => this.normalizeUrlFilterForComparison(model[key]));
       }
       return keys.reduce(
         (result, key) => {
-          const normalized = this.normalizeUrlFilterForComparison(filter[key]);
+          const normalized = this.normalizeUrlFilterForComparison(model[key]);
           // Empty arrays and recursively empty plain-object controls have no
           // URL representation, but array slots remain meaningful.
           if (
