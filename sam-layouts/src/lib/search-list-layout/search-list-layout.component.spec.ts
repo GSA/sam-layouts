@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
+import * as qs from 'qs';
 import { SearchListLayoutComponent } from './search-list-layout.component';
 import { SearchListServiceModule } from './search-list-layout.module';
 import { PaginationModule, SdsSearchResultListModule } from '@gsa-sam/components';
@@ -76,40 +77,105 @@ describe('SearchListLayoutComponent', () => {
     expect(component.page.default).toBe(false);
   });
 
-  it('preserves the initial URL page for an empty sfm and equivalent default Formly filter (#122)', () => {
+  it.each([
+    { label: 'empty sfm', query: '?page=3&sfm=' },
+    { label: 'absent sfm', query: '?page=3' },
+  ])('uses the configured fallback for $label across equivalent emissions (#122)', ({ query }) => {
     const originalUrl = window.location.href;
-    window.history.replaceState({}, '', '?page=3&sfm=');
+    window.history.replaceState({}, '', query);
     try {
       component.configuration.defaultFilterValue = { keyword: 'fallback' };
       component.enableApiCall = false;
       fixture.detectChanges();
-      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ keyword: 'fallback' });
+      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+      service.updateFilter({ keyword: 'fallback' });
       expect(component.page.pageNumber).toBe(3);
+      service.updateFilter({ keyword: 'fallback', location: { city: null } });
+      expect(component.page.pageNumber).toBe(3);
+      service.updateFilter({ keyword: 'changed' });
+      expect(component.page.pageNumber).toBe(1);
     } finally {
       window.history.replaceState({}, '', originalUrl);
     }
   });
 
-  it('preserves the URL-restored page across equivalent nested filter emissions (#104)', async () => {
+  it.each([
+    { source: 'initial URL', page: 3, filter: { keyword: { value: 'test' } } },
+    { source: 'results model', page: 3, filter: { keyword: { value: 'restored' } } },
+    { source: 'popstate', page: 4, filter: { keyword: { value: 'restored' } } },
+  ])(
+    'retains $source page on first/repeated equivalent filters, then resets on change (#104)',
+    ({ source, page, filter }) => {
+      const originalUrl = window.location.href;
+      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+      try {
+        component.enableApiCall = false;
+        if (source === 'initial URL') {
+          window.history.replaceState({}, '', `?page=${page}&sfm[keyword][value]=${filter.keyword.value}`);
+        }
+        fixture.detectChanges();
+        if (source !== 'initial URL') {
+          service.updateFilter({ keyword: { value: 'earlier' } });
+          if (source === 'results model') {
+            component.updateSearchResultsModel({ page, filterModel: filter });
+          } else {
+            window.history.replaceState({}, '', `?page=${page}&sfm[keyword][value]=${filter.keyword.value}`);
+            component.onpopstate(new PopStateEvent('popstate'));
+          }
+        }
+        expect(component.page.pageNumber).toBe(page);
+        service.updateFilter({ keyword: { value: filter.keyword.value } });
+        expect(component.page.pageNumber).toBe(page);
+        service.updateFilter({ keyword: { value: filter.keyword.value } });
+        expect(component.page.pageNumber).toBe(page);
+        service.updateFilter({ keyword: { value: 'changed' } });
+        expect(component.page.pageNumber).toBe(1);
+      } finally {
+        window.history.replaceState({}, '', originalUrl);
+      }
+    },
+  );
+
+  it.each([
+    { source: 'initial URL', page: 3, value: 'test' },
+    { source: 'popstate', page: 4, value: 'restored' },
+  ])('requests restored $source page on first equivalent emission only (#104)', async ({ source, page, value }) => {
     const originalUrl = window.location.href;
-    window.history.replaceState({}, '', '?page=3&sfm[keyword][value]=test');
+    const requests: { page: number; filter: unknown }[] = [];
+    component.service = {
+      getData: (search) => {
+        requests.push({ page: search.page.pageNumber, filter: search.filter });
+        return of({ totalItems: 1, items: [{ id: 1 }] });
+      },
+    };
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     try {
+      if (source === 'initial URL') {
+        window.history.replaceState({}, '', `?page=${page}&sfm[keyword][value]=${value}`);
+      }
       fixture.detectChanges();
-      await updateFilterAndWait(fixture, { keyword: { value: 'test' } });
-      await updateFilterAndWait(fixture, { keyword: { value: 'test' } });
-      expect(component.page.pageNumber).toBe(3);
+      if (source === 'popstate') {
+        service.updateFilter({ keyword: { value: 'earlier' } });
+        await vi.advanceTimersByTimeAsync(100);
+        expect(requests).toHaveLength(1);
+        requests.length = 0;
+        window.history.replaceState({}, '', `?page=${page}&sfm[keyword][value]=${value}`);
+        component.onpopstate(new PopStateEvent('popstate'));
+      }
+      expect(requests).toHaveLength(0);
+      service.updateFilter({ keyword: { value } });
+      expect(component.page.pageNumber).toBe(page);
+      await vi.advanceTimersByTimeAsync(100);
+      expect(requests).toEqual([{ page, filter: { keyword: { value } } }]);
+      service.updateFilter({ keyword: { value } });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(requests).toHaveLength(1);
+      expect(component.page.pageNumber).toBe(page);
     } finally {
+      vi.useRealTimers();
       window.history.replaceState({}, '', originalUrl);
     }
-  });
-
-  it('preserves a newly restored results-model page after an earlier filter (#104)', async () => {
-    fixture.detectChanges();
-    await updateFilterAndWait(fixture, { keyword: { value: 'earlier' } });
-    component.updateSearchResultsModel({ page: 3, filterModel: { keyword: { value: 'restored' } } });
-    await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
-    await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
-    expect(component.page.pageNumber).toBe(3);
   });
 
   it('resets the page for a different filter even on the first restoration emission (#104)', async () => {
@@ -136,21 +202,6 @@ describe('SearchListLayoutComponent', () => {
     filter.keyword.value = 'changed';
     await updateFilterAndWait(fixture, filter);
     expect(component.page.pageNumber).toBe(1);
-  });
-
-  it('preserves the new history page after popstate-style restoration (#104)', async () => {
-    const originalUrl = window.location.href;
-    try {
-      fixture.detectChanges();
-      await updateFilterAndWait(fixture, { keyword: { value: 'earlier' } });
-      window.history.replaceState({}, '', '?page=4&sfm[keyword][value]=restored');
-      component.onpopstate(new PopStateEvent('popstate'));
-      await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
-      await updateFilterAndWait(fixture, { keyword: { value: 'restored' } });
-      expect(component.page.pageNumber).toBe(4);
-    } finally {
-      window.history.replaceState({}, '', originalUrl);
-    }
   });
 
   it('preserves restored pages through real Formly service emissions (#104)', async () => {
@@ -272,18 +323,29 @@ describe('SearchListLayoutComponent', () => {
     }
   });
 
-  it('preserves the URL-restored page when Formly emits an equivalent numeric value (#104)', () => {
-    const originalUrl = window.location.href;
-    window.history.replaceState({}, '', '?page=3&sfm[count]=0');
-    try {
-      fixture.detectChanges();
-      component.enableApiCall = false;
-      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ count: 0 });
-      expect(component.page.pageNumber).toBe(3);
-    } finally {
-      window.history.replaceState({}, '', originalUrl);
-    }
-  });
+  it.each([
+    { label: 'numeric zero', query: 'sfm[count]=0', equivalent: { count: 0 }, changed: { count: 1 } },
+    { label: 'boolean false', query: 'sfm[active]=false', equivalent: { active: false }, changed: { active: true } },
+  ])(
+    'uses URL-shaped comparison for $label, then resets for a changed value (#104)',
+    ({ query, equivalent, changed }) => {
+      const originalUrl = window.location.href;
+      window.history.replaceState({}, '', `?page=3&${query}`);
+      try {
+        component.enableApiCall = false;
+        fixture.detectChanges();
+        const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+        service.updateFilter(equivalent);
+        expect(component.page.pageNumber).toBe(3);
+        service.updateFilter({ ...equivalent });
+        expect(component.page.pageNumber).toBe(3);
+        service.updateFilter(changed);
+        expect(component.page.pageNumber).toBe(1);
+      } finally {
+        window.history.replaceState({}, '', originalUrl);
+      }
+    },
+  );
 
   it('resets the URL-restored page when Formly adds a null array slot (#104)', () => {
     const originalUrl = window.location.href;
@@ -345,19 +407,25 @@ describe('SearchListLayoutComponent', () => {
     }
   });
 
-  it('preserves the URL-restored page for arrays beyond the qs array limit (#104)', () => {
+  it.each([20, 21])('preserves URL-restored page for %i array slots across the qs parse limit (#104)', (length) => {
     const originalUrl = window.location.href;
-    const values = Array.from({ length: 21 }, (_, index) => String(index));
-    window.history.replaceState(
-      {},
-      '',
-      `?page=3&${values.map((value, index) => `sfm[values][${index}]=${value}`).join('&')}`,
-    );
+    const values = Array.from({ length }, (_, index) => String(index));
+    const modelService = TestBed.inject(SDSFormlyUpdateModelService);
+    const updateSpy = vi.spyOn(modelService, 'updateModel');
+    // The URL crosses the same stringify → URLSearchParams → stringify → parse path as history restoration.
+    const query = qs.stringify({ page: 3, sfm: { values } }, { skipNulls: true, encode: false });
+    window.history.replaceState({}, '', `?${query}`);
     try {
-      fixture.detectChanges();
       component.enableApiCall = false;
-      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ values });
+      fixture.detectChanges();
+      const restored = updateSpy.mock.calls.at(-1)![0] as { values: string[] | Record<string, string> };
+      expect(Array.isArray(restored.values)).toBe(length === 20);
+      expect(Object.values(restored.values)).toEqual(values);
+      const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+      service.updateFilter({ values: [...values] });
       expect(component.page.pageNumber).toBe(3);
+      service.updateFilter({ values: [...values, 'extra'] });
+      expect(component.page.pageNumber).toBe(1);
     } finally {
       window.history.replaceState({}, '', originalUrl);
     }
@@ -389,29 +457,31 @@ describe('SearchListLayoutComponent', () => {
     expect(component.page.pageNumber).toBe(3);
   });
 
-  it('distinguishes null and empty-object array slots when restoring a page (#104)', () => {
+  it.each([
+    { shape: 'typed zero and false', restored: { active: false, count: 0 }, changed: { active: false, count: '0' } },
+    { shape: 'positional null slot', restored: { values: [null] }, changed: { values: [{}] } },
+  ])('compares results-model $shape on first/repeated/changed Formly emissions (#104)', ({ restored, changed }) => {
     fixture.detectChanges();
     component.enableApiCall = false;
-    component.updateSearchResultsModel({ page: 3, filterModel: { values: [null] } });
-    component.updateFilter({ values: [{}] });
-    expect(component.page.pageNumber).toBe(1);
-  });
-
-  it('keeps results-model restoration type-sensitive (#104)', () => {
-    fixture.detectChanges();
-    component.enableApiCall = false;
-    component.updateSearchResultsModel({ page: 3, filterModel: { count: '0' } });
-    component.updateFilter({ count: 0 });
-    expect(component.page.pageNumber).toBe(1);
-  });
-
-  it('retains false and zero filter values during page comparison (#104)', () => {
-    fixture.detectChanges();
-    component.enableApiCall = false;
-    const filter = { active: false, count: 0 };
-    component.updateSearchResultsModel({ page: 3, filterModel: filter });
-    component.updateFilter({ active: false, count: 0 });
+    const service = TestBed.inject(SDSFormlyUpdateComunicationService);
+    component.updateSearchResultsModel({ page: 3, filterModel: restored });
+    service.updateFilter(structuredClone(restored));
     expect(component.page.pageNumber).toBe(3);
+    service.updateFilter(structuredClone(restored));
+    expect(component.page.pageNumber).toBe(3);
+    service.updateFilter(changed);
+    expect(component.page.pageNumber).toBe(1);
+  });
+
+  it.each([
+    { shape: 'typed zero', restored: { count: '0' }, changed: { count: 0 } },
+    { shape: 'positional null slot', restored: { values: [null] }, changed: { values: [{}] } },
+  ])('resets results-model $shape on the first changed Formly emission (#104)', ({ restored, changed }) => {
+    fixture.detectChanges();
+    component.enableApiCall = false;
+    component.updateSearchResultsModel({ page: 3, filterModel: restored });
+    TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter(changed);
+    expect(component.page.pageNumber).toBe(1);
   });
 
   it('distinguishes meaningful non-plain filter values during page comparison (#104)', () => {
