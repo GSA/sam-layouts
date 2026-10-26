@@ -233,6 +233,50 @@ describe('SearchListLayoutComponent', () => {
     }
   });
 
+  it('resets the URL-restored page when Formly adds a null array slot (#104)', () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[values][0]=x');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ values: ['x', null] });
+      expect(component.page.pageNumber).toBe(1);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
+  it('preserves the URL-restored page when Formly emits an empty array omitted by the URL (#104)', () => {
+    const originalUrl = window.location.href;
+    window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ keyword: 'test', values: [] });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
+  it('preserves the URL-restored page for arrays beyond the qs array limit (#104)', () => {
+    const originalUrl = window.location.href;
+    const values = Array.from({ length: 21 }, (_, index) => String(index));
+    window.history.replaceState(
+      {},
+      '',
+      `?page=3&${values.map((value, index) => `sfm[values][${index}]=${value}`).join('&')}`,
+    );
+    try {
+      fixture.detectChanges();
+      component.enableApiCall = false;
+      TestBed.inject(SDSFormlyUpdateComunicationService).updateFilter({ values });
+      expect(component.page.pageNumber).toBe(3);
+    } finally {
+      window.history.replaceState({}, '', originalUrl);
+    }
+  });
+
   it('preserves the restored URL page immediately for an equivalent Formly emission (#104)', () => {
     const originalUrl = window.location.href;
     window.history.replaceState({}, '', '?page=3&sfm[keyword]=test');

@@ -264,7 +264,10 @@ export class SearchListLayoutComponent implements OnInit {
     const normalizedFilter = this.normalizeFilterForComparison(filter);
     const preservePage = this.hasPageFilter
       ? this.pageFilterFromUrl
-        ? _.isEqual(this.convertToParam({ sfm: normalizedPageFilter }), this.convertToParam({ sfm: normalizedFilter }))
+        ? _.isEqual(
+            this.normalizeUrlFilterForComparison(normalizedPageFilter),
+            this.normalizeUrlFilterForComparison(normalizedFilter),
+          )
         : _.isEqual(normalizedPageFilter, normalizedFilter)
       : this.page.default;
     this.page.pageNumber = preservePage ? this.page.pageNumber : 1;
@@ -313,6 +316,42 @@ export class SearchListLayoutComponent implements OnInit {
       );
     }
     return filter;
+  }
+
+  private normalizeUrlFilterForComparison(filter: unknown): unknown {
+    if (Array.isArray(filter)) {
+      return filter.map((value) => (value == null ? value : this.normalizeUrlFilterForComparison(value)));
+    }
+    if (this.isPlainObject(filter)) {
+      const keys = Object.keys(filter);
+      // qs parses arrays above its default limit as index-keyed objects. Turn
+      // contiguous numeric keys back into arrays so they compare with Formly.
+      if (keys.length > 0 && keys.every((key, index) => key === index.toString())) {
+        return keys.map((key) => this.normalizeUrlFilterForComparison(filter[key]));
+      }
+      return keys.reduce(
+        (result, key) => {
+          const normalized = this.normalizeUrlFilterForComparison(filter[key]);
+          // Empty arrays have no URL representation, just like omitted empty
+          // plain-object controls, but non-empty arrays retain every slot.
+          if (!(Array.isArray(normalized) && normalized.length === 0)) {
+            result[key] = normalized;
+          }
+          return result;
+        },
+        {} as Record<string, unknown>,
+      );
+    }
+
+    // Compare scalar leaves as the URL would represent them while retaining
+    // the surrounding object and array structure (including null slots).
+    const serialized = this.convertToParam({ value: filter });
+    if (typeof serialized === 'object' && serialized !== null && Object.hasOwn(serialized, 'value')) {
+      return serialized['value'];
+    }
+    // Non-plain values that serialize to nested keys must not all collapse to
+    // undefined; retain their complete serialized representation instead.
+    return serialized;
   }
 
   private isPlainObject(value: unknown): value is Record<string, unknown> {
