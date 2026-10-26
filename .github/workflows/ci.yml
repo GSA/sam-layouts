@@ -95,6 +95,25 @@ jobs:
       - name: Render every Storybook story in Chromium
         run: npm run test:storybook-render
 
+      # CI=1 reuses the artifact above; the Playwright web server probes iframe.html.
+      - name: Playwright story smoke gate
+        run: npm run test:e2e
+
+      - name: Playwright WCAG 2.1 AA axe gate
+        run: npm run test:a11y
+
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-results
+          path: |
+            test-results/e2e/
+            test-results/a11y/
+            playwright-report/e2e/
+            playwright-report/a11y/
+          if-no-files-found: warn
+
       # Stop-the-world formatting gate. Deliberately last: this is a whole-repo
       # mechanical check with no logical dependency on the steps above it, and
       # running it after the substantive build/test/Storybook gates means a
