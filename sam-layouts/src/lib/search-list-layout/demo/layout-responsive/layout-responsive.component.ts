@@ -24,6 +24,18 @@ import { ResultComponent } from '../result/result.component';
 @Component({
   selector: 'demo-search-list-layout',
   templateUrl: './layout-responsive.component.html',
+  styles: [
+    `
+      .domain-toggle {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        line-height: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+    `,
+  ],
   imports: [
     SdsSideToolbarModule,
     IconModule,
