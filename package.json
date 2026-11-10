@@ -63,7 +63,7 @@
     "@angular/cli": "21.2.28",
     "@angular/compiler-cli": "21.2.25",
     "@angular/language-service": "21.2.25",
-    "@axe-core/playwright": "4.13.0",
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "^9.8.0",
     "@nx/angular": "22.7.12",
     "@nx/eslint": "22.7.12",

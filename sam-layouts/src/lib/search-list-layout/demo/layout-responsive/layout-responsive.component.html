@@ -35,25 +35,22 @@
           }
 
           <div class="sds-card sds-card--collapsible" [ngClass]="{ 'sds-card--collapsed': !domainsExpanded }">
-            <div
-              role="button"
-              class="sds-card__header sds-card__header--action"
+            <button
+              type="button"
+              class="sds-card__header sds-card__header--action domain-toggle"
               [attr.aria-expanded]="domainsExpanded"
               aria-controls="panelBody"
-              tabindex="0"
-              aria-label="Select Domain"
               (click)="domainsExpanded = !domainsExpanded"
-              (keyup.enter)="domainsExpanded = !domainsExpanded"
             >
-              <div class="sds-card__title">
+              <span class="sds-card__title">
                 Select Domain<br />
                 <span class="sds-card__subtitle">
                   {{ selectedPanel?.text }}
                 </span>
-              </div>
+              </span>
 
-              <div class="sds-card__action sds-card__collapse"></div>
-            </div>
+              <span class="sds-card__action sds-card__collapse" aria-hidden="true"></span>
+            </button>
 
             <div class="sds-card__body sds-card__body--accent-cool" id="panelBody">
               <sds-selection-panel
